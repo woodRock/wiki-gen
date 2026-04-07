@@ -3,7 +3,6 @@
 Welcome to your personalized research wiki.
 
 ## Papers
-- [Allowing humans to interactively guide machines where to look does not always improve human-AI team's classification accuracy](./2fcab57cf4cd55e3c12ac1a7ca50a83337804235.md)
 - [Attention Is All You Need](./204e3073870fae3d05bcbc2f6a8e263d9b72e776.md)
 - [LeWorldModel (LeWM)](./530dab86cb8034bc12a32d21508aaa3f2cc00aa1.md)
 - [PolarQuant: Quantizing KV Caches with Polar Transformation](./ef9485a2522f64bca0f5cf67edc28a11984790e8.md)
