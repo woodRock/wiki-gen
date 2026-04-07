@@ -284,7 +284,7 @@
   
     
   
-  QJL: 1-Bit Quantized JL Transform
+  QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
 
       </a>
     </li>
@@ -513,7 +513,7 @@
   <span class="md-ellipsis">
     
   
-    QJL: 1-Bit Quantized JL Transform
+    QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
   
 
     
@@ -597,6 +597,17 @@
     <span class="md-ellipsis">
       
         Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
       
     </span>
   </a>
@@ -709,6 +720,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -772,6 +794,22 @@ This page is being generated in a high-quality Wikipedia style.</p>
 </blockquote>
 <h2 id="overview">Overview</h2>
 <p>This paper introduces the Image-based Joint-Embedding Predictive Architecture (I-JEPA), an approach for learning highly semantic image representations without relying on hand-crafted data augmentations. I-JEPA is a non-generative self-supervised learning technique where the model learns by predicting the representations of various target blocks in an image given a single context block. By predicting in representation space instead of pixel space, I-JEPA naturally avoids capturing unnecessary low-level details, yielding representations that are more semantic and an architecture that scales efficiently.</p>
+<h2 id="figures-and-diagrams">Figures and Diagrams</h2>
+<blockquote>
+<p>Key figures extracted from the original paper.</p>
+</blockquote>
+<p><img alt="The overall objective is as follows: given a context" src="../assets/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig1.png" /></p>
+<p><em>The overall objective is as follows: given a context</em></p>
+<hr />
+<p><img alt="Examples of our context and target-masking strategy." src="../assets/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig2.png" /></p>
+<p><em>Examples of our context and target-masking strategy.</em></p>
+<hr />
+<p><img alt="Visualization of I-JEPA predictor representations. For each image: first column contains the original image; second column" src="../assets/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig3.jpeg" /></p>
+<p><em>Visualization of I-JEPA predictor representations. For each image: first column contains the original image; second column</em></p>
+<hr />
+<p><img alt="Visualization of I-JEPA target-encoder representations. For each image: first column contains the original image; subsequent" src="../assets/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig4.jpeg" /></p>
+<p><em>Visualization of I-JEPA target-encoder representations. For each image: first column contains the original image; subsequent</em></p>
+<hr />
 <h2 id="summary">Summary</h2>
 <p>The I-JEPA architecture comprises three main components: a context encoder, a target encoder, and a predictor network, all based on Vision Transformers (ViTs). Unlike generative methods such as Masked Autoencoders (MAE) that aim to reconstruct pixel-level targets, I-JEPA predicts abstract representations. Given an input image, a context block <span class="arithmatex">\(x\)</span> is fed through the context encoder to obtain representations <span class="arithmatex">\(s_x\)</span>. The target encoder processes the full image to generate representations <span class="arithmatex">\(s_y\)</span>, which are then extracted for specific target blocks <span class="arithmatex">\(B_i\)</span>. </p>
 <p>The predictor network <span class="arithmatex">\(g_{\phi}\)</span> takes the context representations <span class="arithmatex">\(s_x\)</span> and positional mask tokens corresponding to the target blocks to predict the target representations:</p>

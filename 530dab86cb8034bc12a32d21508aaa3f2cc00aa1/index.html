@@ -286,7 +286,7 @@
   
     
   
-  QJL: 1-Bit Quantized JL Transform
+  QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
 
       </a>
     </li>
@@ -523,6 +523,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -604,7 +615,7 @@
   <span class="md-ellipsis">
     
   
-    QJL: 1-Bit Quantized JL Transform
+    QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
   
 
     
@@ -709,6 +720,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -772,6 +794,25 @@ This page is being generated in a high-quality Wikipedia style.</p>
 </blockquote>
 <h2 id="overview">Overview</h2>
 <p>LeWorldModel (LeWM) introduces a stable end-to-end method for learning latent world models from raw pixels using a Joint-Embedding Predictive Architecture (JEPA). Traditional JEPA approaches for world modeling suffer from instability and representation collapse, often requiring complex multi-term losses or frozen pre-trained encoders. LeWM overcomes this by employing a simple two-term objective: a next-embedding prediction loss and a Sketched-Isotropic-Gaussian Regularizer (SIGReg) that forces the latent embeddings to match a Gaussian distribution. This dramatically simplifies hyperparameter tuning and enables fast, efficient latent planning for complex continuous control tasks.</p>
+<h2 id="figures-and-diagrams">Figures and Diagrams</h2>
+<blockquote>
+<p>Key figures extracted from the original paper.</p>
+</blockquote>
+<p><img alt="LeWorldModel Latent Planning. Given an initial observation o1 and a goal og, the world model" src="../assets/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig1.jpeg" /></p>
+<p><em>LeWorldModel Latent Planning. Given an initial observation o1 and a goal og, the world model</em></p>
+<hr />
+<p><img alt="Predictor rollouts on PushT and OGBench-Cube. We visualize decoded latent plans" src="../assets/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig2.png" /></p>
+<p><em>Predictor rollouts on PushT and OGBench-Cube. We visualize decoded latent plans</em></p>
+<hr />
+<p><img alt="Decoder visualization during training. As training progresses, the latent representation increasingly" src="../assets/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig3.jpeg" /></p>
+<p><em>Decoder visualization during training. As training progresses, the latent representation increasingly</em></p>
+<hr />
+<p><img alt="Additional predictor rollouts on PushT (top) and OGBench-Cube (bottom). Same setup as" src="../assets/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig4.png" /></p>
+<p><em>Additional predictor rollouts on PushT (top) and OGBench-Cube (bottom). Same setup as</em></p>
+<hr />
+<p><img alt="Example of trajectories used for the Violation of Expectation experiments (Sec. 5.2). For" src="../assets/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig5.png" /></p>
+<p><em>Example of trajectories used for the Violation of Expectation experiments (Sec. 5.2). For</em></p>
+<hr />
 <h2 id="summary">Summary</h2>
 <p>The LeWM framework relies on two primary components: an encoder and a predictor. The encoder maps a raw pixel observation <span class="arithmatex">\(o_t\)</span> into a compact latent representation <span class="arithmatex">\(z_t\)</span>. The predictor models the environment dynamics autoregressively by predicting the next frame's embedding <span class="arithmatex">\(\hat{z}_{t+1}\)</span> conditioned on the current state <span class="arithmatex">\(z_t\)</span> and an action <span class="arithmatex">\(a_t\)</span>:</p>
 <div class="arithmatex">\[z_t = \text{enc}_{\theta}(o_t)\]</div>
