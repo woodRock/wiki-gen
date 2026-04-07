@@ -37,11 +37,11 @@
     "venue": "Computer Vision and Pattern Recognition",
     "abstract": "",
     "tags": [
-      "transformer",
+      "self-supervised-learning",
+      "jepa",
       "computer-vision",
       "embeddings",
-      "jepa",
-      "self-supervised-learning"
+      "transformer"
     ]
   },
   {
@@ -57,8 +57,8 @@
     "abstract": "",
     "tags": [
       "quantization",
-      "large-language-models",
-      "embeddings"
+      "embeddings",
+      "large-language-models"
     ]
   },
   {
@@ -92,8 +92,8 @@
     "abstract": "",
     "tags": [
       "quantization",
-      "large-language-models",
-      "embeddings"
+      "embeddings",
+      "large-language-models"
     ]
   },
   {
@@ -110,11 +110,11 @@
     "venue": "N/A",
     "abstract": "",
     "tags": [
+      "jepa",
       "latent-space",
-      "world-models",
       "computer-vision",
-      "embeddings",
-      "jepa"
+      "world-models",
+      "embeddings"
     ]
   }
 ]

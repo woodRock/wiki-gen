@@ -56,37 +56,32 @@
 
       <h3>Key Points</h3>
       <ul>
-        <li>Replaced recurrence with pure attention architecture</li>
-        <li>Scaled dot-product attention prevents vanishing gradients</li>
-        <li>Multi-head attention captures different types of dependencies</li>
-        <li>Positional encodings add sequence order information</li>
-        <li>Achieved better performance with less training time</li>
+        <li>JL transform preserves distances with random projections</li>
+        <li>Sign quantization achieves 1-bit per value</li>
+        <li>Zero quantization parameter overhead</li>
+        <li>5× memory reduction with custom CUDA kernel</li>
       </ul>
 
       <h3>Detailed Summary</h3>
-      <p>The paper introduces a novel attention mechanism that replaces recurrent and convolutional layers entirely with self-attention.</p>
-      <p>The key innovation is scaled dot-product attention which prevents gradient issues in large models by normalizing with the square root of the key dimension.</p>
-      <p>Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions.</p>
-      <p>The architecture achieves state-of-the-art results on machine translation while being highly parallelizable.</p>
+      <p>QJL applies Johnson-Lindenstrauss transform followed by sign-bit quantization for KV cache compression.</p>
+      <p>The JL transform approximately preserves pairwise distances in lower dimensions using random projections.</p>
+      <p>Sign quantization reduces each value to just 1 bit (+1 or -1) with no need for scale/zero-point storage.</p>
+      <p>Achieves 3-bit KV cache with 5× memory reduction and faster inference via custom CUDA kernels.</p>
 
       <h2 id="math">Key Equations</h2>
 
-      <h3>Scaled Dot-Product Attention</h3>
-      <div class="math-display">$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</div>
-      <p class="math-explanation">Computes attention by taking the dot product of queries and keys, scaling by the square root of key dimension to prevent small gradients, applying softmax to get weights, and multiplying by values.</p>
+      <h3>JL Projection</h3>
+      <div class="math-inline">$\mathbf{y} = \mathbf{S}\mathbf{x}$</div>
+      <p class="math-explanation">Projects input vector using random sketching matrix S, approximately preserving pairwise distances.</p>
 
-      <h3>Multi-Head Attention</h3>
-      <div class="math-display">$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)W^O$$</div>
-      <p class="math-explanation">Runs h attention layers in parallel, each with different learned projections, then concatenates and projects the results.</p>
-
-      <h3>Positional Encoding</h3>
-      <div class="math-display">$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)$$</div>
-      <p class="math-explanation">Adds position information using sine and cosine functions of different frequencies, allowing the model to attend to relative positions.</p>
+      <h3>Sign Quantization</h3>
+      <div class="math-display">$$Q(\mathbf{y}) = \text{sign}(\mathbf{y}) \in \{-1,+1\}^m$$</div>
+      <p class="math-explanation">Reduces each dimension to just its sign, achieving 1-bit representation.</p>
 
       <h2 id="animation">Visual Explanation</h2>
       <figure class="wiki-figure">
-        <img src="wiki/site/assets/animations/7318a804566baadc9f4b4ca8255f78744e749a32.gif" alt="Self-Attention Mechanism">
-        <figcaption>Self-Attention Mechanism</figcaption>
+        <img src="wiki/site/assets/animations/7318a804566baadc9f4b4ca8255f78744e749a32.gif" alt="JL Transform with Sign Quantization">
+        <figcaption>JL Transform with Sign Quantization</figcaption>
       </figure>
 
       <h2 id="references">References</h2>
