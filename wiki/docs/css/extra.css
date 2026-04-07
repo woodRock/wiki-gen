@@ -1,0 +1,60 @@
+/* Reference Hover Cards */
+.cite-card {
+    position: fixed;
+    background: var(--md-code-bg-color);
+    border: 1px solid var(--md-typeset-table-color);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.85rem;
+    max-width: 320px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+    line-height: 1.4;
+    color: var(--md-typeset-color);
+}
+
+.cite-card.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cite-card-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: block;
+    color: var(--md-typeset-a-color);
+}
+
+.cite-card-authors {
+    color: var(--md-typeset-color);
+    font-style: italic;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.cite-card-meta {
+    font-size: 0.75rem;
+    color: var(--md-default-fg-color--lighter);
+    margin-bottom: 8px;
+}
+
+.cite-card-abstract {
+    font-size: 0.8rem;
+    color: var(--md-typeset-color);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.paper-metadata {
+    background: var(--md-code-bg-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
