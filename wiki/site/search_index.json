@@ -1,0 +1,21 @@
+[
+  {
+    "paper_id": "ef9485a2522f64bca0f5cf67edc28a11984790e8",
+    "title": "PolarQuant: Quantizing KV Caches with Polar Transformation",
+    "authors": [
+      "Insu Han",
+      "Praneeth Kacham",
+      "Amin Karbasi",
+      "V. Mirrokni",
+      "A. Zandieh"
+    ],
+    "year": 2025,
+    "venue": "arXiv.org",
+    "abstract": "",
+    "tags": [
+      "quantization",
+      "large-language-models",
+      "embeddings"
+    ]
+  }
+]
