@@ -282,7 +282,7 @@
   
     
   
-  QJL: 1-Bit Quantized JL Transform
+  QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
 
       </a>
     </li>
@@ -511,7 +511,7 @@
   <span class="md-ellipsis">
     
   
-    QJL: 1-Bit Quantized JL Transform
+    QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
   
 
     
@@ -618,60 +618,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
+        Overview
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Summary">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-kv-cache-bottleneck" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The KV Cache Bottleneck
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#polar-transformation-heuristic" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Polar Transformation Heuristic
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#random-preconditioning" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Random Preconditioning
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#animation" class="md-nav__link">
+  <a href="#abstract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Animation
+        Abstract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
       
     </span>
   </a>
@@ -735,60 +718,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
+        Overview
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Summary">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-kv-cache-bottleneck" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The KV Cache Bottleneck
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#polar-transformation-heuristic" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Polar Transformation Heuristic
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#random-preconditioning" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Random Preconditioning
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#animation" class="md-nav__link">
+  <a href="#abstract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Animation
+        Abstract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
       
     </span>
   </a>
@@ -836,64 +802,38 @@
 
 <h1 id="polarquant-quantizing-kv-caches-with-polar-transformation">PolarQuant: Quantizing KV Caches with Polar Transformation</h1>
 <div class="paper-metadata">
-**Authors:** Insu Han, Praneeth Kacham, Amin Karbasi, Vahab Mirrokni, Amir Zandieh  
-**Year:** 2025  
-**Venue:** arXiv (cs.LG)  
+**Authors:** Insu Han, Praneeth Kacham, Amin Karbasi, V. Mirrokni, A. Zandieh
+**Year:** 2025
+**Venue:** arXiv.org
 **Paper ID:** ef9485a2522f64bca0f5cf67edc28a11984790e8
 </div>
 
-<p><strong>PolarQuant</strong> is a specialized quantization framework designed to compress the Key-Value (KV) cache in Large Language Models (LLMs). By representing embedding vectors in polar coordinates rather than traditional Cartesian coordinates, PolarQuant achieves high compression ratios (up to 4.2x) with minimal loss in model accuracy. The method leverages random preconditioning to induce a predictable distribution of angles, eliminating the need for expensive per-block normalization.</p>
+<blockquote>
+<p>[!NOTE]
+This page is being generated in a high-quality Wikipedia style.</p>
+</blockquote>
+<h2 id="overview">Overview</h2>
+<p>This work introduces PolarQuant, a novel quantization method employing random preconditioning and polar transformation, which transforms the KV embeddings into polar coordinates using an efficient recursive algorithm and then quantizes resulting angles.</p>
+<h2 id="abstract">Abstract</h2>
+<p>Large language models (LLMs) require significant memory to store Key-Value (KV) embeddings in their KV cache, especially when handling long-range contexts. Quantization of these KV embeddings is a common technique to reduce memory consumption. This work introduces PolarQuant, a novel quantization method employing random preconditioning and polar transformation. Our method transforms the KV embeddings into polar coordinates using an efficient recursive algorithm and then quantizes resulting angles. Our key insight is that, after random preconditioning, the angles in the polar representation exhibit a tightly bounded and highly concentrated distribution with an analytically computable form. This nice distribution eliminates the need for explicit normalization, a step required by traditional quantization methods which introduces significant memory overhead because quantization parameters (e.g., zero point and scale) must be stored in full precision per each data block. PolarQuant bypasses this normalization step, enabling substantial memory savings. The long-context evaluation demonstrates that PolarQuant compresses the KV cache by over x4.2 while achieving the best quality scores compared to the state-of-the-art methods.</p>
+<h2 id="figures-and-diagrams">Figures and Diagrams</h2>
+<blockquote>
+<p>Key figures extracted from the original paper.</p>
+</blockquote>
+<p><img alt="Distributions of angles of polar transformed key embeddings (a) with and (b) without" src="../assets/ef9485a2522f64bca0f5cf67edc28a11984790e8_fig1.png" /></p>
+<p><em>Distributions of angles of polar transformed key embeddings (a) with and (b) without</em></p>
+<hr />
+<p><img alt="Needle-In-A-Haystack test using Llama-3.1-8B-Instruct. The test spans different depths" src="../assets/ef9485a2522f64bca0f5cf67edc28a11984790e8_fig2.png" /></p>
+<p><em>Needle-In-A-Haystack test using Llama-3.1-8B-Instruct. The test spans different depths</em></p>
+<hr />
 <h2 id="summary">Summary</h2>
-<h3 id="the-kv-cache-bottleneck">The KV Cache Bottleneck</h3>
-<p>In autoregressive Transformers, the KV cache stores key and value embeddings for all previously generated tokens to avoid redundant computations. As context length increases, the memory demand for these caches scales linearly, often becoming the primary bottleneck for serving long-sequence models. </p>
-<h3 id="polar-transformation-heuristic">Polar Transformation Heuristic</h3>
-<p>Traditional quantization methods (like 4-bit or 8-bit integer quantization) operate on Cartesian coordinates and require storing scale and zero-point metadata for each block of numbers. PolarQuant shifts this paradigm by converting vectors into a <strong>Recursive Polar Transformation</strong>.</p>
-<p>For a vector <span class="arithmatex">\(x \in \mathbb{R}^d\)</span>, the transformation groups coordinates into pairs and recursively computes radii and angles:
-$<span class="arithmatex">\(\psi^{(1)}_j = \tan^{-1}(x_{2j}/x_{2j-1})\)</span>$
-$<span class="arithmatex">\(r^{(1)}_j = \sqrt{x_{2j-1}^2 + x_{2j}^2}\)</span>$</p>
-<p>This process is repeated <span class="arithmatex">\(\log_2 d\)</span> times, resulting in a single final radius and a set of angles.</p>
-<h3 id="random-preconditioning">Random Preconditioning</h3>
-<p>A core contribution of PolarQuant is the use of <strong>Random Preconditioning</strong> (multiplying the input by a random rotation matrix <span class="arithmatex">\(S\)</span>). According to the Johnson-Lindenstrauss lemma, this preserves the inner product while ensuring the resulting vectors follow a multivariate normal distribution. </p>
-<p>Crucially, after preconditioning, the angles <span class="arithmatex">\(\psi\)</span> exhibit a tightly bounded and highly concentrated distribution (Lemma 1). This concentration allows for the design of optimal, data-oblivious codebooks, removing the overhead of storing per-block normalization constants.</p>
-<h2 id="animation">Animation</h2>
-<p><img alt="Explanation" src="../assets/PolarQuantExplanation.gif" /></p>
+<p>(The LLM agent will populate this section with a detailed, structured summary including equations and figure references)</p>
 <h2 id="glossary">Glossary</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Term</th>
-<th style="text-align: left;">Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>KV Cache</strong></td>
-<td style="text-align: left;">A memory buffer used in Transformers to store Key and Value vectors of previous tokens to accelerate inference.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Quantization</strong></td>
-<td style="text-align: left;">The process of mapping continuous or high-precision values to a finite set of discrete symbols to reduce memory.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Random Preconditioning</strong></td>
-<td style="text-align: left;">Applying a random rotation matrix to input data to normalize its distribution while preserving geometric properties.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Polar Coordinates</strong></td>
-<td style="text-align: left;">A 2D coordinate system where each point is determined by a distance from a reference point and an angle from a reference direction.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Data-Oblivious</strong></td>
-<td style="text-align: left;">Algorithms that do not require access to the specific input distribution to maintain performance.</td>
-</tr>
-</tbody>
-</table>
+<p>(The LLM agent will populate this section with technical terms and definitions)</p>
 <h2 id="references">References</h2>
-<p>[1] <a href="./Achiam2023GPT4TR.md">GPT-4 Technical Report</a><br />
-[3] <a href="./Anthropic2024Claude3.md">Claude 3 Family</a><br />
-[15] <a href="./Google2024Gemini15.md">Gemini 1.5 Pro</a><br />
-[37] <a href="../204e3073870fae3d05bcbc2f6a8e263d9b72e776/">Attention is All you Need</a><br />
-[41] <a href="../7318a804566baadc9f4b4ca8255f78744e749a32/">QJL: 1-Bit Quantized JL Transform</a>  </p>
+<p>No references found.</p>
+<hr />
+<p><em>Generated from: han2025polarquant.pdf</em></p>
 
 
 

@@ -286,7 +286,7 @@
   
     
   
-  QJL: 1-Bit Quantized JL Transform
+  QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
 
       </a>
     </li>
@@ -469,6 +469,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -604,7 +615,7 @@
   <span class="md-ellipsis">
     
   
-    QJL: 1-Bit Quantized JL Transform
+    QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
   
 
     
@@ -709,6 +720,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#figures-and-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Figures and Diagrams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -772,12 +794,22 @@ This page is being generated in a high-quality Wikipedia style.</p>
 </blockquote>
 <h2 id="overview">Overview</h2>
 <p>The dominant sequence transduction models have historically been based on complex recurrent or convolutional neural networks. This paper proposes the Transformer, a novel network architecture based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. The model proves to be highly parallelizable, significantly faster to train, and achieves state-of-the-art results on machine translation tasks.</p>
+<h2 id="figures-and-diagrams">Figures and Diagrams</h2>
+<blockquote>
+<p>Key figures extracted from the original paper.</p>
+</blockquote>
+<p><img alt="The Transformer - model architecture." src="../assets/204e3073870fae3d05bcbc2f6a8e263d9b72e776_fig1.png" /></p>
+<p><em>The Transformer - model architecture.</em></p>
+<hr />
+<p><img alt="(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several" src="../assets/204e3073870fae3d05bcbc2f6a8e263d9b72e776_fig2.png" /></p>
+<p><em>(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several</em></p>
+<hr />
 <h2 id="summary">Summary</h2>
 <p>The core of the Transformer architecture is its reliance on the <strong>Self-Attention</strong> mechanism to draw global dependencies between input and output. The most critical component introduced is <strong>Scaled Dot-Product Attention</strong>, defined as:</p>
-<div class="arithmatex">\[ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V \]</div>
+<div class="arithmatex">\[\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V\]</div>
 <p>To allow the model to jointly attend to information from different representation subspaces at different positions, the authors introduce <strong>Multi-Head Attention</strong>:</p>
-<p>$$ \text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O $$
-where <span class="arithmatex">\(\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)\)</span>.</p>
+<div class="arithmatex">\[\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O\]</div>
+<p>where <span class="arithmatex">\(\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)\)</span>.</p>
 <p>The architecture features an encoder-decoder structure. Since it lacks recurrence or convolutions, <strong>Positional Encodings</strong> (using sine and cosine functions of different frequencies) are injected into the input embeddings to provide information about the relative or absolute position of tokens in the sequence. The Transformer achieves significant improvements over RNN-based encoder-decoder architectures, requiring far fewer sequential operations and exhibiting a shorter maximum path length for learning long-range dependencies.</p>
 <h2 id="glossary">Glossary</h2>
 <table>

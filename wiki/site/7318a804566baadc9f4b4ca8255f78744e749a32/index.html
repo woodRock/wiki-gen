@@ -23,7 +23,7 @@
     
     
       
-        <title>QJL: 1-Bit Quantized JL Transform - Research Paper Wiki</title>
+        <title>QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead - Research Paper Wiki</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#qjl-1-bit-quantized-jl-transform" class="md-skip">
+        <a href="#qjl-1-bit-quantized-jl-transform-for-kv-cache-quantization-with-zero-overhead" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              QJL: 1-Bit Quantized JL Transform
+              QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
             
           </span>
         </div>
@@ -286,7 +286,7 @@
   
     
   
-  QJL: 1-Bit Quantized JL Transform
+  QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
 
       </a>
     </li>
@@ -522,7 +522,7 @@
   <span class="md-ellipsis">
     
   
-    QJL: 1-Bit Quantized JL Transform
+    QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
   
 
     
@@ -540,7 +540,7 @@
   <span class="md-ellipsis">
     
   
-    QJL: 1-Bit Quantized JL Transform
+    QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead
   
 
     
@@ -577,10 +577,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#abstract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
+        Abstract
       
     </span>
   </a>
@@ -588,10 +588,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#animation" class="md-nav__link">
+  <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Animation
+        Summary
       
     </span>
   </a>
@@ -720,10 +720,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#abstract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
+        Abstract
       
     </span>
   </a>
@@ -731,10 +731,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#animation" class="md-nav__link">
+  <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Animation
+        Summary
       
     </span>
   </a>
@@ -780,11 +780,11 @@
 
 
 
-<h1 id="qjl-1-bit-quantized-jl-transform">QJL: 1-Bit Quantized JL Transform</h1>
+<h1 id="qjl-1-bit-quantized-jl-transform-for-kv-cache-quantization-with-zero-overhead">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</h1>
 <div class="paper-metadata">
-**Authors:** Amir Zandieh, Majid Daliri, Insu Han  
-**Year:** 2024  
-**Venue:** AAAI Conference on Artificial Intelligence  
+**Authors:** A. Zandieh, Majid Daliri, Insu Han
+**Year:** 2024
+**Venue:** AAAI Conference on Artificial Intelligence
 **Paper ID:** 7318a804566baadc9f4b4ca8255f78744e749a32
 </div>
 
@@ -793,50 +793,28 @@
 This page is being generated in a high-quality Wikipedia style.</p>
 </blockquote>
 <h2 id="overview">Overview</h2>
-<p>Serving Large Language Models (LLMs) requires substantial memory due to the storage requirements of Key-Value (KV) embeddings in the KV cache, which grows with sequence length. This paper introduces QJL, a quantization approach combining a Johnson-Lindenstrauss (JL) transform followed by sign-bit quantization. Unlike existing techniques, QJL eliminates memory overheads by removing the need for storing quantization constants, allowing the KV cache to be aggressively compressed while preserving model accuracy and enabling high-throughput inference for long contexts.</p>
+<p>This work introduces QJL, a new quantization approach that consists of a Johnson-Lindenstrauss (JL) transform followed by sign-bit quantization, and develops an efficient implementation of the QJL sketch and its corresponding inner product estimator, incorporating a lightweight CUDA kernel for optimized computation.</p>
+<h2 id="abstract">Abstract</h2>
+<p>Serving LLMs requires substantial memory due to the storage requirements of Key-Value (KV) embeddings in the KV cache, which grows with sequence length. An effective approach to compress KV cache is quantization. However, traditional quantization methods face significant memory overhead due to the need to store quantization constants (at least a zero point and a scale) in full precision per data block. Depending on the block size, this overhead can add 1 or 2 bits per quantized number. We introduce QJL, a new quantization approach that consists of a Johnson-Lindenstrauss (JL) transform followed by sign-bit quantization. In contrast to existing methods, QJL eliminates memory overheads by removing the need for storing quantization constants. We propose an asymmetric estimator for the inner product of two vectors and demonstrate that applying QJL to one vector and a standard JL transform without quantization to the other provides an unbiased estimator with minimal distortion. We have developed an efficient implementation of the QJL sketch and its corresponding inner product estimator, incorporating a lightweight CUDA kernel for optimized computation. When applied across various LLMs and NLP tasks to quantize the KV cache to only 3 bits, QJL demonstrates a more than fivefold reduction in KV cache memory usage without compromising accuracy, all while achieving faster runtime.</p>
 <h2 id="summary">Summary</h2>
-<p>The QJL (Quantized Johnson-Lindenstrauss) method tackles the substantial memory consumption of the KV cache during the token generation decoding phase of auto-regressive transformers. The core idea is to apply a 1-bit quantization mapping to vectors using a random projection matrix <span class="arithmatex">\(\mathbf{S} \in \mathbb{R}^{m \times d}\)</span>:</p>
-<div class="arithmatex">\[ \mathcal{H}_S(\mathbf{k}) := \text{sign}(\mathbf{S} \cdot \mathbf{k}) \]</div>
-<p>To achieve an unbiased estimate of the inner product of two vectors (crucial for computing attention scores <span class="arithmatex">\(\text{softmax}(\mathbf{q}^T \mathbf{k})\)</span> without amplifying error), QJL uses an asymmetric estimator where only the key is quantized to a single bit while the query remains unquantized:</p>
-<div class="arithmatex">\[ \text{Prod}_{QJL}(\mathbf{q}, \mathbf{k}) := \frac{\sqrt{\pi/2}}{m} \|\mathbf{k}\|_2 \cdot \langle \mathbf{S}\mathbf{q}, \mathcal{H}_S(\mathbf{k}) \rangle \]</div>
-<p>The authors provide theoretical guarantees that <span class="arithmatex">\(\text{Prod}_{QJL}\)</span> is an unbiased estimator with bounded distortion. This method is data-oblivious, does not require fine-tuning, and uses an orthogonalized JL transform to improve empirical performance. It successfully compresses the KV cache to only 3 bits per floating-point number with virtually zero accuracy loss.</p>
-<h2 id="animation">Animation</h2>
-<p><img alt="Explanation" src="../assets/QJLExplanation.gif" /></p>
+<p>(The LLM agent will populate this section with a detailed, structured summary including equations and figure references)</p>
 <h2 id="glossary">Glossary</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Term</th>
-<th style="text-align: left;">Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>KV Cache</strong></td>
-<td style="text-align: left;">Memory used in auto-regressive transformers to store previously generated key and value embeddings, preventing redundant recomputations.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Johnson-Lindenstrauss (JL) Transform</strong></td>
-<td style="text-align: left;">A mathematical technique involving a random projection that preserves the distances and inner products between points in a high-dimensional space.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>QJL Transform</strong></td>
-<td style="text-align: left;">A mapping that projects a vector using a JL transform and then quantizes the result to its sign bit (1-bit).</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Asymmetric Estimator</strong></td>
-<td style="text-align: left;">An inner product estimation technique where one vector is fully quantized while the other is kept unquantized, ensuring unbiased and low-distortion results.</td>
-</tr>
-</tbody>
-</table>
+<p>(The LLM agent will populate this section with technical terms and definitions)</p>
 <h2 id="references">References</h2>
 <ul>
-<li><a href="../204e3073870fae3d05bcbc2f6a8e263d9b72e776/">Attention is All you Need</a></li>
-<li><a href="./dc52b09089704ebd6f471177474bc29741c50023.md">Fast Transformer Decoding: One Write-Head is All You Need</a></li>
-<li><a href="./42a14d824caa3348046eb34c37e2ab7985faa7a3.md">High-throughput Generative Inference of Large Language Models with a Single GPU</a></li>
+<li><a href="./8a3df7b9cb6c323da340a4871ae705d0063f28bf.md">KV Cache is 1 Bit Per Channel: Efficient Large Language Model Inference with Coupled Quantization</a></li>
+<li><a href="./7a54aad06171f59149aca5380863c62729c70b41.md">GEAR: An Efficient KV Cache Compression Recipe for Near-Lossless Generative Inference of LLM</a></li>
+<li><a href="./a48a3cfde9e9a6f02821ea28698012e4d3e1cd73.md">QAQ: Quality Adaptive Quantization for LLM KV Cache</a></li>
+<li><a href="./89e0fde2dc60f8520c176a57396c6cad3af5dc40.md">No Token Left Behind: Reliable KV Cache Compression via Importance-Aware Mixed Precision Quantization</a></li>
+<li><a href="./f608011b0f50a14bb2949c186a7c632a099aa75b.md">WKVQuant: Quantizing Weight and Key/Value Cache for Large Language Models Gains More</a></li>
+<li><a href="./f9f311472ed8c4b15cfd74e1539f0c4815e574e9.md">SubGen: Token Generation in Sublinear Time and Memory</a></li>
 <li><a href="./a3e000e0d7f64c1d094c2a8bf6f43992cbabe91b.md">KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache</a></li>
 <li><a href="./b085968c4362fb286ad6c5ef71a5db9630da0498.md">KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization</a></li>
+<li><a href="./fdc53c2c10742464087c0525f77e32604827a21d.md">Efficient Streaming Language Models with Attention Sinks</a></li>
+<li><a href="./83b90f4a0ae4cc214eb3cc140ccfef9cd99fac05.md">Efficient Memory Management for Large Language Model Serving with PagedAttention</a></li>
 </ul>
+<hr />
+<p><em>Generated from: zandieh2024qjl.pdf</em></p>
 
 
 
