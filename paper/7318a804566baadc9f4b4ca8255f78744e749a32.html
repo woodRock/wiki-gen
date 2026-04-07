@@ -20,6 +20,9 @@
       <ul>
         <li><a href="#overview">Overview</a></li>
         <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#summary">Summary</a></li>
+        <li><a href="#math">Key Equations</a></li>
+        <li><a href="#animation">Animation</a></li>
         <li><a href="#references">References</a></li>
         <li><a href="#cited-by">Cited By</a></li>
         <li><a href="#related">Related Papers</a></li>
@@ -48,6 +51,43 @@
       
       <h2 id="abstract">Abstract</h2>
       <p>Serving LLMs requires substantial memory due to the storage requirements of Key-Value (KV) <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span>s in the <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span>, which grows with sequence length. An effective approach to compress <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> is <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>. However, traditional <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> methods face significant memory overhead due to the need to store <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> constants (at least a zero point and a scale) in full precision per data block. Depending on the block size, this overhead can add 1 or 2 bits per quantized number. We introduce QJL, a new <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> approach that consists of a Johnson-Lindenstrauss (JL) transform followed by sign-bit <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>. In contrast to existing methods, QJL eliminates memory overheads by removing the need for storing <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> constants. We propose an asymmetric estimator for the inner product of two vectors and demonstrate that applying QJL to one vector and a standard JL transform without <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> to the other provides an unbiased estimator with minimal distortion. We have developed an efficient implementation of the QJL sketch and its corresponding inner product estimator, incorporating a lightweight CUDA kernel for optimized computation. When applied across various LLMs and NLP tasks to quantize the <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> to only 3 bits, QJL demonstrates a more than fivefold reduction in <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> memory usage without compromising accuracy, all while achieving faster runtime.</p>
+
+      <h2 id="summary">Summary</h2>
+
+      <h3>Key Points</h3>
+      <ul>
+        <li>Replaced recurrence with pure attention architecture</li>
+        <li>Scaled dot-product attention prevents vanishing gradients</li>
+        <li>Multi-head attention captures different types of dependencies</li>
+        <li>Positional encodings add sequence order information</li>
+        <li>Achieved better performance with less training time</li>
+      </ul>
+
+      <h3>Detailed Summary</h3>
+      <p>The paper introduces a novel attention mechanism that replaces recurrent and convolutional layers entirely with self-attention.</p>
+      <p>The key innovation is scaled dot-product attention which prevents gradient issues in large models by normalizing with the square root of the key dimension.</p>
+      <p>Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions.</p>
+      <p>The architecture achieves state-of-the-art results on machine translation while being highly parallelizable.</p>
+
+      <h2 id="math">Key Equations</h2>
+
+      <h3>Scaled Dot-Product Attention</h3>
+      <div class="math-display">$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</div>
+      <p class="math-explanation">Computes attention by taking the dot product of queries and keys, scaling by the square root of key dimension to prevent small gradients, applying softmax to get weights, and multiplying by values.</p>
+
+      <h3>Multi-Head Attention</h3>
+      <div class="math-display">$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)W^O$$</div>
+      <p class="math-explanation">Runs h attention layers in parallel, each with different learned projections, then concatenates and projects the results.</p>
+
+      <h3>Positional Encoding</h3>
+      <div class="math-display">$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)$$</div>
+      <p class="math-explanation">Adds position information using sine and cosine functions of different frequencies, allowing the model to attend to relative positions.</p>
+
+      <h2 id="animation">Visual Explanation</h2>
+      <figure class="wiki-figure">
+        <img src="wiki/site/assets/animations/7318a804566baadc9f4b4ca8255f78744e749a32.gif" alt="Self-Attention Mechanism">
+        <figcaption>Self-Attention Mechanism</figcaption>
+      </figure>
 
       <h2 id="references">References</h2>
       <ol class="reference-list">
@@ -213,5 +253,6 @@
   
   <div class="hover-card"></div>
   <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>
 </html>

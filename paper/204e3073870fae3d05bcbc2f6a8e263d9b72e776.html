@@ -20,8 +20,9 @@
       <ul>
         <li><a href="#overview">Overview</a></li>
         <li><a href="#abstract">Abstract</a></li>
-        <li><a href="#figures">Figures</a></li>
-        <li><a href="#references">References</a></li>
+        <li><a href="#summary">Summary</a></li>
+        <li><a href="#math">Key Equations</a></li>
+        <li><a href="#animation">Animation</a></li>
 
       </ul>
       
@@ -37,7 +38,7 @@
           <tr><th>Authors</th><td>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, I. Polosukhin</td></tr>
           <tr><th>Year</th><td>2017</td></tr>
           <tr><th>Venue</th><td>Neural Information Processing Systems</td></tr>
-          <tr><th>Citations</th><td><strong>171931</strong> (19559 influential)</td></tr>
+          <tr><th>Citations</th><td><strong>171934</strong> (19559 influential)</td></tr>
           <tr><th>DOI</th><td><a href="https://doi.org/" target="_blank"></a></td></tr>
         </table>
       </div>
@@ -48,301 +49,42 @@
       <h2 id="abstract">Abstract</h2>
       <p>The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the <span class="glossary-term" data-definition="A sequence model based entirely on attention mechanisms, avoiding recurrence">transformer</span>, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the <span class="glossary-term" data-definition="A sequence model based entirely on attention mechanisms, avoiding recurrence">transformer</span> generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.</p>
 
-      <h2 id="figures">Figures and Diagrams</h2>
+      <h2 id="summary">Summary</h2>
 
+      <h3>Key Points</h3>
+      <ul>
+        <li>Replaced recurrence with pure attention architecture</li>
+        <li>Scaled dot-product attention prevents vanishing gradients</li>
+        <li>Multi-head attention captures different types of dependencies</li>
+        <li>Positional encodings add sequence order information</li>
+        <li>Achieved better performance with less training time</li>
+      </ul>
+
+      <h3>Detailed Summary</h3>
+      <p>The paper introduces a novel attention mechanism that replaces recurrent and convolutional layers entirely with self-attention.</p>
+      <p>The key innovation is scaled dot-product attention which prevents gradient issues in large models by normalizing with the square root of the key dimension.</p>
+      <p>Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions.</p>
+      <p>The architecture achieves state-of-the-art results on machine translation while being highly parallelizable.</p>
+
+      <h2 id="math">Key Equations</h2>
+
+      <h3>Scaled Dot-Product Attention</h3>
+      <div class="math-display">$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</div>
+      <p class="math-explanation">Computes attention by taking the dot product of queries and keys, scaling by the square root of key dimension to prevent small gradients, applying softmax to get weights, and multiplying by values.</p>
+
+      <h3>Multi-Head Attention</h3>
+      <div class="math-display">$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)W^O$$</div>
+      <p class="math-explanation">Runs h attention layers in parallel, each with different learned projections, then concatenates and projects the results.</p>
+
+      <h3>Positional Encoding</h3>
+      <div class="math-display">$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)$$</div>
+      <p class="math-explanation">Adds position information using sine and cosine functions of different frequencies, allowing the model to attend to relative positions.</p>
+
+      <h2 id="animation">Visual Explanation</h2>
       <figure class="wiki-figure">
-        <img src="../assets/figures/204e3073870fae3d05bcbc2f6a8e263d9b72e776_fig1.png" alt="The Transformer - model architecture.">
-        <figcaption>The Transformer - model architecture.</figcaption>
+        <img src="wiki/site/assets/animations/204e3073870fae3d05bcbc2f6a8e263d9b72e776.gif" alt="Self-Attention Mechanism">
+        <figcaption>Self-Attention Mechanism</figcaption>
       </figure>
-
-      <figure class="wiki-figure">
-        <img src="../assets/figures/204e3073870fae3d05bcbc2f6a8e263d9b72e776_fig2.png" alt="(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several">
-        <figcaption>(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several</figcaption>
-      </figure>
-
-      <h2 id="references">References</h2>
-      <ol class="reference-list">
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="032274e57f7d8b456bd255fe76b909b2c1d7458e">A Deep Reinforced Model for Abstractive Summarization</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Romain Paulus, Caiming Xiong, R. Socher (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="43428880d75b3a14257c3ee9bda054e61eb869c0">Convolutional Sequence to Sequence Learning</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jonas Gehring, Michael Auli, David Grangier et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="4550a4c714920ef57d19878e31c9ebae37b049b2">Massive Exploration of Neural Machine Translation Architectures</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            D. Britz, Anna Goldie, Minh-Thang Luong et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="204a4a70428f3938d2c538a4d74c7ae0416306d8">A Structured Self-attentive Sentence Embedding</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Zhouhan Lin, Minwei Feng, C. D. Santos et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="79baf48bd560060549998d7b61751286de062e2a">Factorization tricks for LSTM networks</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Oleksii Kuchaiev, Boris Ginsburg (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="13d9323a8716131911bfda048a40e2cde1a76a46">Structured Attention Networks</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Yoon Kim, Carl Denton, Luong Hoang et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="510e26733aaff585d65701b9f1be7ca9d5afc586">Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="98445f4172659ec5e891e031d8202c102135c644">Neural Machine Translation in Linear Time</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Nal Kalchbrenner, L. Espeholt, K. Simonyan et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="735d547fc75e0772d2a78c46a1cc5fad7da1474c">Can Active Memory Replace Attention?</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Lukasz Kaiser, Samy Bengio (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="5b6ec746d309b165f9f9def873a2375b6fb40f3d">Xception: Deep Learning with Depthwise Separable Convolutions</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            François Chollet (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="c6850869aa5e78a107c378d2e8bfa39633158c0c">Google's Neural Machine Translation System: Bridging the Gap between Human and Machine Translation</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Yonghui Wu, M. Schuster, Z. Chen et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="63e39cdf1ad884da6bc69096bb3413b5b1100559">Using the Output Embedding to Improve Language Models</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Ofir Press, Lior Wolf (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="97fb4e3d45bb098e27e0071448b6152217bd35a5">Layer Normalization</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jimmy Ba, J. Kiros, Geoffrey E. Hinton (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b60abe57bc195616063be10638c6437358c81d1e">Deep Recurrent Models with Fast-Forward Connections for Neural Machine Translation</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jie Zhou, Ying Cao, Xuguang Wang et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="2f2d8f8072e5cc9b296fad551f65f183bdbff7aa">Exploring the Limits of Language Modeling</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            R. Józefowicz, O. Vinyals, M. Schuster et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="7345843e87c81e24e42264859b214d26042f8d51">Recurrent Neural Network Grammars</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Chris Dyer, A. Kuncoro, Miguel Ballesteros et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="13fe71da009484f240c46f14d9330e932f8de210">Long Short-Term Memory-Networks for Machine Reading</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jianpeng Cheng, Li Dong, Mirella Lapata (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="2c03df8b48bf3fa39054345bafabfeff15bfd11d">Deep Residual Learning for Image Recognition</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Kaiming He, X. Zhang, Shaoqing Ren et al. (2015)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="23ffaa0fe06eae05817f527a47ac3291077f9e58">Rethinking the Inception Architecture for Computer Vision</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe et al. (2015)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="5e4eb58d5b47ac1c73f4cf189497170e75ae6237">Neural GPUs Learn Algorithms</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Lukasz Kaiser, I. Sutskever (2015)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="032274e57f7d8b456bd255fe76b909b2c1d7458e">A Deep Reinforced Model for Abstractive Summarization</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Romain Paulus, Caiming Xiong, R. Socher (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="43428880d75b3a14257c3ee9bda054e61eb869c0">Convolutional Sequence to Sequence Learning</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jonas Gehring, Michael Auli, David Grangier et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="4550a4c714920ef57d19878e31c9ebae37b049b2">Massive Exploration of Neural Machine Translation Architectures</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            D. Britz, Anna Goldie, Minh-Thang Luong et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="204a4a70428f3938d2c538a4d74c7ae0416306d8">A Structured Self-attentive Sentence Embedding</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Zhouhan Lin, Minwei Feng, C. D. Santos et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="79baf48bd560060549998d7b61751286de062e2a">Factorization tricks for LSTM networks</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Oleksii Kuchaiev, Boris Ginsburg (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="13d9323a8716131911bfda048a40e2cde1a76a46">Structured Attention Networks</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Yoon Kim, Carl Denton, Luong Hoang et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="510e26733aaff585d65701b9f1be7ca9d5afc586">Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz et al. (2017)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="98445f4172659ec5e891e031d8202c102135c644">Neural Machine Translation in Linear Time</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Nal Kalchbrenner, L. Espeholt, K. Simonyan et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="735d547fc75e0772d2a78c46a1cc5fad7da1474c">Can Active Memory Replace Attention?</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Lukasz Kaiser, Samy Bengio (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="5b6ec746d309b165f9f9def873a2375b6fb40f3d">Xception: Deep Learning with Depthwise Separable Convolutions</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            François Chollet (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="c6850869aa5e78a107c378d2e8bfa39633158c0c">Google's Neural Machine Translation System: Bridging the Gap between Human and Machine Translation</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Yonghui Wu, M. Schuster, Z. Chen et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="63e39cdf1ad884da6bc69096bb3413b5b1100559">Using the Output Embedding to Improve Language Models</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Ofir Press, Lior Wolf (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="97fb4e3d45bb098e27e0071448b6152217bd35a5">Layer Normalization</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jimmy Ba, J. Kiros, Geoffrey E. Hinton (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b60abe57bc195616063be10638c6437358c81d1e">Deep Recurrent Models with Fast-Forward Connections for Neural Machine Translation</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jie Zhou, Ying Cao, Xuguang Wang et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="2f2d8f8072e5cc9b296fad551f65f183bdbff7aa">Exploring the Limits of Language Modeling</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            R. Józefowicz, O. Vinyals, M. Schuster et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="7345843e87c81e24e42264859b214d26042f8d51">Recurrent Neural Network Grammars</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Chris Dyer, A. Kuncoro, Miguel Ballesteros et al. (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="13fe71da009484f240c46f14d9330e932f8de210">Long Short-Term Memory-Networks for Machine Reading</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Jianpeng Cheng, Li Dong, Mirella Lapata (2016)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="2c03df8b48bf3fa39054345bafabfeff15bfd11d">Deep Residual Learning for Image Recognition</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Kaiming He, X. Zhang, Shaoqing Ren et al. (2015)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="23ffaa0fe06eae05817f527a47ac3291077f9e58">Rethinking the Inception Architecture for Computer Vision</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe et al. (2015)
-          </div>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="5e4eb58d5b47ac1c73f4cf189497170e75ae6237">Neural GPUs Learn Algorithms</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Lukasz Kaiser, I. Sutskever (2015)
-          </div>
-        </li>
-      </ol>
 
     </article>
   </main>
@@ -353,5 +95,6 @@
   
   <div class="hover-card"></div>
   <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>
 </html>

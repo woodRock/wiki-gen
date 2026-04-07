@@ -37,11 +37,11 @@
     "venue": "Computer Vision and Pattern Recognition",
     "abstract": "",
     "tags": [
-      "jepa",
-      "embeddings",
-      "self-supervised-learning",
       "transformer",
-      "computer-vision"
+      "computer-vision",
+      "embeddings",
+      "jepa",
+      "self-supervised-learning"
     ]
   },
   {
@@ -56,9 +56,9 @@
     "venue": "AAAI Conference on Artificial Intelligence",
     "abstract": "",
     "tags": [
-      "embeddings",
       "quantization",
-      "large-language-models"
+      "large-language-models",
+      "embeddings"
     ]
   },
   {
@@ -91,9 +91,9 @@
     "venue": "arXiv.org",
     "abstract": "",
     "tags": [
-      "embeddings",
       "quantization",
-      "large-language-models"
+      "large-language-models",
+      "embeddings"
     ]
   },
   {
@@ -110,11 +110,11 @@
     "venue": "N/A",
     "abstract": "",
     "tags": [
-      "jepa",
-      "embeddings",
-      "computer-vision",
+      "latent-space",
       "world-models",
-      "latent-space"
+      "computer-vision",
+      "embeddings",
+      "jepa"
     ]
   }
 ]

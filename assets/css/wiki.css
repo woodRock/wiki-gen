@@ -367,3 +367,25 @@ body {
 .hover-card.visible {
   animation: fadeIn 0.2s ease-out;
 }
+
+/* Math styling */
+.math-display {
+  text-align: center;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--wiki-gray-bg);
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.math-inline {
+  display: inline-block;
+  margin: 0.5rem 0;
+}
+
+.math-explanation {
+  font-size: 0.9rem;
+  color: #54595d;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
