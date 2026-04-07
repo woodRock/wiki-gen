@@ -1,9 +1,11 @@
 import os
 import shutil
 import pdf2doi
+import fitz  # PyMuPDF
 from semanticscholar import SemanticScholar
 from dotenv import load_dotenv
 from pathlib import Path
+import re
 
 load_dotenv()
 
@@ -16,95 +18,115 @@ sch = SemanticScholar(api_key=S2_API_KEY)
 INGEST_DIR = Path("ingest")
 PROCESSED_DIR = Path("processed")
 DOCS_DIR = Path("wiki/docs")
+ASSETS_DIR = DOCS_DIR / "assets"
 
 def ensure_dirs():
     INGEST_DIR.mkdir(exist_ok=True)
     PROCESSED_DIR.mkdir(exist_ok=True)
     DOCS_DIR.mkdir(exist_ok=True)
-    (DOCS_DIR / "assets").mkdir(exist_ok=True)
+    ASSETS_DIR.mkdir(exist_ok=True)
+
+def extract_content(pdf_path, paper_id):
+    doc = fitz.open(pdf_path)
+    full_text = ""
+    paper_assets_dir = ASSETS_DIR / paper_id
+    paper_assets_dir.mkdir(exist_ok=True)
+    
+    img_count = 0
+    for i in range(len(doc)):
+        page = doc.load_page(i)
+        
+        # Extract text
+        text = page.get_text("text")
+        full_text += f"\n\n### Page {i+1}\n\n" + text
+        
+        # Extract images
+        images = page.get_images(full=True)
+        for img_index, img in enumerate(images):
+            xref = img[0]
+            base_image = doc.extract_image(xref)
+            image_bytes = base_image["image"]
+            image_ext = base_image["ext"]
+            img_filename = f"fig_{i+1}_{img_index}.{image_ext}"
+            with open(paper_assets_dir / img_filename, "wb") as f:
+                f.write(image_bytes)
+            
+            # Insert image reference in text
+            # We use a path relative to the .md file in docs/
+            full_text += f"\n\n![Figure {img_count+1}](./assets/{paper_id}/{img_filename})\n\n"
+            img_count += 1
+            
+    return full_text
 
 def process_pdf(pdf_path):
     print(f"Processing {pdf_path.name}...")
     try:
-        # Extract DOI or Title
         results = pdf2doi.pdf2doi(str(pdf_path))
         identifier = results.get('identifier')
         
         if not identifier:
-            print(f"Could not find DOI for {pdf_path.name}. Searching by title...")
-            # If no DOI, try to search by filename/extracted title
-            # pdf2doi might have found a title
             identifier = results.get('title')
         
         if not identifier:
             print(f"Failed to identify {pdf_path.name}")
             return False
 
-        # Get data from Semantic Scholar
         if results.get('identifier_type') == 'doi' or (identifier and '/' in identifier):
             paper = sch.get_paper(identifier)
         else:
-            # Search by title
             search_results = sch.search_paper(identifier, limit=1)
             if not search_results:
                 print(f"No paper found on Semantic Scholar for {identifier}")
                 return False
             paper = search_results[0]
 
-        generate_markdown(paper, pdf_path)
+        paper_id = paper.paperId
+        full_content = extract_content(pdf_path, paper_id)
+        generate_markdown(paper, pdf_path, full_content)
         
-        # Move PDF to processed
         shutil.move(str(pdf_path), str(PROCESSED_DIR / pdf_path.name))
         return True
     except Exception as e:
         print(f"Error processing {pdf_path.name}: {e}")
         return False
 
-def generate_markdown(paper, pdf_path):
+def generate_markdown(paper, pdf_path, full_content):
     paper_id = paper.paperId
     filename = f"{paper_id}.md"
     
     authors = ", ".join([a.name for a in paper.authors]) if paper.authors else "Unknown"
     year = paper.year if paper.year else "N/A"
-    abstract = paper.abstract if paper.abstract else "No abstract available."
     tldr = paper.tldr['text'] if paper.tldr else "N/A"
-    venue = paper.venue if paper.venue else "N/A"
     
-    content = f"""# {paper.title}
+    header = f"""# {paper.title}
 
-**Authors:** {authors}  
-**Year:** {year}  
-**Venue:** {venue}  
-**DOI:** [{paper.externalIds.get('DOI', 'N/A')}](https://doi.org/{paper.externalIds.get('DOI', '')})
+**Authors:** {authors} | **Year:** {year} | **DOI:** [{paper.externalIds.get('DOI', 'N/A')}](https://doi.org/{paper.externalIds.get('DOI', '')})
 
-## TL;DR
+## Summary (TL;DR)
 {tldr}
 
-## Abstract
-{abstract}
+---
 
-## Citations
-- **Total Citations:** {paper.citationCount}
-- **Influential Citations:** {paper.influentialCitationCount}
+## Full Paper Content
 
-## References
+{full_content}
+
+---
+
+## Metadata & References
+- **Citations:** {paper.citationCount}
 """
-    # Add references (top 10 for brevity in wiki)
     if paper.references:
-        for ref in paper.references[:10]:
+        header += "\n### References\n"
+        for ref in paper.references[:15]:
             ref_id = ref.paperId
-            ref_title = ref.title
             if ref_id:
-                content += f"- [{ref_title}](./{ref_id}.md)\n"
+                header += f"- [{ref.title}](./{ref_id}.md)\n"
             else:
-                content += f"- {ref_title}\n"
-    else:
-        content += "No references found.\n"
-
-    content += f"\n\n--- \n*Generated from: {pdf_path.name}*"
+                header += f"- {ref.title}\n"
 
     with open(DOCS_DIR / filename, "w") as f:
-        f.write(content)
+        f.write(header)
     
     update_index()
 

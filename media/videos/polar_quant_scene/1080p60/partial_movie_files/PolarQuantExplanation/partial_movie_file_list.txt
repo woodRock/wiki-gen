@@ -1,0 +1,13 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/3544663784_2012451152_223132457.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_1432596116_1729284911.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_773643610_3208343497.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_1159121220_1187375368.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_2747243256_529683032.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_2193049744_1358003615.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_1432596116_2283437868.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_2694249644_3534008325.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_1432596116_2330785365.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_384065582_3777709890.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_3923348793_2366706717.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/polar_quant_scene/1080p60/partial_movie_files/PolarQuantExplanation/260329756_2872842549_4141826968.mp4'
