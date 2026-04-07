@@ -68,37 +68,32 @@
 
       <h3>Key Points</h3>
       <ul>
-        <li>Replaced recurrence with pure attention architecture</li>
-        <li>Scaled dot-product attention prevents vanishing gradients</li>
-        <li>Multi-head attention captures different types of dependencies</li>
-        <li>Positional encodings add sequence order information</li>
-        <li>Achieved better performance with less training time</li>
+        <li>Polar transformation replaces Cartesian quantization</li>
+        <li>Angles have bounded, concentrated distribution</li>
+        <li>No per-block scale/zero-point parameters needed</li>
+        <li>4.2× compression with minimal quality loss</li>
       </ul>
 
       <h3>Detailed Summary</h3>
-      <p>The paper introduces a novel attention mechanism that replaces recurrent and convolutional layers entirely with self-attention.</p>
-      <p>The key innovation is scaled dot-product attention which prevents gradient issues in large models by normalizing with the square root of the key dimension.</p>
-      <p>Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions.</p>
-      <p>The architecture achieves state-of-the-art results on machine translation while being highly parallelizable.</p>
+      <p>PolarQuant transforms KV embeddings into polar coordinates before quantizing the angles.</p>
+      <p>After random preconditioning, the angles exhibit a tightly bounded, concentrated distribution that can be quantized efficiently.</p>
+      <p>This eliminates the need for per-block quantization parameters (scale and zero-point), saving significant memory overhead.</p>
+      <p>Achieves 4.2× KV cache compression while maintaining model quality across long-context tasks.</p>
 
       <h2 id="math">Key Equations</h2>
 
-      <h3>Scaled Dot-Product Attention</h3>
-      <div class="math-display">$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</div>
-      <p class="math-explanation">Computes attention by taking the dot product of queries and keys, scaling by the square root of key dimension to prevent small gradients, applying softmax to get weights, and multiplying by values.</p>
+      <h3>Polar Transformation</h3>
+      <div class="math-display">$$r = \sqrt{x^2 + y^2}, \quad \theta = \tan^{-1}\!\left(\frac{y}{x}\right)$$</div>
+      <p class="math-explanation">Converts 2D Cartesian coordinates to polar form with radius and angle.</p>
 
-      <h3>Multi-Head Attention</h3>
-      <div class="math-display">$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)W^O$$</div>
-      <p class="math-explanation">Runs h attention layers in parallel, each with different learned projections, then concatenates and projects the results.</p>
-
-      <h3>Positional Encoding</h3>
-      <div class="math-display">$$PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)$$</div>
-      <p class="math-explanation">Adds position information using sine and cosine functions of different frequencies, allowing the model to attend to relative positions.</p>
+      <h3>Angle Quantization</h3>
+      <div class="math-display">$$\hat{\theta} = \text{round}\!\left(\frac{\theta}{\Delta}\right) \cdot \Delta$$</div>
+      <p class="math-explanation">Quantizes angle by rounding to nearest discrete level with step size Δ.</p>
 
       <h2 id="animation">Visual Explanation</h2>
       <figure class="wiki-figure">
-        <img src="wiki/site/assets/animations/ef9485a2522f64bca0f5cf67edc28a11984790e8.gif" alt="Self-Attention Mechanism">
-        <figcaption>Self-Attention Mechanism</figcaption>
+        <img src="wiki/site/assets/animations/ef9485a2522f64bca0f5cf67edc28a11984790e8.gif" alt="Polar Coordinate Quantization">
+        <figcaption>Polar Coordinate Quantization</figcaption>
       </figure>
 
       <h2 id="cited-by">Cited By</h2>
