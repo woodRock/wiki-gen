@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'wiki/**'
+      - 'scripts/**'
+      - 'ingest/**'
       - '.github/workflows/deploy.yml'
 
 jobs:
@@ -20,17 +22,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12'
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs mkdocs-material pdf2doi semanticscholar pymupdf python-dotenv
+          pip install pdf2doi semanticscholar pymupdf python-dotenv Jinja2
 
       - name: Build Wiki
         run: |
-          cd wiki
-          mkdocs build
+          python scripts/processor.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
