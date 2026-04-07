@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#references">References</a></li>
+        <li><a href="#cited-by">Cited By</a></li>
+        <li><a href="#related">Related Papers</a></li>
+
+      </ul>
+      
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">embeddings</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">large-language-models</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">quantization</span></div>
+    </aside>
+    
+    <article class="wiki-article">
+      <h1 id="title">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</h1>
+      
+      <div class="paper-infobox">
+        <table>
+          <tr><th>Authors</th><td>A. Zandieh, Majid Daliri, Insu Han</td></tr>
+          <tr><th>Year</th><td>2024</td></tr>
+          <tr><th>Venue</th><td>AAAI Conference on Artificial Intelligence</td></tr>
+          <tr><th>Citations</th><td><strong>24</strong> (0 influential)</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.48550/arXiv.2406.03482" target="_blank">10.48550/arXiv.2406.03482</a></td></tr>
+        </table>
+      </div>
+      
+      <h2 id="overview">Overview</h2>
+      <p>This work introduces QJL, a new quantization approach that consists of a Johnson-Lindenstrauss (JL) transform followed by sign-bit quantization, and develops an efficient implementation of the QJL sketch and its corresponding inner product estimator, incorporating a lightweight CUDA kernel for optimized computation.</p>
+      
+      <h2 id="abstract">Abstract</h2>
+      <p>Serving LLMs requires substantial memory due to the storage requirements of Key-Value (KV) <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span>s in the <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span>, which grows with sequence length. An effective approach to compress <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> is <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>. However, traditional <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> methods face significant memory overhead due to the need to store <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> constants (at least a zero point and a scale) in full precision per data block. Depending on the block size, this overhead can add 1 or 2 bits per quantized number. We introduce QJL, a new <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> approach that consists of a Johnson-Lindenstrauss (JL) transform followed by sign-bit <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>. In contrast to existing methods, QJL eliminates memory overheads by removing the need for storing <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> constants. We propose an asymmetric estimator for the inner product of two vectors and demonstrate that applying QJL to one vector and a standard JL transform without <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> to the other provides an unbiased estimator with minimal distortion. We have developed an efficient implementation of the QJL sketch and its corresponding inner product estimator, incorporating a lightweight CUDA kernel for optimized computation. When applied across various LLMs and NLP tasks to quantize the <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> to only 3 bits, QJL demonstrates a more than fivefold reduction in <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> memory usage without compromising accuracy, all while achieving faster runtime.</p>
+
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="8a3df7b9cb6c323da340a4871ae705d0063f28bf">KV Cache is 1 Bit Per Channel: Efficient Large Language Model Inference with Coupled Quantization</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Tianyi Zhang, Jonah Yi, Zhaozhuo Xu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="7a54aad06171f59149aca5380863c62729c70b41">GEAR: An Efficient KV Cache Compression Recipe for Near-Lossless Generative Inference of LLM</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Hao Kang, Qingru Zhang, Souvik Kundu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="a48a3cfde9e9a6f02821ea28698012e4d3e1cd73">QAQ: Quality Adaptive Quantization for LLM KV Cache</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Shichen Dong, Wenfang Cheng, Jiayu Qin et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="89e0fde2dc60f8520c176a57396c6cad3af5dc40">No Token Left Behind: Reliable KV Cache Compression via Importance-Aware Mixed Precision Quantization</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            J. Yang, Byeongwook Kim, Jeongin Bae et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f608011b0f50a14bb2949c186a7c632a099aa75b">WKVQuant: Quantizing Weight and Key/Value Cache for Large Language Models Gains More</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Yuxuan Yue, Zhihang Yuan, Haojie Duanmu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f9f311472ed8c4b15cfd74e1539f0c4815e574e9">SubGen: Token Generation in Sublinear Time and Memory</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            A. Zandieh, Insu Han, V. Mirrokni et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="a3e000e0d7f64c1d094c2a8bf6f43992cbabe91b">KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Zirui Liu, Jiayi Yuan, Hongye Jin et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b085968c4362fb286ad6c5ef71a5db9630da0498">KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Coleman Hooper, Sehoon Kim, Hiva Mohammadzadeh et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="fdc53c2c10742464087c0525f77e32604827a21d">Efficient Streaming Language Models with Attention Sinks</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Guangxuan Xiao, Yuandong Tian, Beidi Chen et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="83b90f4a0ae4cc214eb3cc140ccfef9cd99fac05">Efficient Memory Management for Large Language Model Serving with PagedAttention</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Woosuk Kwon, Zhuohan Li, Siyuan Zhuang et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b31a5884a8ebe96b6300839b28608b97f8f8ef76">LongBench: A Bilingual, Multitask Benchmark for Long Context Understanding</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Yushi Bai, Xin Lv, Jiajie Zhang et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="104b0bb1da562d53cbda87aec79ef6a2827d191a">Llama 2: Open Foundation and Fine-Tuned Chat Models</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Hugo Touvron, Louis Martin, Kevin R. Stone et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="e586a4591ba0303b769f2c07cbddaf1899cb72e4">H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Zhenyu (Allen) Zhang, Ying Sheng, Tianyi Zhou et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="d6eeb2898bd9bd34744194ef543062dda6c4531a">Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Zichang Liu, Aditya Desai, Fangshuo Liao et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5ae6fb6b5a3c7df515ff4a82ac9673bae6a8e200">GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            J. Ainslie, J. Lee-Thorp, Michiel de Jong et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="163b4d6a79a5b19af88b8585456363340d9efd04">GPT-4 Technical Report</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            OpenAI Josh Achiam, Steven Adler, S. Agarwal et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="42a14d824caa3348046eb34c37e2ab7985faa7a3">High-throughput Generative Inference of Large Language Models with a Single GPU</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Ying Sheng, Lianmin Zheng, Binhang Yuan et al. (2023)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="379e42895f6d40ab9e9559609f505aba89145a5d">Efficiently Scaling Transformer Inference</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Reiner Pope, Sholto Douglas, A. Chowdhery et al. (2022)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="c57293882b2561e1ba03017902df9fc2f289dea2">Hierarchical Text-Conditional Image Generation with CLIP Latents</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            A. Ramesh, Prafulla Dhariwal, Alex Nichol et al. (2022)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="e6c561d02500b2596a230b341a8eb8b921ca5bf2">Scaling Laws for Neural Language Models</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            J. Kaplan, Sam McCandlish, T. Henighan et al. (2020)
+          </div>
+        </li>
+      </ol>
+
+      <h2 id="cited-by">Cited By</h2>
+      <ul>
+        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
+      </ul>
+
+      <h2 id="related">Related Papers</h2>
+      <ul>
+        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
+        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
+      </ul>
+
+    </article>
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+  </footer>
+  
+  <div class="hover-card"></div>
+  <script src="../assets/js/wiki.js"></script>
+</body>
+</html>

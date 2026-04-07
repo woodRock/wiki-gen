@@ -94,30 +94,67 @@ def extract_caption(page):
     
     return ""
 
+def extract_title_from_pdf(pdf_path):
+    """Extract title from PDF's first page text."""
+    doc = fitz.open(str(pdf_path))
+    first_page = doc[0]
+    text = first_page.get_text()
+    doc.close()
+    
+    # Title is usually the first non-empty line
+    lines = text.strip().split('\n')
+    for line in lines:
+        line = line.strip()
+        if line and len(line) > 10:  # Skip short lines (authors, etc.)
+            return line
+    return None
+
 def process_pdf(pdf_path):
     """Process a single PDF: extract metadata, figures, store in DB."""
     print(f"📄 Processing {pdf_path.name}...")
     try:
-        # Extract DOI or Title
-        results = pdf2doi.pdf2doi(str(pdf_path))
-        identifier = results.get('identifier')
-
-        if not identifier:
-            identifier = results.get('title')
-
-        if not identifier:
-            print(f"  ❌ Failed to identify {pdf_path.name}")
+        # Get data from Semantic Scholar - try multiple strategies
+        paper = None
+        
+        # Strategy 1: Try DOI from pdf2doi
+        try:
+            results = pdf2doi.pdf2doi(str(pdf_path))
+            identifier = results.get('identifier')
+            if identifier and '/' in identifier:
+                print(f"  🔍 Trying DOI: {identifier}")
+                paper = sch.get_paper(identifier)
+        except Exception as e:
+            print(f"  ⚠ DOI failed: {str(e)[:50]}")
+            pass
+        
+        # Strategy 2: Extract title from PDF and search
+        if not paper:
+            pdf_title = extract_title_from_pdf(pdf_path)
+            if pdf_title:
+                print(f"  🔍 Searching by PDF title: {pdf_title[:60]}...")
+                try:
+                    search_results = sch.search_paper(pdf_title, limit=3)
+                    if search_results:
+                        # Take the first result with highest match
+                        paper = search_results[0]
+                        print(f"  ✓ Found: {paper.title[:60]}...")
+                except Exception as e:
+                    print(f"  ⚠ Title search failed: {str(e)[:50]}")
+        
+        # Strategy 3: Try filename-based search
+        if not paper:
+            title_from_filename = pdf_path.stem
+            print(f"  🔍 Searching by filename: {title_from_filename}")
+            try:
+                search_results = sch.search_paper(title_from_filename, limit=3)
+                if search_results:
+                    paper = search_results[0]
+            except:
+                pass
+        
+        if not paper:
+            print(f"  ❌ Could not find paper on Semantic Scholar")
             return False
-
-        # Get data from Semantic Scholar
-        if results.get('identifier_type') == 'doi' or (identifier and '/' in identifier):
-            paper = sch.get_paper(identifier)
-        else:
-            search_results = sch.search_paper(identifier, limit=1)
-            if not search_results:
-                print(f"  ❌ No paper found on Semantic Scholar for {identifier}")
-                return False
-            paper = search_results[0]
 
         # Extract paper ID
         paper_id = paper.paperId

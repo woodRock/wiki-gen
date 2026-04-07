@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attention is All you Need - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#figures">Figures</a></li>
+
+      </ul>
+      
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">attention-mechanism</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">transformer</span></div>
+    </aside>
+    
+    <article class="wiki-article">
+      <h1 id="title">Attention is All you Need</h1>
+      
+      <div class="paper-infobox">
+        <table>
+          <tr><th>Authors</th><td>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, I. Polosukhin</td></tr>
+          <tr><th>Year</th><td>2017</td></tr>
+          <tr><th>Venue</th><td>Neural Information Processing Systems</td></tr>
+          <tr><th>Citations</th><td><strong>171931</strong> (19559 influential)</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/" target="_blank"></a></td></tr>
+        </table>
+      </div>
+      
+      <h2 id="overview">Overview</h2>
+      <p></p>
+      
+      <h2 id="abstract">Abstract</h2>
+      <p>The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the <span class="glossary-term" data-definition="A sequence model based entirely on attention mechanisms, avoiding recurrence">transformer</span>, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the <span class="glossary-term" data-definition="A sequence model based entirely on attention mechanisms, avoiding recurrence">transformer</span> generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.</p>
+
+      <h2 id="figures">Figures and Diagrams</h2>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/204e3073870fae3d05bcbc2f6a8e263d9b72e776_fig1.png" alt="The Transformer - model architecture.">
+        <figcaption>The Transformer - model architecture.</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/204e3073870fae3d05bcbc2f6a8e263d9b72e776_fig2.png" alt="(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several">
+        <figcaption>(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several</figcaption>
+      </figure>
+
+    </article>
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+  </footer>
+  
+  <div class="hover-card"></div>
+  <script src="../assets/js/wiki.js"></script>
+</body>
+</html>

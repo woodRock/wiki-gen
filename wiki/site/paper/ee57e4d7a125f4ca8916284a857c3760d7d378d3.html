@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#figures">Figures</a></li>
+
+      </ul>
+      
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">computer-vision</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">embeddings</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">jepa</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">self-supervised-learning</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">transformer</span></div>
+    </aside>
+    
+    <article class="wiki-article">
+      <h1 id="title">Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</h1>
+      
+      <div class="paper-infobox">
+        <table>
+          <tr><th>Authors</th><td>Mahmoud Assran, Quentin Duval, Ishan Misra, Piotr Bojanowski, Pascal Vincent, Michael G. Rabbat, Yann LeCun, Nicolas Ballas</td></tr>
+          <tr><th>Year</th><td>2023</td></tr>
+          <tr><th>Venue</th><td>Computer Vision and Pattern Recognition</td></tr>
+          <tr><th>Citations</th><td><strong>719</strong> (85 influential)</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1109/CVPR52729.2023.01499" target="_blank">10.1109/CVPR52729.2023.01499</a></td></tr>
+        </table>
+      </div>
+      
+      <h2 id="overview">Overview</h2>
+      <p>N/A</p>
+      
+      <h2 id="abstract">Abstract</h2>
+      <p>This paper demonstrates an approach for learning highly semantic image representations without relying on hand-crafted data-augmentations. We introduce the Image-based Joint-<span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span> Predictive Architecture (I-<span class="glossary-term" data-definition="Joint Embedding Predictive Architecture for self-supervised learning">jepa</span>), a non-generative approach for self-supervised learning from images. The idea behind I-<span class="glossary-term" data-definition="Joint Embedding Predictive Architecture for self-supervised learning">jepa</span> is simple: from a single context block, predict the representations of various target blocks in the same image. A core design choice to guide I-<span class="glossary-term" data-definition="Joint Embedding Predictive Architecture for self-supervised learning">jepa</span> towards producing semantic representations is the masking strategy; specifically, it is crucial to (a) sample target blocks with sufficiently large scale (semantic), and to (b) use a sufficiently informative (spatially distributed) context block. Empirically, when combined with Vision <span class="glossary-term" data-definition="A sequence model based entirely on attention mechanisms, avoiding recurrence">transformer</span>s, we find I-<span class="glossary-term" data-definition="Joint Embedding Predictive Architecture for self-supervised learning">jepa</span> to be highly scalable. For instance, we train a ViT-Huge/14 on ImageNet using 16 A100 GPUs in under 72 hours to achieve strong downstream performance across a wide range of tasks, from linear classification to object counting and depth prediction.</p>
+
+      <h2 id="figures">Figures and Diagrams</h2>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig1.png" alt="The overall objective is as follows: given a context">
+        <figcaption>The overall objective is as follows: given a context</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig2.png" alt="Examples of our context and target-masking strategy.">
+        <figcaption>Examples of our context and target-masking strategy.</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig3.jpeg" alt="Visualization of I-JEPA predictor representations. For each image: first column contains the original image; second column">
+        <figcaption>Visualization of I-JEPA predictor representations. For each image: first column contains the original image; second column</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig4.jpeg" alt="Visualization of I-JEPA target-encoder representations. For each image: first column contains the original image; subsequent">
+        <figcaption>Visualization of I-JEPA target-encoder representations. For each image: first column contains the original image; subsequent</figcaption>
+      </figure>
+
+    </article>
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+  </footer>
+  
+  <div class="hover-card"></div>
+  <script src="../assets/js/wiki.js"></script>
+</body>
+</html>
