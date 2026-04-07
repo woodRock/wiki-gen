@@ -164,9 +164,25 @@ def process_pdf(pdf_path):
         figures = extract_figures_from_pdf(pdf_path, paper_id)
         print(f"  ✓ Found {len(figures)} figures")
 
+        # Generate LLM content (summary, math, animation)
+        print(f"  🤖 Generating LLM content...")
+        try:
+            from llm_content_gen import generate_llm_content
+            llm_content = generate_llm_content(pdf_path, paper_id)
+        except Exception as e:
+            print(f"  ⚠ LLM content generation failed: {e}")
+            llm_content = {
+                'summary': [],
+                'key_points': [],
+                'math_equations': [],
+                'glossary_terms': [],
+                'animation_path': None,
+                'main_concept': None
+            }
+
         # Prepare paper data
         authors = [a.name for a in paper.authors] if paper.authors else []
-        
+
         paper_data = {
             'paper_id': paper_id,
             'title': paper.title,
@@ -179,12 +195,19 @@ def process_pdf(pdf_path):
             'citation_count': paper.citationCount,
             'influential_citation_count': paper.influentialCitationCount,
             'pdf_filename': pdf_path.name,
-            'tags': extract_tags(paper)
+            'tags': extract_tags(paper),
+            # LLM-generated content
+            'summary': llm_content.get('summary', []),
+            'key_points': llm_content.get('key_points', []),
+            'math_equations': llm_content.get('math_equations', []),
+            'glossary_terms': llm_content.get('glossary_terms', []),
+            'animation_path': llm_content.get('animation_path'),
+            'main_concept': llm_content.get('main_concept')
         }
 
         # Store in database
         conn = get_connection()
-        
+
         # Insert paper
         print(f"  💾 Storing in database...")
         insert_paper(conn, paper_data)

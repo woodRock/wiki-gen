@@ -411,6 +411,28 @@ body {
 .hover-card.visible {
   animation: fadeIn 0.2s ease-out;
 }
+
+/* Math styling */
+.math-display {
+  text-align: center;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--wiki-gray-bg);
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.math-inline {
+  display: inline-block;
+  margin: 0.5rem 0;
+}
+
+.math-explanation {
+  font-size: 0.9rem;
+  color: #54595d;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
 """
     
     with open(SITE_DIR / "assets" / "css" / "wiki.css", 'w') as f:
@@ -680,6 +702,15 @@ def generate_paper_page(paper, glossary):
     if paper.get('figures'):
         html += '        <li><a href="#figures">Figures</a></li>\n'
     
+    if paper.get('summary_html') or paper.get('key_points'):
+        html += '        <li><a href="#summary">Summary</a></li>\n'
+    
+    if paper.get('math_equations'):
+        html += '        <li><a href="#math">Key Equations</a></li>\n'
+    
+    if paper.get('animation_path'):
+        html += '        <li><a href="#animation">Animation</a></li>\n'
+    
     if paper.get('references'):
         html += '        <li><a href="#references">References</a></li>\n'
     
@@ -729,7 +760,61 @@ def generate_paper_page(paper, glossary):
         <figcaption>{caption}</figcaption>
       </figure>
 """
-    
+
+    # LLM-Generated Summary and Key Points
+    if paper.get('summary') or paper.get('key_points'):
+        html += """
+      <h2 id="summary">Summary</h2>
+"""
+        if paper.get('key_points'):
+            html += """
+      <h3>Key Points</h3>
+      <ul>
+"""
+            for point in paper['key_points']:
+                html += f'        <li>{point}</li>\n'
+            html += "      </ul>\n"
+        
+        if paper.get('summary'):
+            html += """
+      <h3>Detailed Summary</h3>
+"""
+            if isinstance(paper['summary'], list):
+                for para in paper['summary']:
+                    html += f'      <p>{para}</p>\n'
+            else:
+                html += f'      <p>{paper["summary"]}</p>\n'
+
+    # Math Equations
+    if paper.get('math_equations'):
+        html += """
+      <h2 id="math">Key Equations</h2>
+"""
+        for eq in paper['math_equations']:
+            html += f"""
+      <h3>{eq.get('name', 'Equation')}</h3>
+"""
+            # Check if it's display math (has $$ or is multi-line)
+            latex = eq.get('latex', '')
+            if len(latex) > 50 or '\\\\' in latex:
+                # Display math
+                html += f'      <div class="math-display">$${latex}$$</div>\n'
+            else:
+                # Inline math
+                html += f'      <div class="math-inline">${latex}$</div>\n'
+            
+            html += f'      <p class="math-explanation">{eq.get("explanation", "")}</p>\n'
+
+    # Animation
+    if paper.get('animation_path'):
+        html += f"""
+      <h2 id="animation">Visual Explanation</h2>
+      <figure class="wiki-figure">
+        <img src="{paper['animation_path']}" alt="{paper.get('main_concept', 'Animation')}">
+        <figcaption>{paper.get('main_concept', 'Animated concept explanation')}</figcaption>
+      </figure>
+"""
+
     # References
     if paper.get('references'):
         html += """
@@ -784,6 +869,7 @@ def generate_paper_page(paper, glossary):
   
   <div class="hover-card"></div>
   <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>
 </html>"""
     

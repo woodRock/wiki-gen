@@ -37,7 +37,12 @@ def init_db():
             citation_count INTEGER DEFAULT 0,
             influential_citation_count INTEGER DEFAULT 0,
             pdf_filename TEXT,
-            summary TEXT,  -- Rich HTML summary
+            summary TEXT,  -- Rich HTML summary (JSON array of paragraphs)
+            key_points TEXT,  -- JSON array
+            math_equations TEXT,  -- JSON array of {name, latex, explanation}
+            glossary_terms TEXT,  -- JSON array of {term, definition}
+            animation_path TEXT,
+            main_concept TEXT,
             tags TEXT,  -- JSON array
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -137,15 +142,21 @@ def init_db():
 def insert_paper(conn, paper_data):
     """Insert or update a paper in the database."""
     cursor = conn.cursor()
-    
+
     authors_json = json.dumps(paper_data.get('authors', []))
     tags_json = json.dumps(paper_data.get('tags', []))
-    
+    summary_json = json.dumps(paper_data.get('summary', [])) if isinstance(paper_data.get('summary'), list) else paper_data.get('summary')
+    key_points_json = json.dumps(paper_data.get('key_points', []))
+    math_equations_json = json.dumps(paper_data.get('math_equations', []))
+    glossary_terms_json = json.dumps(paper_data.get('glossary_terms', []))
+
     cursor.execute("""
-        INSERT OR REPLACE INTO papers 
-        (paper_id, title, authors, year, venue, doi, abstract, tldr, 
-         citation_count, influential_citation_count, pdf_filename, summary, tags, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        INSERT OR REPLACE INTO papers
+        (paper_id, title, authors, year, venue, doi, abstract, tldr,
+         citation_count, influential_citation_count, pdf_filename, 
+         summary, key_points, math_equations, glossary_terms,
+         animation_path, main_concept, tags, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     """, (
         paper_data['paper_id'],
         paper_data['title'],
@@ -158,7 +169,12 @@ def insert_paper(conn, paper_data):
         paper_data.get('citation_count', 0),
         paper_data.get('influential_citation_count', 0),
         paper_data.get('pdf_filename'),
-        paper_data.get('summary'),
+        summary_json,
+        key_points_json,
+        math_equations_json,
+        glossary_terms_json,
+        paper_data.get('animation_path'),
+        paper_data.get('main_concept'),
         tags_json
     ))
     
@@ -254,6 +270,10 @@ def get_paper(conn, paper_id):
     # Parse JSON fields
     paper['authors'] = json.loads(paper['authors']) if paper['authors'] else []
     paper['tags'] = json.loads(paper['tags']) if paper['tags'] else []
+    paper['summary'] = json.loads(paper['summary']) if paper['summary'] else []
+    paper['key_points'] = json.loads(paper['key_points']) if paper['key_points'] else []
+    paper['math_equations'] = json.loads(paper['math_equations']) if paper['math_equations'] else []
+    paper['glossary_terms'] = json.loads(paper['glossary_terms']) if paper['glossary_terms'] else []
     
     # Get figures
     cursor.execute("SELECT * FROM figures WHERE paper_id = ? ORDER BY figure_index", (paper_id,))
