@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../530dab86cb8034bc12a32d21508aaa3f2cc00aa1/">
+        <link rel="prev" href="../2fcab57cf4cd55e3c12ac1a7ca50a83337804235/">
       
       
-        <link rel="next" href="../7318a804566baadc9f4b4ca8255f78744e749a32/">
+        <link rel="next" href="../65780e86fa36e354da618499f8b4616ac87838bf/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>TurboQuant: Online Vector Quantization - Research Paper Wiki</title>
+        <title>LeWorldModel (LeWM) - Research Paper Wiki</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#turboquant-online-vector-quantization" class="md-skip">
+        <a href="#leworldmodel-lewm" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              TurboQuant: Online Vector Quantization
+              LeWorldModel (LeWM)
             
           </span>
         </div>
@@ -238,9 +238,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../530dab86cb8034bc12a32d21508aaa3f2cc00aa1/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -257,11 +259,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../65780e86fa36e354da618499f8b4616ac87838bf/" class="md-tabs__link">
         
   
   
@@ -449,33 +449,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../530dab86cb8034bc12a32d21508aaa3f2cc00aa1/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    LeWorldModel (LeWM)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -495,7 +468,7 @@
   <span class="md-ellipsis">
     
   
-    TurboQuant: Online Vector Quantization
+    LeWorldModel (LeWM)
   
 
     
@@ -513,7 +486,7 @@
   <span class="md-ellipsis">
     
   
-    TurboQuant: Online Vector Quantization
+    LeWorldModel (LeWM)
   
 
     
@@ -586,6 +559,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../65780e86fa36e354da618499f8b4616ac87838bf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TurboQuant: Online Vector Quantization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -758,12 +758,12 @@
 
 
 
-<h1 id="turboquant-online-vector-quantization">TurboQuant: Online Vector Quantization</h1>
+<h1 id="leworldmodel-lewm">LeWorldModel (LeWM)</h1>
 <div class="paper-metadata">
-**Authors:** Amir Zandieh, Majid Daliri, Majid Hadian, Vahab Mirrokni  
-**Year:** 2025  
-**Venue:** arXiv  
-**Paper ID:** 65780e86fa36e354da618499f8b4616ac87838bf
+**Authors:** Lucas Maes, Quentin Le Lidec, Damien Scieur, Yann LeCun, Randall Balestriero  
+**Year:** 2026  
+**Venue:** N/A  
+**Paper ID:** 530dab86cb8034bc12a32d21508aaa3f2cc00aa1
 </div>
 
 <blockquote>
@@ -771,17 +771,16 @@
 This page is being generated in a high-quality Wikipedia style.</p>
 </blockquote>
 <h2 id="overview">Overview</h2>
-<p>Vector quantization aims to compress high-dimensional Euclidean vectors into low-bitwidth integers while minimizing structural distortion, a core operation for tasks such as KV cache compression in LLMs and nearest neighbor search. Existing methods either lack online applicability or exhibit suboptimal distortion bounds. TurboQuant solves this by presenting a fast, data-oblivious, online vector quantization algorithm that achieves near-optimal distortion rates. It mitigates both Mean-Squared Error (MSE) and inner product distortion, operating efficiently without the heavy preprocessing steps characterizing traditional product quantization techniques.</p>
+<p>LeWorldModel (LeWM) introduces a stable end-to-end method for learning latent world models from raw pixels using a Joint-Embedding Predictive Architecture (JEPA). Traditional JEPA approaches for world modeling suffer from instability and representation collapse, often requiring complex multi-term losses or frozen pre-trained encoders. LeWM overcomes this by employing a simple two-term objective: a next-embedding prediction loss and a Sketched-Isotropic-Gaussian Regularizer (SIGReg) that forces the latent embeddings to match a Gaussian distribution. This dramatically simplifies hyperparameter tuning and enables fast, efficient latent planning for complex continuous control tasks.</p>
 <h2 id="summary">Summary</h2>
-<p>TurboQuant operates on worst-case vectors (normalized to the unit sphere) and fundamentally reshapes their distribution by applying a random rotation matrix <span class="arithmatex">\(\mathbf{\Pi} \in \mathbb{R}^{d \times d}\)</span>. This random projection induces a Beta distribution (which approaches a Gaussian in high dimensions) on every coordinate of <span class="arithmatex">\(\mathbf{\Pi}\mathbf{x}\)</span>, rendering distinct coordinates virtually independent. This allows TurboQuant to apply an optimal 1D continuous Lloyd-Max scalar quantizer independently per coordinate.</p>
-<p>For a bit-width <span class="arithmatex">\(b\)</span>, the MSE-optimal quantizer <span class="arithmatex">\(Q_{mse}\)</span> guarantees a bounded expected distortion tightly matching the theoretical Shannon Lower Bound. Specifically, the distortion is bound by:
-$$ D_{mse}(Q_{mse}) := \mathbb{E} \left[ |\mathbf{x} - Q_{mse}^{-1}(Q_{mse}(\mathbf{x}))|_2^2 \right] \le \frac{\sqrt{3}\pi}{2} \cdot \frac{1}{4^b} $$</p>
-<p>However, MSE-optimal quantizers are biased for inner product estimations. To correct this, the paper introduces a two-stage approach for inner product quantization (<span class="arithmatex">\(Q_{prod}\)</span>):
-1. Quantize the rotated vector using an MSE-optimized scalar quantizer at bit-width <span class="arithmatex">\(b-1\)</span>.
-2. Apply a 1-bit Quantized Johnson-Lindenstrauss (QJL) transform on the remaining residual vector <span class="arithmatex">\(\mathbf{r} = \mathbf{x} - \tilde{\mathbf{x}}_{mse}\)</span>.</p>
-<p>The reconstructed vector yields an unbiased inner product estimator:
-$$ \mathbb{E}\left[\langle \mathbf{y}, \tilde{\mathbf{x}}<em qjl="qjl">{mse} + \mathbf{r}</em> \rangle $$
-This method dramatically improves performance in LLM long-context tasks, allowing KV cache compression up to } \rangle\right] = \langle \mathbf{y}, \mathbf{x<span class="arithmatex">\(4.5\times\)</span> (approx. 2.5-3.5 bits per float) without degradation, while massively speeding up inner product approximations for database indexing.</p>
+<p>The LeWM framework relies on two primary components: an encoder and a predictor. The encoder maps a raw pixel observation <span class="arithmatex">\(o_t\)</span> into a compact latent representation <span class="arithmatex">\(z_t\)</span>. The predictor models the environment dynamics autoregressively by predicting the next frame's embedding <span class="arithmatex">\(\hat{z}_{t+1}\)</span> conditioned on the current state <span class="arithmatex">\(z_t\)</span> and an action <span class="arithmatex">\(a_t\)</span>:
+$$ z_t = \text{enc}<em t_1="t+1">{\theta}(o_t) $$
+$$ \hat{z}</em>(z_t, a_t) $$} = \text{pred}_{\phi</p>
+<p>The architecture is trained end-to-end using a remarkably streamlined objective function:
+$$ \mathcal{L}<em _text_pred="\text{pred">{\text{LeWM}} \triangleq \mathcal{L}</em>) $$}} + \lambda \text{SIGReg}(\mathbf{Z</p>
+<p>Here, <span class="arithmatex">\(\mathcal{L}_{\text{pred}} \triangleq \|\hat{z}_{t+1} - z_{t+1}\|_2^2\)</span> is the mean-squared error for the dynamics prediction. To prevent the trivial representation collapse typical of JEPA architectures, LeWM introduces <strong>SIGReg</strong>. Because measuring normality in high dimensions is challenging, SIGReg projects the batch of embeddings <span class="arithmatex">\(\mathbf{Z}\)</span> onto <span class="arithmatex">\(M\)</span> random 1D directions <span class="arithmatex">\(u^{(m)} \in \mathbb{S}^{D-1}\)</span> and applies a univariate normality test, the Epps-Pulley test <span class="arithmatex">\(T(h^{(m)})\)</span>:
+$$ \text{SIGReg}(\mathbf{Z}) \triangleq \frac{1}{M} \sum_{m=1}^M T(h^{(m)}) $$</p>
+<p>This optimization encourages the full joint distribution to be isotropic Gaussian, naturally preventing collapse. Once trained, LeWM acts as a simulator, allowing agents to perform Model Predictive Control (MPC) using the Cross-Entropy Method (CEM) to optimize sequences of actions entirely within the latent space.</p>
 <h2 id="glossary">Glossary</h2>
 <table>
 <thead>
@@ -792,33 +791,30 @@ This method dramatically improves performance in LLM long-context tasks, allowin
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Vector Quantization</strong></td>
-<td style="text-align: left;">The process of mapping a continuous or high-precision multi-dimensional space into a finite set of discrete values or low-precision integers to save memory.</td>
+<td style="text-align: left;"><strong>World Model</strong></td>
+<td style="text-align: left;">A predictive model of an environment's dynamics, allowing an agent to simulate future states in a latent imagination space without executing them in reality.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Mean-Squared Error (MSE) Distortion</strong></td>
-<td style="text-align: left;">A metric capturing the expected squared Euclidean distance between original and quantized vectors.</td>
+<td style="text-align: left;"><strong>Representation Collapse</strong></td>
+<td style="text-align: left;">A trivial solution where an encoder maps all distinct inputs to the exact same point or subspace, effectively rendering the representations useless for prediction or discrimination.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Shannon Lower Bound (SLB)</strong></td>
-<td style="text-align: left;">A fundamental information-theoretic lower bound on the optimal achievable distortion rate for any lossy compression scheme.</td>
+<td style="text-align: left;"><strong>Sketched-Isotropic-Gaussian Regularizer (SIGReg)</strong></td>
+<td style="text-align: left;">A regularization technique that projects high-dimensional embeddings onto random 1D lines and enforces normality, effectively steering the multi-dimensional distribution towards an isotropic Gaussian.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Data-Oblivious</strong></td>
-<td style="text-align: left;">An algorithm that functions universally without relying on specific statistics or characteristics of the underlying dataset, making it ideal for online settings.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Product Quantization (PQ)</strong></td>
-<td style="text-align: left;">A classic nearest-neighbor approach dividing vectors into sub-vectors and quantizing them separately, usually heavily dependent on offline training (k-means).</td>
+<td style="text-align: left;"><strong>Latent Planning</strong></td>
+<td style="text-align: left;">The process of optimizing action sequences by rolling out future trajectories in the low-dimensional space of a world model rather than pixel space.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="references">References</h2>
 <ul>
-<li><a href="../204e3073870fae3d05bcbc2f6a8e263d9b72e776/">Attention Is All You Need</a></li>
-<li><a href="../7318a804566baadc9f4b4ca8255f78744e749a32/">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</a></li>
-<li><a href="./28.md">Polarquant: Quantizing kv caches with polar transformation</a></li>
-<li><a href="./18.md">Llama 3 herd of models</a></li>
+<li><a href="../ee57e4d7a125f4ca8916284a857c3760d7d378d3/">Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture</a></li>
+<li><a href="./0d0cf5f64c052aa7edc5bb638203616a620557f6.md">VICReg: Variance-Invariance-Covariance Regularization for Self-Supervised Learning</a></li>
+<li><a href="./775f42ed458b8c5b0f2094ea4ff5b64c557b1a34.md">A Path Towards Autonomous Machine Intelligence Version 0.9.2, 2022-06-27</a></li>
+<li><a href="./41cca0b0a27ba363ca56e7033569aeb1922b0ac9.md">Recurrent World Models Facilitate Policy Evolution</a></li>
+<li><a href="./988ef01812555a4e2a5810bd245a71f31896b36c.md">LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics</a></li>
 </ul>
 
 

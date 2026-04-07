@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../530dab86cb8034bc12a32d21508aaa3f2cc00aa1/">
+        <link rel="prev" href="../7318a804566baadc9f4b4ca8255f78744e749a32/">
       
       
-        <link rel="next" href="../7318a804566baadc9f4b4ca8255f78744e749a32/">
+        <link rel="next" href="../ef9485a2522f64bca0f5cf67edc28a11984790e8/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>TurboQuant: Online Vector Quantization - Research Paper Wiki</title>
+        <title>Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA) - Research Paper Wiki</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#turboquant-online-vector-quantization" class="md-skip">
+        <a href="#self-supervised-learning-from-images-with-a-joint-embedding-predictive-architecture-i-jepa" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              TurboQuant: Online Vector Quantization
+              Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)
             
           </span>
         </div>
@@ -257,11 +257,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../65780e86fa36e354da618499f8b4616ac87838bf/" class="md-tabs__link">
         
   
   
@@ -297,9 +295,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../ee57e4d7a125f4ca8916284a857c3760d7d378d3/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -476,6 +476,60 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../65780e86fa36e354da618499f8b4616ac87838bf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TurboQuant: Online Vector Quantization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7318a804566baadc9f4b4ca8255f78744e749a32/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QJL: 1-Bit Quantized JL Transform
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -495,7 +549,7 @@
   <span class="md-ellipsis">
     
   
-    TurboQuant: Online Vector Quantization
+    Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)
   
 
     
@@ -513,7 +567,7 @@
   <span class="md-ellipsis">
     
   
-    TurboQuant: Online Vector Quantization
+    Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)
   
 
     
@@ -586,60 +640,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../7318a804566baadc9f4b4ca8255f78744e749a32/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    QJL: 1-Bit Quantized JL Transform
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ee57e4d7a125f4ca8916284a857c3760d7d378d3/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -758,12 +758,12 @@
 
 
 
-<h1 id="turboquant-online-vector-quantization">TurboQuant: Online Vector Quantization</h1>
+<h1 id="self-supervised-learning-from-images-with-a-joint-embedding-predictive-architecture-i-jepa">Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)</h1>
 <div class="paper-metadata">
-**Authors:** Amir Zandieh, Majid Daliri, Majid Hadian, Vahab Mirrokni  
-**Year:** 2025  
-**Venue:** arXiv  
-**Paper ID:** 65780e86fa36e354da618499f8b4616ac87838bf
+**Authors:** Mahmoud Assran, Quentin Duval, Ishan Misra, Piotr Bojanowski, Pascal Vincent, Michael Rabbat, Yann LeCun, Nicolas Ballas  
+**Year:** 2023  
+**Venue:** CVPR  
+**Paper ID:** ee57e4d7a125f4ca8916284a857c3760d7d378d3
 </div>
 
 <blockquote>
@@ -771,17 +771,14 @@
 This page is being generated in a high-quality Wikipedia style.</p>
 </blockquote>
 <h2 id="overview">Overview</h2>
-<p>Vector quantization aims to compress high-dimensional Euclidean vectors into low-bitwidth integers while minimizing structural distortion, a core operation for tasks such as KV cache compression in LLMs and nearest neighbor search. Existing methods either lack online applicability or exhibit suboptimal distortion bounds. TurboQuant solves this by presenting a fast, data-oblivious, online vector quantization algorithm that achieves near-optimal distortion rates. It mitigates both Mean-Squared Error (MSE) and inner product distortion, operating efficiently without the heavy preprocessing steps characterizing traditional product quantization techniques.</p>
+<p>This paper introduces the Image-based Joint-Embedding Predictive Architecture (I-JEPA), an approach for learning highly semantic image representations without relying on hand-crafted data augmentations. I-JEPA is a non-generative self-supervised learning technique where the model learns by predicting the representations of various target blocks in an image given a single context block. By predicting in representation space instead of pixel space, I-JEPA naturally avoids capturing unnecessary low-level details, yielding representations that are more semantic and an architecture that scales efficiently.</p>
 <h2 id="summary">Summary</h2>
-<p>TurboQuant operates on worst-case vectors (normalized to the unit sphere) and fundamentally reshapes their distribution by applying a random rotation matrix <span class="arithmatex">\(\mathbf{\Pi} \in \mathbb{R}^{d \times d}\)</span>. This random projection induces a Beta distribution (which approaches a Gaussian in high dimensions) on every coordinate of <span class="arithmatex">\(\mathbf{\Pi}\mathbf{x}\)</span>, rendering distinct coordinates virtually independent. This allows TurboQuant to apply an optimal 1D continuous Lloyd-Max scalar quantizer independently per coordinate.</p>
-<p>For a bit-width <span class="arithmatex">\(b\)</span>, the MSE-optimal quantizer <span class="arithmatex">\(Q_{mse}\)</span> guarantees a bounded expected distortion tightly matching the theoretical Shannon Lower Bound. Specifically, the distortion is bound by:
-$$ D_{mse}(Q_{mse}) := \mathbb{E} \left[ |\mathbf{x} - Q_{mse}^{-1}(Q_{mse}(\mathbf{x}))|_2^2 \right] \le \frac{\sqrt{3}\pi}{2} \cdot \frac{1}{4^b} $$</p>
-<p>However, MSE-optimal quantizers are biased for inner product estimations. To correct this, the paper introduces a two-stage approach for inner product quantization (<span class="arithmatex">\(Q_{prod}\)</span>):
-1. Quantize the rotated vector using an MSE-optimized scalar quantizer at bit-width <span class="arithmatex">\(b-1\)</span>.
-2. Apply a 1-bit Quantized Johnson-Lindenstrauss (QJL) transform on the remaining residual vector <span class="arithmatex">\(\mathbf{r} = \mathbf{x} - \tilde{\mathbf{x}}_{mse}\)</span>.</p>
-<p>The reconstructed vector yields an unbiased inner product estimator:
-$$ \mathbb{E}\left[\langle \mathbf{y}, \tilde{\mathbf{x}}<em qjl="qjl">{mse} + \mathbf{r}</em> \rangle $$
-This method dramatically improves performance in LLM long-context tasks, allowing KV cache compression up to } \rangle\right] = \langle \mathbf{y}, \mathbf{x<span class="arithmatex">\(4.5\times\)</span> (approx. 2.5-3.5 bits per float) without degradation, while massively speeding up inner product approximations for database indexing.</p>
+<p>The I-JEPA architecture comprises three main components: a context encoder, a target encoder, and a predictor network, all based on Vision Transformers (ViTs). Unlike generative methods such as Masked Autoencoders (MAE) that aim to reconstruct pixel-level targets, I-JEPA predicts abstract representations. Given an input image, a context block <span class="arithmatex">\(x\)</span> is fed through the context encoder to obtain representations <span class="arithmatex">\(s_x\)</span>. The target encoder processes the full image to generate representations <span class="arithmatex">\(s_y\)</span>, which are then extracted for specific target blocks <span class="arithmatex">\(B_i\)</span>. </p>
+<p>The predictor network <span class="arithmatex">\(g_{\phi}\)</span> takes the context representations <span class="arithmatex">\(s_x\)</span> and positional mask tokens corresponding to the target blocks to predict the target representations:
+$$ \hat{s}<em _phi="\phi">y(i) = g</em>) $$}(s_x, {m_j}_{j \in B_i</p>
+<p>The model is optimized using an average <span class="arithmatex">\(L_2\)</span> distance loss between the predicted patch-level representation and the target patch-level representation:
+$$ \frac{1}{M}\sum_{i=1}^M D(\hat{s}<em i="1">y(i), s_y(i)) = \frac{1}{M}\sum</em>}^M \sum_{j \in B_i} |\hat{s<em y_j="y_j">{y_j} - s</em>|_2^2 $$</p>
+<p>To prevent representation collapse, I-JEPA relies on an asymmetric design where the target encoder's weights are updated as an exponential moving average (EMA) of the context encoder's weights. A critical design choice is the multi-block masking strategy, which ensures the target blocks are large enough to contain semantic information and the context is informative but sparse.</p>
 <h2 id="glossary">Glossary</h2>
 <table>
 <thead>
@@ -792,33 +789,29 @@ This method dramatically improves performance in LLM long-context tasks, allowin
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Vector Quantization</strong></td>
-<td style="text-align: left;">The process of mapping a continuous or high-precision multi-dimensional space into a finite set of discrete values or low-precision integers to save memory.</td>
+<td style="text-align: left;"><strong>Joint-Embedding Predictive Architecture (JEPA)</strong></td>
+<td style="text-align: left;">A self-supervised framework where a predictor network learns to map representations of a context signal to the representations of target signals in an abstract embedding space.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Mean-Squared Error (MSE) Distortion</strong></td>
-<td style="text-align: left;">A metric capturing the expected squared Euclidean distance between original and quantized vectors.</td>
+<td style="text-align: left;"><strong>Representation Collapse</strong></td>
+<td style="text-align: left;">A failure mode in joint-embedding architectures where the encoder ignores the input and outputs a constant vector, artificially minimizing the distance between pairs.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Shannon Lower Bound (SLB)</strong></td>
-<td style="text-align: left;">A fundamental information-theoretic lower bound on the optimal achievable distortion rate for any lossy compression scheme.</td>
+<td style="text-align: left;"><strong>Exponential Moving Average (EMA)</strong></td>
+<td style="text-align: left;">An update mechanism where the weights of a target network smoothly track the weights of the online network over time, preventing collapse in self-supervised learning.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Data-Oblivious</strong></td>
-<td style="text-align: left;">An algorithm that functions universally without relying on specific statistics or characteristics of the underlying dataset, making it ideal for online settings.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Product Quantization (PQ)</strong></td>
-<td style="text-align: left;">A classic nearest-neighbor approach dividing vectors into sub-vectors and quantizing them separately, usually heavily dependent on offline training (k-means).</td>
+<td style="text-align: left;"><strong>Multi-Block Masking</strong></td>
+<td style="text-align: left;">A masking strategy that samples multiple, potentially overlapping target blocks and a single, spatially disjoint context block to force the model to learn semantic dependencies rather than trivial local continuities.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="references">References</h2>
 <ul>
-<li><a href="../204e3073870fae3d05bcbc2f6a8e263d9b72e776/">Attention Is All You Need</a></li>
-<li><a href="../7318a804566baadc9f4b4ca8255f78744e749a32/">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</a></li>
-<li><a href="./28.md">Polarquant: Quantizing kv caches with polar transformation</a></li>
-<li><a href="./18.md">Llama 3 herd of models</a></li>
+<li><a href="./775f42ed458b8c5b0f2094ea4ff5b64c557b1a34.md">A path towards autonomous machine intelligence version 0.9. 2, 2022-06-27</a></li>
+<li><a href="./36e52296b5a19000a6e87f654b7b3ee42a5ea79c.md">Masked autoencoders are scalable vision learners</a></li>
+<li><a href="./18b958fb359a35e8eb9f3150247fc897d103dfb3.md">Emerging properties in self-supervised vision transformers</a></li>
+<li><a href="./08c5c70fb905187771746f3661eb9f783281350a.md">Data2vec: A general framework for self-supervised learning in speech, vision and language</a></li>
 </ul>
 
 
