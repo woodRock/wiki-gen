@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#figures">Figures</a></li>
+
+      </ul>
+      
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">computer-vision</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">embeddings</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">jepa</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">latent-space</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">world-models</span></div>
+    </aside>
+    
+    <article class="wiki-article">
+      <h1 id="title">LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels</h1>
+      
+      <div class="paper-infobox">
+        <table>
+          <tr><th>Authors</th><td>Lucas Maes, Quentin Le Lidec, Damien Scieur, Yann LeCun, Randall Balestriero</td></tr>
+          <tr><th>Year</th><td>2026</td></tr>
+          <tr><th>Venue</th><td>N/A</td></tr>
+          <tr><th>Citations</th><td><strong>1</strong> (0 influential)</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/" target="_blank"></a></td></tr>
+        </table>
+      </div>
+      
+      <h2 id="overview">Overview</h2>
+      <p>N/A</p>
+      
+      <h2 id="abstract">Abstract</h2>
+      <p>Joint <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span> Predictive Architectures (<span class="glossary-term" data-definition="Joint Embedding Predictive Architecture for self-supervised learning">jepa</span>s) offer a compelling framework for learning <span class="glossary-term" data-definition="A predictive model of environment dynamics for planning">world model</span>s in compact latent spaces, yet existing methods remain fragile, relying on complex multi-term losses, exponential moving averages, pre-trained encoders, or auxiliary supervision to avoid representation collapse. In this work, we introduce LeWorldModel (LeWM), the first <span class="glossary-term" data-definition="Joint Embedding Predictive Architecture for self-supervised learning">jepa</span> that trains stably end-to-end from raw pixels using only two loss terms: a next-<span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span> prediction loss and a regularizer enforcing Gaussian-distributed latent <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span>s. This reduces tunable loss hyperparameters from six to one compared to the only existing end-to-end alternative. With ~15M parameters trainable on a single GPU in a few hours, LeWM plans up to 48x faster than foundation-model-based <span class="glossary-term" data-definition="A predictive model of environment dynamics for planning">world model</span>s while remaining competitive across diverse 2D and 3D control tasks. Beyond control, we show that LeWM's latent space encodes meaningful physical structure through probing of physical quantities. Surprise evaluation confirms that the model reliably detects physically implausible events.</p>
+
+      <h2 id="figures">Figures and Diagrams</h2>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig1.jpeg" alt="LeWorldModel Latent Planning. Given an initial observation o1 and a goal og, the world model">
+        <figcaption>LeWorldModel Latent Planning. Given an initial observation o1 and a goal og, the world model</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig2.png" alt="Predictor rollouts on PushT and OGBench-Cube. We visualize decoded latent plans">
+        <figcaption>Predictor rollouts on PushT and OGBench-Cube. We visualize decoded latent plans</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig3.jpeg" alt="Decoder visualization during training. As training progresses, the latent representation increasingly">
+        <figcaption>Decoder visualization during training. As training progresses, the latent representation increasingly</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig4.png" alt="Additional predictor rollouts on PushT (top) and OGBench-Cube (bottom). Same setup as">
+        <figcaption>Additional predictor rollouts on PushT (top) and OGBench-Cube (bottom). Same setup as</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/530dab86cb8034bc12a32d21508aaa3f2cc00aa1_fig5.png" alt="Example of trajectories used for the Violation of Expectation experiments (Sec. 5.2). For">
+        <figcaption>Example of trajectories used for the Violation of Expectation experiments (Sec. 5.2). For</figcaption>
+      </figure>
+
+    </article>
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+  </footer>
+  
+  <div class="hover-card"></div>
+  <script src="../assets/js/wiki.js"></script>
+</body>
+</html>

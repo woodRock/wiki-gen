@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PolarQuant: Quantizing KV Caches with Polar Transformation - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#cited-by">Cited By</a></li>
+        <li><a href="#related">Related Papers</a></li>
+
+      </ul>
+      
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">embeddings</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">large-language-models</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">quantization</span></div>
+    </aside>
+    
+    <article class="wiki-article">
+      <h1 id="title">PolarQuant: Quantizing KV Caches with Polar Transformation</h1>
+      
+      <div class="paper-infobox">
+        <table>
+          <tr><th>Authors</th><td>Insu Han, Praneeth Kacham, Amin Karbasi, V. Mirrokni, A. Zandieh</td></tr>
+          <tr><th>Year</th><td>2025</td></tr>
+          <tr><th>Venue</th><td>arXiv.org</td></tr>
+          <tr><th>Citations</th><td><strong>8</strong> (0 influential)</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.48550/arXiv.2502.02617" target="_blank">10.48550/arXiv.2502.02617</a></td></tr>
+        </table>
+      </div>
+      
+      <h2 id="overview">Overview</h2>
+      <p>This work introduces PolarQuant, a novel quantization method employing random preconditioning and polar transformation, which transforms the KV embeddings into polar coordinates using an efficient recursive algorithm and then quantizes resulting angles.</p>
+      
+      <h2 id="abstract">Abstract</h2>
+      <p>Large language models (LLMs) require significant memory to store Key-Value (KV) <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span>s in their <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span>, especially when handling long-range contexts. <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> of these KV <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span>s is a common technique to reduce memory consumption. This work introduces PolarQuant, a novel <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> method employing random preconditioning and polar transformation. Our method transforms the KV <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span>s into polar coordinates using an efficient recursive algorithm and then quantizes resulting angles. Our key insight is that, after random preconditioning, the angles in the polar representation exhibit a tightly bounded and highly concentrated distribution with an analytically computable form. This nice distribution eliminates the need for explicit normalization, a step required by traditional <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> methods which introduces significant memory overhead because <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> parameters (e.g., zero point and scale) must be stored in full precision per each data block. PolarQuant bypasses this normalization step, enabling substantial memory savings. The long-context evaluation demonstrates that PolarQuant compresses the <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> by over x4.2 while achieving the best quality scores compared to the state-of-the-art methods.</p>
+
+      <h2 id="figures">Figures and Diagrams</h2>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/ef9485a2522f64bca0f5cf67edc28a11984790e8_fig1.png" alt="Distributions of angles of polar transformed key embeddings (a) with and (b) without">
+        <figcaption>Distributions of angles of polar transformed key embeddings (a) with and (b) without</figcaption>
+      </figure>
+
+      <figure class="wiki-figure">
+        <img src="../assets/figures/ef9485a2522f64bca0f5cf67edc28a11984790e8_fig2.png" alt="Needle-In-A-Haystack test using Llama-3.1-8B-Instruct. The test spans different depths">
+        <figcaption>Needle-In-A-Haystack test using Llama-3.1-8B-Instruct. The test spans different depths</figcaption>
+      </figure>
+
+      <h2 id="cited-by">Cited By</h2>
+      <ul>
+        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
+      </ul>
+
+      <h2 id="related">Related Papers</h2>
+      <ul>
+        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
+      </ul>
+
+    </article>
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+  </footer>
+  
+  <div class="hover-card"></div>
+  <script src="../assets/js/wiki.js"></script>
+</body>
+</html>

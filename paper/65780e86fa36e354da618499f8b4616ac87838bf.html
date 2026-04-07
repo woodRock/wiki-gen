@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#references">References</a></li>
+        <li><a href="#related">Related Papers</a></li>
+
+      </ul>
+      
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">quantization</span></div>
+    </aside>
+    
+    <article class="wiki-article">
+      <h1 id="title">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</h1>
+      
+      <div class="paper-infobox">
+        <table>
+          <tr><th>Authors</th><td>A. Zandieh, Majid Daliri, Majid Hadian, V. Mirrokni</td></tr>
+          <tr><th>Year</th><td>2025</td></tr>
+          <tr><th>Venue</th><td>arXiv.org</td></tr>
+          <tr><th>Citations</th><td><strong>9</strong> (0 influential)</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.48550/arXiv.2504.19874" target="_blank">10.48550/arXiv.2504.19874</a></td></tr>
+        </table>
+      </div>
+      
+      <h2 id="overview">Overview</h2>
+      <p>This work proposes TurboQuant, a two-stage approach to address both mean-squared error (MSE) and inner product distortion, overcoming limitations of existing methods that fail to achieve optimal distortion rates.</p>
+      
+      <h2 id="abstract">Abstract</h2>
+      <p>Vector <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>, a problem rooted in Shannon's source coding theory, aims to quantize high-dimensional Euclidean vectors while minimizing distortion in their geometric structure. We propose TurboQuant to address both mean-squared error (MSE) and inner product distortion, overcoming limitations of existing methods that fail to achieve optimal distortion rates. Our data-oblivious algorithms, suitable for online applications, achieve near-optimal distortion rates (within a small constant factor) across all bit-widths and dimensions. TurboQuant achieves this by randomly rotating input vectors, inducing a concentrated Beta distribution on coordinates, and leveraging the near-independence property of distinct coordinates in high dimensions to simply apply optimal scalar quantizers per each coordinate. Recognizing that MSE-optimal quantizers introduce bias in inner product estimation, we propose a two-stage approach: applying an MSE quantizer followed by a 1-bit Quantized JL (QJL) transform on the residual, resulting in an unbiased inner product quantizer. We also provide a formal proof of the information-theoretic lower bounds on best achievable distortion rate by any vector quantizer, demonstrating that TurboQuant closely matches these bounds, differing only by a small constant ($\approx 2.7$) factor. Experimental results validate our theoretical findings, showing that for <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>, we achieve absolute quality neutrality with 3.5 bits per channel and marginal quality degradation with 2.5 bits per channel. Furthermore, in nearest neighbor search tasks, our method outperforms existing product <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> techniques in recall while reducing indexing time to virtually zero.</p>
+
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b2d3806a2f4bb99af0decb32533ac0d6f1598234">Streaming Attention Approximation via Discrepancy Theory</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            E. Kochetkova, K. Sheth, Insu Han et al. (2025)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="ef9485a2522f64bca0f5cf67edc28a11984790e8">PolarQuant: Quantizing KV Caches with Polar Transformation</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Insu Han, Praneeth Kacham, Amin Karbasi et al. (2025)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b5774726e1943659b2047a25e4c89b526816d928">RotateKV: Accurate and Robust 2-Bit KV Cache Quantization for LLMs via Outlier-Aware Adaptive Rotations</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Zunhai Su, Zhe Chen, Wang Shen et al. (2025)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f121117c8cf3dd9feb16e278915b7ddf658b1961">Lexico: Extreme KV Cache Compression via Sparse Coding over Universal Dictionaries</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Junhyuck Kim, Jongho Park, Jaewoong Cho et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="ee6b8cd0d0db8772eb4c366b160a8f4e5a89357c">Practical and Asymptotically Optimal Quantization of High-Dimensional Vectors in Euclidean Space for Approximate Nearest Neighbor Search</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Jianyang Gao, Yutong Gou, Yuexuan Xu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="40e8af970329135ec95057d73e239dab805ad128">The Llama 3 Herd of Models</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5d1ca53a0b41f4f5c960cd9997556d7180d6b88d">FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Jay Shah, Ganesh Bikshandi, Ying Zhang et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="7318a804566baadc9f4b4ca8255f78744e749a32">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            A. Zandieh, Majid Daliri, Insu Han (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="812356c723c082f88fb722531beaf45e344ffa1e">PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Zefan Cai, Yichi Zhang, Bofei Gao et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="8a3df7b9cb6c323da340a4871ae705d0063f28bf">KV Cache is 1 Bit Per Channel: Efficient Large Language Model Inference with Coupled Quantization</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Tianyi Zhang, Jonah Yi, Zhaozhuo Xu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="c1799bf28d1ae93e1631be5b59196ee1e568f538">From Local to Global: A Graph RAG Approach to Query-Focused Summarization</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Darren Edge, Ha Trinh, Newman Cheng et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="1784c987e681d60c634765fe64c8d9c26f73d5ff">SnapKV: LLM Knows What You are Looking for Before Generation</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Yuhong Li, Yingbing Huang, Bowen Yang et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="dd85e6cab147d237a0b1ab6f674570d3efb4d4a0">QuaRot: Outlier-Free 4-Bit Inference in Rotated LLMs</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Saleh Ashkboos, Amirkeivan Mohtashami, Maximilian L. Croci et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="7a54aad06171f59149aca5380863c62729c70b41">GEAR: An Efficient KV Cache Compression Recipe for Near-Lossless Generative Inference of LLM</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Hao Kang, Qingru Zhang, Souvik Kundu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="c811bedbe8f4c21d0cba9f9175f7c2eb203284a7">Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Machel Reid, N. Savinov, Denis Teplyashin et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="a48a3cfde9e9a6f02821ea28698012e4d3e1cd73">QAQ: Quality Adaptive Quantization for LLM KV Cache</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Shichen Dong, Wenfang Cheng, Jiayu Qin et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="89e0fde2dc60f8520c176a57396c6cad3af5dc40">No Token Left Behind: Reliable KV Cache Compression via Importance-Aware Mixed Precision Quantization</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            J. Yang, Byeongwook Kim, Jeongin Bae et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f608011b0f50a14bb2949c186a7c632a099aa75b">WKVQuant: Quantizing Weight and Key/Value Cache for Large Language Models Gains More</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Yuxuan Yue, Zhihang Yuan, Haojie Duanmu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f288e2238ac8725baa7ca9874bbc3fed1e89a632">Data Engineering for Scaling Language Models to 128K Context</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            Yao Fu, Rameswar Panda, Xinyao Niu et al. (2024)
+          </div>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f9f311472ed8c4b15cfd74e1539f0c4815e574e9">SubGen: Token Generation in Sublinear Time and Memory</a>
+          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
+            A. Zandieh, Insu Han, V. Mirrokni et al. (2024)
+          </div>
+        </li>
+      </ol>
+
+      <h2 id="related">Related Papers</h2>
+      <ul>
+        <li><a href="7318a804566baadc9f4b4ca8255f78744e749a32.html">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</a></li>
+        <li><a href="7318a804566baadc9f4b4ca8255f78744e749a32.html">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</a></li>
+        <li><a href="ef9485a2522f64bca0f5cf67edc28a11984790e8.html">PolarQuant: Quantizing KV Caches with Polar Transformation</a></li>
+      </ul>
+
+    </article>
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+  </footer>
+  
+  <div class="hover-card"></div>
+  <script src="../assets/js/wiki.js"></script>
+</body>
+</html>
