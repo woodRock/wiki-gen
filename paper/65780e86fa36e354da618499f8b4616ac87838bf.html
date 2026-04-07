@@ -55,32 +55,32 @@
 
       <h3>Key Points</h3>
       <ul>
-        <li>JL transform preserves distances with random projections</li>
-        <li>Sign quantization achieves 1-bit per value</li>
-        <li>Zero quantization parameter overhead</li>
-        <li>5× memory reduction with custom CUDA kernel</li>
+        <li>Online adaptation without offline training</li>
+        <li>Near-optimal distortion-rate performance</li>
+        <li>Streaming operation for dynamic inference</li>
+        <li>Superior to static quantization methods</li>
       </ul>
 
       <h3>Detailed Summary</h3>
-      <p>QJL applies Johnson-Lindenstrauss transform followed by sign-bit quantization for KV cache compression.</p>
-      <p>The JL transform approximately preserves pairwise distances in lower dimensions using random projections.</p>
-      <p>Sign quantization reduces each value to just 1 bit (+1 or -1) with no need for scale/zero-point storage.</p>
-      <p>Achieves 3-bit KV cache with 5× memory reduction and faster inference via custom CUDA kernels.</p>
+      <p>TurboQuant introduces online vector quantization adapting to data distribution without offline training.</p>
+      <p>The method achieves near-optimal distortion-rate performance while maintaining computational efficiency.</p>
+      <p>Operating in streaming fashion makes it suitable for dynamic inference scenarios.</p>
+      <p>Demonstrates superior performance compared to static quantization approaches.</p>
 
       <h2 id="math">Key Equations</h2>
 
-      <h3>JL Projection</h3>
-      <div class="math-inline">$\mathbf{y} = \mathbf{S}\mathbf{x}$</div>
-      <p class="math-explanation">Projects input vector using random sketching matrix S, approximately preserving pairwise distances.</p>
+      <h3>Distortion Measure</h3>
+      <div class="math-display">$$D = \mathbb{E}\!\left[\|\mathbf{x} - Q(\mathbf{x})\|^2ight]$$</div>
+      <p class="math-explanation">Expected squared error between original and quantized vectors.</p>
 
-      <h3>Sign Quantization</h3>
-      <div class="math-display">$$Q(\mathbf{y}) = \text{sign}(\mathbf{y}) \in \{-1,+1\}^m$$</div>
-      <p class="math-explanation">Reduces each dimension to just its sign, achieving 1-bit representation.</p>
+      <h3>Rate-Distortion Bound</h3>
+      <div class="math-display">$$R(D) \geq 	frac{1}{2}\log_2\!\left(	frac{\sigma^2}{D}ight)$$</div>
+      <p class="math-explanation">Theoretical minimum bits needed for a given distortion level D.</p>
 
       <h2 id="animation">Visual Explanation</h2>
       <figure class="wiki-figure">
-        <img src="wiki/site/assets/animations/65780e86fa36e354da618499f8b4616ac87838bf.gif" alt="JL Transform with Sign Quantization">
-        <figcaption>JL Transform with Sign Quantization</figcaption>
+        <img src="../assets/animations/65780e86fa36e354da618499f8b4616ac87838bf.gif" alt="Online Vector Quantization">
+        <figcaption>Online Vector Quantization</figcaption>
       </figure>
 
       <h2 id="references">References</h2>
