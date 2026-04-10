@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -30,6 +36,7 @@
         <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
         <li><a href="#references">References</a></li>
+        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -39,7 +46,7 @@
     
     <article class="wiki-article">
       <h1 id="title">Auto-Encoding Variational Bayes</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Variational Autoencoders (VAEs)</div>
@@ -57,16 +64,16 @@
         </table>
       </div>
 
-      
-      <p class="lead">Auto-Encoding Variational Bayes introduced the Variational Autoencoder (VAE), a powerful generative model that combines the principles of Bayesian inference with deep learning. By introducing the 're<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization trick,' the authors enabled the efficient training of directed probabilistic graphical models with continuous <span class="glossary-term" data-definition="A variable that is not directly observed but is inferred from other variables.">latent variable</span>s using standard <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>. This work provided a scalable solution for approximate inference in complex datasets, leading to significant advancements in manifold learning and generative modeling.</p>
+
+      <p class="lead">Auto-Encoding Variational Bayes introduced the Variational Autoencoder (VAE), a powerful generative model that combines the principles of Bayesian inference with deep learning. By introducing the 'reparameterization trick,' the authors enabled the efficient training of directed probabilistic graphical models with continuous latent variables using standard <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span>. This work provided a scalable solution for approximate inference in complex datasets, leading to significant advancements in manifold learning and generative modeling.</p>
 <h2 id="section-0">Approximate Inference and the ELBO</h2>
 <p>A fundamental problem in Bayesian statistics is the intractability of the <span class="glossary-term" data-definition="The probability distribution of a latent variable given the observed data.">posterior</span> distribution $p(z|x)$ for complex models. The authors propose using a recognition model $q_\phi(z|x)$—an encoder—to approximate this true <span class="glossary-term" data-definition="The probability distribution of a latent variable given the observed data.">posterior</span>.</p>
 <p>The training objective is to maximize the Evidence Lower Bound (ELBO), which balances the reconstruction quality of the data with the similarity of the approximate <span class="glossary-term" data-definition="The probability distribution of a latent variable given the observed data.">posterior</span> to a <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">prior</span> distribution (typically a standard Gaussian). This ensures that the latent space is well-structured and can be sampled to generate new data.</p>
 <h2 id="section-1">The Reparameterization Trick</h2>
-<p>The most significant technical hurdle in training VAEs is that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> cannot flow through random sampling operations. If we sample $z$ directly from $q_\phi(z|x)$, the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> with respect to the encoder <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s $\phi$ is not well-defined.</p>
-<p>The authors solve this with the **re<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization trick**. Instead of sampling $z$ directly, they express $z$ as a deterministic transformation of an auxiliary noise variable $\epsilon$: $z = \mu + \sigma \odot \epsilon$, where $\epsilon \sim \mathcal{N}(0, I)$. This moves the <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span>ity into an input branch, allowing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s to flow through $\mu$ and $\sigma$ to the encoder.</p>
+<p>The most significant technical hurdle in training VAEs is that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span> cannot flow through random sampling operations. If we sample $z$ directly from $q_\phi(z|x)$, the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> with respect to the encoder parameters $\phi$ is not well-defined.</p>
+<p>The authors solve this with the **reparameterization trick**. Instead of sampling $z$ directly, they express $z$ as a deterministic transformation of an auxiliary noise variable $\epsilon$: $z = \mu + \sigma \odot \epsilon$, where $\epsilon \sim \mathcal{N}(0, I)$. This moves the stochasticity into an input branch, allowing gradients to flow through $\mu$ and $\sigma$ to the encoder.</p>
 <h2 id="section-2">SGVB Estimator and AEVB Algorithm</h2>
-<p>The paper introduces the <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> Variational Bayes (SGVB) estimator, which provides a way to compute <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s of the ELBO using mini-batches of data. By applying the re<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization trick, the ELBO becomes differentiable, enabling the use of standard <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> ascent algorithms like Adam.</p>
+<p>The paper introduces the <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">Stochastic</span> <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">Gradient</span> Variational Bayes (SGVB) estimator, which provides a way to compute gradients of the ELBO using mini-batches of data. By applying the reparameterization trick, the ELBO becomes differentiable, enabling the use of standard <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> ascent algorithms like Adam.</p>
 <p>The Auto-Encoding Variational Bayes (AEVB) algorithm is the practical implementation of this framework, where the encoder and decoder (generative model) are neural networks trained jointly to minimize the total loss (reconstruction error plus KL divergence).</p>
 <h2 id="section-3">Comparison with Traditional Methods</h2>
 <p>Before VAEs, approximate inference often relied on computationally expensive methods like Mean Field Variational Inference or Markov Chain Monte Carlo (MCMC). These methods struggle to scale to the large, high-dimensional datasets common in modern machine learning.</p>
@@ -75,7 +82,7 @@
 
       <div class="concept-item">
         <div class="concept-title">Encoder (Recognition Model)</div>
-        <p>A neural network that maps input data $x$ to the <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s of a latent distribution (mean and variance).</p>
+        <p>A neural network that maps input data $x$ to the parameters of a latent distribution (mean and variance).</p>
       </div>
 
       <div class="concept-item">
@@ -85,7 +92,7 @@
 
       <div class="concept-item">
         <div class="concept-title">Reparameterization Trick</div>
-        <p>A method to rewrite a random variable so that it becomes differentiable with respect to its distribution's <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s.</p>
+        <p>A method to rewrite a random variable so that it becomes differentiable with respect to its distribution's parameters.</p>
       </div>
 
       <div class="concept-item">
@@ -103,7 +110,7 @@
 <div class="math-explanation-box">Allows the model to sample from a distribution while remaining differentiable.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\mu$</td><td>Learned mean of the latent distribution</td></tr><tr><td>$\sigma$</td><td>Learned standard deviation</td></tr><tr><td>$\epsilon$</td><td>Random noise from a standard normal distribution</td></tr></table></div>
 <h3>The ELBO Objective</h3>
 <div class="math-block">$$\mathcal{L}(\theta, \phi; x^{(i)}) = -D_{KL}(q_\phi(z|x^{(i)}) || p_\theta(z)) + \mathbb{E}_{q_\phi(z|x^{(i)})}[\log p_\theta(x^{(i)}|z)]$$</div>
-<div class="math-explanation-box">The loss function combining the KL divergence (<span class="glossary-term" data-definition="A technique used to prevent <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> by adding constraints or noise to the learning process.">regularization</span>) and the expected log-likelihood (reconstruction).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$D_{KL}$</td><td>Kullback-Leibler divergence</td></tr><tr><td>$q_\phi$</td><td>The encoder (recognition) model</td></tr><tr><td>$p_\theta$</td><td>The decoder (generative) model</td></tr></table></div>
+<div class="math-explanation-box">The loss function combining the KL divergence (<span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span>) and the expected log-likelihood (reconstruction).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$D_{KL}$</td><td>Kullback-Leibler divergence</td></tr><tr><td>$q_\phi$</td><td>The encoder (recognition) model</td></tr><tr><td>$p_\theta$</td><td>The decoder (generative) model</td></tr></table></div>
 <h2 id="figures">Figures and Explanations</h2>
 
       <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
@@ -275,14 +282,25 @@
           <span style="font-size: 0.8rem; color: #54595d;"> - H. Bourlard, Y. Kamp (1988)</span>
         </li>
       </ol>
+<h2 id="related">Related Papers</h2>
+<div class="related-grid">
+  <div class="related-card" onclick="window.location.href='../paper/86ee1835a56722b76564119437070782fc90eb19.html'">
+    <div class="related-card-title">Generative Adversarial Nets</div>
+    <div class="related-card-meta">2014 &bull; 2328 citations</div>
+  </div>
+  <div class="related-card" onclick="window.location.href='../paper/a6cb366736791bcccc5c8639de5a8f9636bf87e8.html'">
+    <div class="related-card-title">Adam: A Method for Stochastic Optimization</div>
+    <div class="related-card-meta">2014 &bull; 164663 citations</div>
+  </div>
+</div>
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

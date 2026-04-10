@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -32,13 +38,13 @@
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div></div>
+      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">transformer</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">regularization</span></div>
     </aside>
 
     
     <article class="wiki-article">
       <h1 id="title">Dropout: a simple way to prevent neural networks from overfitting</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Dropout Regularization</div>
@@ -56,19 +62,19 @@
         </table>
       </div>
 
-      
-      <p class="lead">Dropout: A Simple Way to Prevent Neural Networks from <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> introduced one of the most effective and widely used <span class="glossary-term" data-definition="A technique used to prevent <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> by adding constraints or noise to the learning process.">regularization</span> techniques in deep learning. By randomly 'dropping out' units (setting their activations to zero) during training, the authors demonstrated that neural networks can be made significantly more robust and less prone to co-adaptation of neurons. This simple yet powerful idea effectively trains an ensemble of many different 'thinned' networks, leading to substantial improvements in <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span> across a wide range of domains, including vision, speech, and text.</p>
+
+      <p class="lead">Dropout: A Simple Way to Prevent Neural Networks from <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">Overfitting</span> introduced one of the most effective and widely used <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> techniques in deep learning. By randomly 'dropping out' units (setting their activations to zero) during training, the authors demonstrated that neural networks can be made significantly more robust and less prone to co-adaptation of neurons. This simple yet powerful idea effectively trains an ensemble of many different 'thinned' networks, leading to substantial improvements in <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span> across a wide range of domains, including vision, speech, and text.</p>
 <h2 id="section-0">The Problem of Co-adaptation</h2>
-<p>Deep neural networks with a large number of <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s are incredibly flexible and powerful, but this power comes with a high risk of <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>. In a standard network, neurons may develop complex 'co-adaptations' where a neuron only performs well in the presence of specific other neurons.</p>
+<p>Deep neural networks with a large number of parameters are incredibly flexible and powerful, but this power comes with a high risk of <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>. In a standard network, neurons may develop complex 'co-adaptations' where a neuron only performs well in the presence of specific other neurons.</p>
 <p>This leads to a fragile system that captures the noise in the training data rather than the underlying signal. Dropout breaks these co-adaptations by making the presence of any particular neuron unreliable. As a result, each neuron is forced to learn features that are useful in conjunction with many different random subsets of other neurons.</p>
 <h2 id="section-1">The Dropout Procedure</h2>
 <p>During training, Dropout involves zeroing out the output of each hidden neuron with a fixed probability $p$ (commonly 0.5). For each training case, a new 'thinned' network is sampled by randomly removing neurons and their incoming and outgoing connections.</p>
 <p>At test time, it is not practical to average the predictions of all possible thinned networks. Instead, the authors proposed a simple 'weight scaling' <span class="glossary-term" data-definition="A practical approach to problem-solving that may not be optimal but is sufficient for the immediate goal.">heuristic</span>: use the full network but scale the outgoing weights by the probability $p$. This ensures that the expected input to a neuron at test time is the same as it was during training, providing an efficient approximation to the ensemble average.</p>
 <h2 id="section-2">Dropout as Model Averaging</h2>
 <p>A key theoretical insight of the paper is that Dropout can be viewed as a form of model averaging. A network with $n$ units can be seen as a collection of $2^n$ possible thinned networks. Training with Dropout is equivalent to training this massive ensemble where all models share weights.</p>
-<p>This 'ensemble' perspective explains why Dropout is so effective: it combines the strengths of many different architectures while only requiring the training time of a single model. The authors showed that this is significantly more powerful than other <span class="glossary-term" data-definition="A technique used to prevent <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> by adding constraints or noise to the learning process.">regularization</span> methods like <span class="glossary-term" data-definition="A regularization method that adds a penalty based on the magnitude of the weights to the loss function.">weight decay</span> or early stopping.</p>
+<p>This 'ensemble' perspective explains why Dropout is so effective: it combines the strengths of many different architectures while only requiring the training time of a single model. The authors showed that this is significantly more powerful than other <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> methods like <span class="glossary-term" data-definition="A regularization method that adds a penalty based on the magnitude of the weights to the loss function.">weight decay</span> or early stopping.</p>
 <h2 id="section-3">Empirical Success and Generalization</h2>
-<p>The paper provides extensive experimental evidence for Dropout's effectiveness. On the MNIST dataset, Dropout achieved a new record error rate of 1.05%. On the ImageNet LSVRC-2012 competition, adding Dropout to AlexNet significantly reduced the <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model's top five predictions.">top-5 error</span> rate.</p>
+<p>The paper provides extensive experimental evidence for Dropout's effectiveness. On the MNIST dataset, Dropout achieved a new record error rate of 1.05%. On the ImageNet LSVRC-2012 competition, adding Dropout to AlexNet significantly reduced the <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rate.</p>
 <p>Beyond computer vision, Dropout was shown to improve performance on speech recognition tasks and various NLP benchmarks. Its simplicity and consistent results have made it a standard component of almost every modern deep learning architecture, from simple MLPs to complex Transformers.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
@@ -89,7 +95,7 @@
 
       <div class="concept-item">
         <div class="concept-title">Ensemble Learning</div>
-        <p>The process of combining the predictions of mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>ple models to achieve better performance than any single model.</p>
+        <p>The process of combining the predictions of multiple models to achieve better performance than any single model.</p>
       </div>
 
       <div class="concept-item">
@@ -99,7 +105,7 @@
 <h2 id="math">Mathematics</h2>
 <h3>Training Activation</h3>
 <div class="math-block">$$\tilde{y}^{(l)} = r^{(l)} * y^{(l)}, \quad r_j^{(l)} \sim \text{Bernoulli}(p)$$</div>
-<div class="math-explanation-box">During training, the output of a layer $y^{(l)}$ is element-wise mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plied by a vector of random binary variables $r^{(l)}$, where each entry is 1 with probability $p$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$p$</td><td>Probability of keeping a neuron (retention rate)</td></tr><tr><td>$r$</td><td>A random binary mask</td></tr></table></div>
+<div class="math-explanation-box">During training, the output of a layer $y^{(l)}$ is element-wise multiplied by a vector of random binary variables $r^{(l)}$, where each entry is 1 with probability $p$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$p$</td><td>Probability of keeping a neuron (retention rate)</td></tr><tr><td>$r$</td><td>A random binary mask</td></tr></table></div>
 <h3>Test Time Scaling</h3>
 <div class="math-block">$$W_{test}^{(l)} = p W^{(l)}$$</div>
 <div class="math-explanation-box">At test time, the learned weights are scaled by the retention probability $p$ to maintain consistent activation magnitudes.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$W$</td><td>The weight matrix learned during training</td></tr></table></div>
@@ -283,11 +289,11 @@
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

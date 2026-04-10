@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -31,13 +37,13 @@
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div></div>
+      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">transformer</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">optimization</span></div>
     </aside>
 
     
     <article class="wiki-article">
       <h1 id="title">Gradient-based learning applied to document recognition</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">LeNet-5 CNN Architecture</div>
@@ -55,20 +61,20 @@
         </table>
       </div>
 
-      
-      <p class="lead"><span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>-Based Learning Applied to Document Recognition introduced LeNet-5, a pioneering <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al neural network that set the standard for modern deep learning. By combining <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al layers, sub-sampling layers, and fully connected layers, Yann LeCun and colleagues demonstrated a robust system for handwritten character recognition that was deployed commercially to process millions of bank checks. This paper extensively details the architecture and training methods that proved <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> could be scaled to complex, mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-layer visual systems.</p>
+
+      <p class="lead"><span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">Gradient</span>-Based Learning Applied to Document Recognition introduced LeNet-5, a pioneering convolutional neural network that set the standard for modern deep learning. By combining convolutional layers, sub-sampling layers, and fully connected layers, Yann LeCun and colleagues demonstrated a robust system for handwritten character recognition that was deployed commercially to process millions of bank checks. This paper extensively details the architecture and training methods that proved <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span> could be scaled to complex, multi-layer visual systems.</p>
 <h2 id="section-0">The LeNet-5 Architecture</h2>
-<p>LeNet-5 is a seven-layer <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al neural network (excluding the input) that processes 32x32 pixel images. The architecture follows a specific sequence: <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span> (C1) -> Sub-sampling (S2) -> <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span> (C3) -> Sub-sampling (S4) -> <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span> (C5) -> Fully Connected (F6) -> Output.</p>
+<p>LeNet-5 is a seven-layer convolutional neural network (excluding the input) that processes 32x32 pixel images. The architecture follows a specific sequence: <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">Convolution</span> (C1) -> Sub-sampling (S2) -> <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">Convolution</span> (C3) -> Sub-sampling (S4) -> <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">Convolution</span> (C5) -> Fully Connected (F6) -> Output.</p>
 <p>This progressive reduction in spatial resolution combined with an increase in the number of feature maps allows the network to transform raw pixels into high-level categorical representations. The use of sub-sampling (specifically average <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> in this version) provides a degree of <span class="glossary-term" data-definition="The property of remaining unchanged regardless of certain transformations, like translation or scaling.">invariance</span> to small translations and distortions in the input digit.</p>
 <h2 id="section-1">Convolutional and Sub-sampling Layers</h2>
-<p>In LeNet-5, <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al layers extract local features using 5x5 <span class="glossary-term" data-definition="A small matrix of weights used in a convolutional layer to extract features from an image.">kernel</span>s. For example, the first layer (C1) produces 6 feature maps of size 28x28. The sub-sampling layers (S2 and S4) then reduce the size of these maps by a factor of two, which effectively doubles the <span class="glossary-term" data-definition="The specific region of the sensory space in which a stimulus will modify the firing of that neuron.">receptive field</span> of the neurons in the following layer.</p>
-<p>A notable detail in LeNet-5 is the sparse connection pattern between S2 and C3. Instead of every C3 map being connected to every S2 map, the authors used a specific table of connections to break symmetry and reduce the number of <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s, forcing different maps to specialize in different features.</p>
+<p>In LeNet-5, convolutional layers extract local features using 5x5 kernels. For example, the first layer (C1) produces 6 feature maps of size 28x28. The sub-sampling layers (S2 and S4) then reduce the size of these maps by a factor of two, which effectively doubles the <span class="glossary-term" data-definition="The specific region of the sensory space in which a stimulus will modify the firing of that neuron.">receptive field</span> of the neurons in the following layer.</p>
+<p>A notable detail in LeNet-5 is the sparse connection pattern between S2 and C3. Instead of every C3 map being connected to every S2 map, the authors used a specific table of connections to break symmetry and reduce the number of parameters, forcing different maps to specialize in different features.</p>
 <h2 id="section-2">Graph Transformer Networks (GTN)</h2>
 <p>Beyond the individual digit recognition of LeNet-5, the paper introduces Graph Transformer Networks (GTNs) for handling whole documents. GTNs allow the system to perform '<span class="glossary-term" data-definition="The process of dividing a document or image into meaningful parts, such as individual characters.">segmentation</span>-free' recognition by treating the entire sequence of characters as a graph of possible interpretations.</p>
 <p>By optimizing a global loss function that accounts for the <span class="glossary-term" data-definition="A steering rule that causes flockmates to face the same direction.">alignment</span> between the predicted sequence and the true label, the system can learn to segment and recognize characters simultaneously. This approach was critical for the commercial success of the system in reading zip codes and bank checks where character boundaries are often ambiguous.</p>
 <h2 id="section-3">The MNIST Dataset</h2>
 <p>The 1998 paper also serves as the formal introduction of the MNIST dataset, which has since become the 'Hello World' of machine learning. MNIST was created by re-mixing and normalizing digits from the USPS and NIST datasets to provide a standard benchmark for comparing different recognition algorithms.</p>
-<p>LeNet-5 achieved an error rate of 0.95% on the MNIST test set, outperforming several other methods including Support Vector Machines (SVMs) and simpler fully connected networks. This benchmark helped establish <span class="glossary-term" data-definition="Convolutional Neural Network; a type of deep neural network most commonly applied to analyzing visual imagery.">cnn</span>s as the state-of-the-art for visual pattern recognition.</p>
+<p>LeNet-5 achieved an error rate of 0.95% on the MNIST test set, outperforming several other methods including Support Vector Machines (SVMs) and simpler fully connected networks. This benchmark helped establish CNNs as the state-of-the-art for visual pattern recognition.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
@@ -98,7 +104,7 @@
 <h2 id="math">Mathematics</h2>
 <h3>Activation Function (Squashing)</h3>
 <div class="math-block">$$f(a) = A \tanh(S a)$$</div>
-<div class="math-explanation-box">LeNet-5 uses a scaled <span class="glossary-term" data-definition="A <span class="glossary-term" data-definition="A mathematical function having a characteristic 'S'-shaped curve.">sigmoid</span>-shaped mathematical function used as an activation <span class="glossary-term" data-definition="A mathematical function where the output is not directly proportional to the input, essential for learning complex patterns.">non-linearity</span>.">hyperbolic tangent</span> function, where $A=1.7159$ and $S=2/3$, ensuring that the non-linearities are in their most active range.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$a$</td><td>Weighted sum of inputs to the neuron</td></tr><tr><td>$f(a)$</td><td>The activated output</td></tr></table></div>
+<div class="math-explanation-box">LeNet-5 uses a scaled <span class="glossary-term" data-definition="A sigmoid-shaped mathematical function used as an activation non-linearity.">hyperbolic tangent</span> function, where $A=1.7159$ and $S=2/3$, ensuring that the non-linearities are in their most active range.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$a$</td><td>Weighted sum of inputs to the neuron</td></tr><tr><td>$f(a)$</td><td>The activated output</td></tr></table></div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
@@ -124,11 +130,11 @@
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

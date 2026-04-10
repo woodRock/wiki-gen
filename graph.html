@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citation Graph - Research Wiki</title>
+  <link rel="stylesheet" href="assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="index.html" class="wiki-logo">&#128218; Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+    <nav class="wiki-nav">
+      <a href="index.html">Home</a>
+      <a href="timeline.html">Timeline</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
+  </header>
+
+  <div style="padding: 1rem 2rem 0;">
+    <h1 style="font-family: 'Linux Libertine', Georgia, serif; font-weight: normal; margin-bottom: 0.3rem;">Citation Graph</h1>
+    <p class="graph-hint">Drag nodes to rearrange &bull; Scroll to zoom &bull; Click a node to open paper &bull; 21 papers, 4 citation links</p>
+  </div>
+
+  <div style="padding: 0 2rem 1rem;">
+    <canvas id="graph-canvas"></canvas>
+    <div class="graph-tooltip" id="graph-tooltip"></div>
+  </div>
+
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base &bull; Citation graph</p>
+  </footer>
+
+  <script>
+    window.PAPERS_DATA = [{"paper_id": "2c03df8b48bf3fa39054345bafabfeff15bfd11d", "title": "Deep Residual Learning for Image Recognition", "year": 2015, "citation_count": 224977}, {"paper_id": "204e3073870fae3d05bcbc2f6a8e263d9b72e776", "title": "Attention Is All You Need", "year": 2017, "citation_count": 172280}, {"paper_id": "a6cb366736791bcccc5c8639de5a8f9636bf87e8", "title": "Adam: A Method for Stochastic Optimization", "year": 2014, "citation_count": 164663}, {"paper_id": "abd1c342495432171beb7ca8fd9551ef13cbd0ff", "title": "ImageNet classification with deep convolutional neural networks", "year": 2012, "citation_count": 127985}, {"paper_id": "df2b0e26d0599ce3e70df8a9da02e51594e0e992", "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding", "year": 2019, "citation_count": 112710}, {"paper_id": "2e9d221c206e9503ceb452302d68d10e293f2a10", "title": "Long Short-Term Memory", "year": 1997, "citation_count": 102893}, {"paper_id": "162d958ff885f1462aeda91cd72582323fd6a1f4", "title": "Gradient-based learning applied to document recognition", "year": 1998, "citation_count": 59803}, {"paper_id": "90abbc2cf38462b954ae1b772fac9532e2ccd8b0", "title": "Language Models are Few-Shot Learners", "year": 2020, "citation_count": 56349}, {"paper_id": "34f25a8704614163c4095b3ee2fc969b60de4698", "title": "Dropout: a simple way to prevent neural networks from overfitting", "year": 2014, "citation_count": 42812}, {"paper_id": "052b1d8ce63b07fec3de9dbb583772d860b7c769", "title": "Learning representations by back-propagating errors", "year": 1986, "citation_count": 30688}, {"paper_id": "5f5dc5b9a2ba710937e2c413b37b053cd673df02", "title": "Auto-Encoding Variational Bayes", "year": 2013, "citation_count": 17041}, {"paper_id": "a8e8f3c8d4418c8d62e306538c9c1292635e9d27", "title": "Backpropagation Applied to Handwritten Zip Code Recognition", "year": 1989, "citation_count": 11974}, {"paper_id": "7bbc7595196a0606a07506c4fb1473e5e87f6082", "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces", "year": 2023, "citation_count": 6401}, {"paper_id": "86ee1835a56722b76564119437070782fc90eb19", "title": "Generative Adversarial Nets", "year": 2014, "citation_count": 2328}, {"paper_id": "14fdab35cc6288083a38a92392af3f1da0b95a90", "title": "KAN: Kolmogorov-Arnold Networks", "year": 2024, "citation_count": 1543}, {"paper_id": "ee57e4d7a125f4ca8916284a857c3760d7d378d3", "title": "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture", "year": 2023, "citation_count": 722}, {"paper_id": "f49101078fb25f714a9813259ece149581017782", "title": "Taylor expansion of the accumulated rounding error", "year": 1976, "citation_count": 300}, {"paper_id": "7318a804566baadc9f4b4ca8255f78744e749a32", "title": "QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead", "year": 2024, "citation_count": 26}, {"paper_id": "65780e86fa36e354da618499f8b4616ac87838bf", "title": "TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate", "year": 2025, "citation_count": 11}, {"paper_id": "ef9485a2522f64bca0f5cf67edc28a11984790e8", "title": "PolarQuant: Quantizing KV Caches with Polar Transformation", "year": 2025, "citation_count": 10}, {"paper_id": "530dab86cb8034bc12a32d21508aaa3f2cc00aa1", "title": "LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels", "year": 2026, "citation_count": 3}];
+    window.LINKS_DATA = [{"source": "65780e86fa36e354da618499f8b4616ac87838bf", "target": "7318a804566baadc9f4b4ca8255f78744e749a32"}, {"source": "65780e86fa36e354da618499f8b4616ac87838bf", "target": "ef9485a2522f64bca0f5cf67edc28a11984790e8"}, {"source": "86ee1835a56722b76564119437070782fc90eb19", "target": "abd1c342495432171beb7ca8fd9551ef13cbd0ff"}, {"source": "df2b0e26d0599ce3e70df8a9da02e51594e0e992", "target": "204e3073870fae3d05bcbc2f6a8e263d9b72e776"}];
+  </script>
+  <script src="assets/js/wiki.js"></script>
+</body>
+</html>

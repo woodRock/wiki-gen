@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -30,16 +36,17 @@
         <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
         <li><a href="#references">References</a></li>
+        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div></div>
+      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">transformer</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">generative-models</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">optimization</span></div>
     </aside>
 
     
     <article class="wiki-article">
       <h1 id="title">Adam: A Method for Stochastic Optimization</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Adam Optimization Algorithm</div>
@@ -57,17 +64,17 @@
         </table>
       </div>
 
-      
-      <p class="lead">Adam (Adaptive Moment Estimation) is an algorithm for first-order <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>-based optimization of <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> objective functions, based on adaptive estimates of lower-order moments. By combining the advantages of AdaGrad, which works well with sparse <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s, and RMSProp, which works well in online and non-stationary settings, Adam has become the default optimizer for deep learning. Its computational efficiency, low memory requirements, and <span class="glossary-term" data-definition="The property of remaining unchanged regardless of certain transformations, like translation or scaling.">invariance</span> to diagonal scaling of the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s make it well-suited for large-scale data and <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>-heavy models.</p>
+
+      <p class="lead">Adam (Adaptive Moment Estimation) is an algorithm for first-order <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>-based optimization of <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> objective functions, based on adaptive estimates of lower-order moments. By combining the advantages of AdaGrad, which works well with sparse gradients, and RMSProp, which works well in online and non-stationary settings, Adam has become the default optimizer for deep learning. Its computational efficiency, low memory requirements, and <span class="glossary-term" data-definition="The property of remaining unchanged regardless of certain transformations, like translation or scaling.">invariance</span> to diagonal scaling of the gradients make it well-suited for large-scale data and <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>-heavy models.</p>
 <h2 id="section-0">Adaptive Moment Estimation</h2>
-<p>The Adam algorithm maintains exponentially moving averages of the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> ($m_t$) and the squared <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> ($v_t$), which represent estimates of the first moment (the mean) and the second raw moment (the uncentered variance) of the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s, respectively.</p>
-<p>Two hyper-<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s $\beta_1, \beta_2 \in [0, 1)$ control the exponential decay rates of these moving averages. By utilizing both the direction (<span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span>) and the magnitude (adaptive scaling) of the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s, Adam can navi<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> complex loss landscapes more effectively than standard <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>."><span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> descent</span> (SGD).</p>
+<p>The Adam algorithm maintains exponentially moving averages of the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> ($m_t$) and the squared <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> ($v_t$), which represent estimates of the first moment (the mean) and the second raw moment (the uncentered variance) of the gradients, respectively.</p>
+<p>Two hyper-parameters $\beta_1, \beta_2 \in [0, 1)$ control the exponential decay rates of these moving averages. By utilizing both the direction (<span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span>) and the magnitude (adaptive scaling) of the gradients, Adam can navigate complex loss landscapes more effectively than standard <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">Stochastic</span> <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative gradient.">Gradient Descent</span> (SGD).</p>
 <h2 id="section-1">Bias Correction</h2>
-<p>A unique feature of Adam is the use of initialization <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span> correction. Since the moving averages $m_t$ and $v_t$ are typically initialized as vectors of zeros, they are <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span>ed towards zero, especially during the initial time steps or when the decay rates are small (i.e., $\beta_1$ and $\beta_2$ are close to 1).</p>
+<p>A unique feature of Adam is the use of initialization <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span> correction. Since the moving averages $m_t$ and $v_t$ are typically initialized as vectors of zeros, they are biased towards zero, especially during the initial time steps or when the decay rates are small (i.e., $\beta_1$ and $\beta_2$ are close to 1).</p>
 <p>The authors derived <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span>-corrected estimates $\hat{m}_t$ and $\hat{v}_t$ to counteract this effect. This correction ensures that the moments are more accurate early in the training process, leading to more stable updates and preventing the algorithm from 'stalling' at the beginning of optimization.</p>
 <h2 id="section-2">Hyper-parameters and Stability</h2>
-<p>Adam is known for being robust to its hyper-<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s. The default values suggested in the paper—$\alpha=0.001$, $\beta_1=0.9$, $\beta_2=0.999$, and $\epsilon=10^{-8}$—work well for most deep learning problems.</p>
-<p>The algorithm's update rule is conceptually similar to a 'signal-to-noise ratio' (SNR) where the step size is determined by how much the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> signal outweighs its uncertainty. This property makes Adam particularly effective for non-stationary objectives and problems with very noisy or sparse <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s.</p>
+<p>Adam is known for being robust to its hyper-parameters. The default values suggested in the paper—$\alpha=0.001$, $\beta_1=0.9$, $\beta_2=0.999$, and $\epsilon=10^{-8}$—work well for most deep learning problems.</p>
+<p>The algorithm's update rule is conceptually similar to a 'signal-to-noise ratio' (SNR) where the step size is determined by how much the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> signal outweighs its uncertainty. This property makes Adam particularly effective for non-stationary objectives and problems with very noisy or sparse gradients.</p>
 <h2 id="section-3">Adam vs. Other Optimizers</h2>
 <p>The paper compares Adam to other popular optimization methods, including SGD with Nesterov <span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span>, AdaGrad, and RMSProp. Across experiments on MNIST, CIFAR-10, and various neural network architectures, Adam consistently demonstrated faster <span class="glossary-term" data-definition="The point at which an optimization algorithm has found a stable solution (usually a local minimum).">convergence</span> and reached lower training loss.</p>
 <p>While SGD with <span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span> may sometimes achieve slightly better <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span> on certain vision tasks, Adam's ease of use and consistent performance have made it the industry standard for training large-scale models like Transformers and GANs.</p>
@@ -75,12 +82,12 @@
 
       <div class="concept-item">
         <div class="concept-title">First Moment (m_t)</div>
-        <p>The exponentially decaying average of past <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s, providing <span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span> to accelerate descent in the correct direction.</p>
+        <p>The exponentially decaying average of past gradients, providing <span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span> to accelerate descent in the correct direction.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Second Moment (v_t)</div>
-        <p>The exponentially decaying average of past squared <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s, used to scale the learning rate for each individual <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>.</p>
+        <p>The exponentially decaying average of past squared gradients, used to scale the learning rate for each individual <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>.</p>
       </div>
 
       <div class="concept-item">
@@ -264,14 +271,25 @@
           <span style="font-size: 0.8rem; color: #54595d;"> - Boris Polyak, A. Juditsky (1992)</span>
         </li>
       </ol>
+<h2 id="related">Related Papers</h2>
+<div class="related-grid">
+  <div class="related-card" onclick="window.location.href='../paper/5f5dc5b9a2ba710937e2c413b37b053cd673df02.html'">
+    <div class="related-card-title">Auto-Encoding Variational Bayes</div>
+    <div class="related-card-meta">2013 &bull; 17041 citations</div>
+  </div>
+  <div class="related-card" onclick="window.location.href='../paper/86ee1835a56722b76564119437070782fc90eb19.html'">
+    <div class="related-card-title">Generative Adversarial Nets</div>
+    <div class="related-card-meta">2014 &bull; 2328 citations</div>
+  </div>
+</div>
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

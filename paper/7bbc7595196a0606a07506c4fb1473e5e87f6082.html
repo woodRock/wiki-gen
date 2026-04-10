@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -38,7 +44,7 @@
     
     <article class="wiki-article">
       <h1 id="title">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Selective State Space Models (S6)</div>
@@ -56,17 +62,17 @@
         </table>
       </div>
 
-      
-      <p class="lead">Mamba is a breakthrough sequence modeling architecture that introduces selective state space models (<span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>s) to achieve linear-time scaling and high-performance across modalities like language, genomics, and audio. By allowing <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s to be functions of the input, Mamba enables content-based reasoning—a key limitation of previous subquadratic architectures. Combined with a hardware-aware parallel algorithm, Mamba matches or exceeds Transformer performance while offering 5x higher throughput and the ability to process million-length sequences.</p>
+
+      <p class="lead">Mamba is a breakthrough sequence modeling architecture that introduces selective state space models (SSMs) to achieve linear-time scaling and high-performance across modalities like language, genomics, and audio. By allowing <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">SSM</span> parameters to be functions of the input, Mamba enables content-based reasoning—a key limitation of previous subquadratic architectures. Combined with a hardware-aware parallel algorithm, Mamba matches or exceeds Transformer performance while offering 5x higher throughput and the ability to process million-length sequences.</p>
 <h2 id="section-0">From Linear SSMs to Selective Selection</h2>
-<p>Traditional State Space Models (<span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>s) are linear time-invariant (<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>) systems that map an input sequence to an output sequence through an intermediate latent state. While efficient due to their <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al representation, <span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span> systems struggle with content-based reasoning because their transition matrices are fixed and independent of the input.</p>
-<p>Mamba introduces 'Selection' by making the <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s ($B$, $C$, and $\Delta$) functions of the input $x$. This allows the model to 'selectively' propa<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> or forget information based on the current <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>, enabling it to handle discrete modalities like language where certain words (like 'if' or 'else') dictate the importance of subsequent information.</p>
+<p>Traditional State Space Models (SSMs) are linear time-invariant (<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">LTI</span>) systems that map an input sequence to an output sequence through an intermediate latent state. While efficient due to their convolutional representation, <span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">LTI</span> systems struggle with content-based reasoning because their transition matrices are fixed and independent of the input.</p>
+<p>Mamba introduces 'Selection' by making the <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">SSM</span> parameters ($B$, $C$, and $\Delta$) functions of the input $x$. This allows the model to 'selectively' propagate or forget information based on the current <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>, enabling it to handle discrete modalities like language where certain words (like 'if' or 'else') dictate the importance of subsequent information.</p>
 <h2 id="section-1">Hardware-Aware Parallel Scan</h2>
-<p>The introduction of input-dependency breaks the <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al property of <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>s, seemingly requiring a slow <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> computation. Mamba overcomes this through a hardware-aware parallel scan algorithm. Instead of materializing the full expanded state in slow GPU memory (<span class="glossary-term" data-definition="High Bandwidth Memory; the primary, larger, but slower memory used on GPUs.">hbm</span>), the model performs the discretization and recurrence in fast <span class="glossary-term" data-definition="Static Random-Access Memory; fast, on-chip memory used for intermediate computations in GPUs.">sram</span>.</p>
-<p>By utilizing the memory hierarchy of modern GPUs, Mamba achieves the efficiency of <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>s while maintaining the flexibility of <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> models. This allows the model to scale linearly with sequence length, making it practical for processing extremely long contexts that would be computationally prohibitive for Transformers' $O(L^2)$ attention.</p>
+<p>The introduction of input-dependency breaks the convolutional property of SSMs, seemingly requiring a slow <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> computation. Mamba overcomes this through a hardware-aware parallel scan algorithm. Instead of materializing the full expanded state in slow GPU memory (<span class="glossary-term" data-definition="High Bandwidth Memory; the primary, larger, but slower memory used on GPUs.">HBM</span>), the model performs the discretization and recurrence in fast <span class="glossary-term" data-definition="Static Random-Access Memory; fast, on-chip memory used for intermediate computations in GPUs.">SRAM</span>.</p>
+<p>By utilizing the memory hierarchy of modern GPUs, Mamba achieves the efficiency of convolutions while maintaining the flexibility of <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> models. This allows the model to scale linearly with sequence length, making it practical for processing extremely long contexts that would be computationally prohibitive for Transformers' $O(L^2)$ attention.</p>
 <h2 id="section-2">The Mamba Block Architecture</h2>
-<p>The Mamba architecture simplifies the standard deep learning stack by integrating the selective <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> into a streamlined block. Unlike Transformers, which alternate between attention and MLP layers, Mamba uses a single homogenous block that combines linear projections, 1D <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>s, and the selective <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>.</p>
-<p>This design removes the need for attention mechanisms entirely, significantly reducing the memory footprint for <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s in autoregressive generation, enabling O(1) per-<span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> attention at the cost of O(n) memory.">kv cache</span>s during inference. The result is a model that is both faster to train and more efficient to deploy, particularly for long-generation tasks.</p>
+<p>The Mamba architecture simplifies the standard deep learning stack by integrating the selective <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">SSM</span> into a streamlined block. Unlike Transformers, which alternate between attention and MLP layers, Mamba uses a single homogenous block that combines linear projections, 1D convolutions, and the selective <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">SSM</span>.</p>
+<p>This design removes the need for attention mechanisms entirely, significantly reducing the memory footprint for KV caches during inference. The result is a model that is both faster to train and more efficient to deploy, particularly for long-generation tasks.</p>
 <h2 id="section-3">Empirical Performance and Scaling</h2>
 <p>In language modeling benchmarks, Mamba-3B matches the performance of Transformers twice its size. It demonstrates consistent improvements as the sequence length increases, whereas Transformers often suffer from performance degradation or memory exhaustion beyond their training window.</p>
 <p>Beyond language, Mamba excels in genomics (long DNA sequences) and audio modeling, where its ability to handle millions of time steps with linear complexity provides a decisive advantage over previous state-of-the-art architectures.</p>
@@ -74,12 +80,12 @@
 
       <div class="concept-item">
         <div class="concept-title">Selective SSM (S6)</div>
-        <p>A state space model where the <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s vary with the input, allowing the model to choose which information to keep or discard.</p>
+        <p>A state space model where the parameters vary with the input, allowing the model to choose which information to keep or discard.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Parallel Scan</div>
-        <p>A technique to compute <span class="glossary-term" data-definition="A mathematical operation where each element in a sequence is the sum of all preceding elements.">prefix sum</span>s or recurrences in parallel, adapted in Mamba for hardware-efficient <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> updates.</p>
+        <p>A technique to compute prefix sums or recurrences in parallel, adapted in Mamba for hardware-efficient <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">SSM</span> updates.</p>
       </div>
 
       <div class="concept-item">
@@ -89,7 +95,7 @@
 
       <div class="concept-item">
         <div class="concept-title">Hardware-Awareness</div>
-        <p>Designing algorithms to minimize data movement between different levels of GPU memory (<span class="glossary-term" data-definition="High Bandwidth Memory; the primary, larger, but slower memory used on GPUs.">hbm</span> vs. <span class="glossary-term" data-definition="Static Random-Access Memory; fast, on-chip memory used for intermediate computations in GPUs.">sram</span>) to maximize throughput.</p>
+        <p>Designing algorithms to minimize data movement between different levels of GPU memory (<span class="glossary-term" data-definition="High Bandwidth Memory; the primary, larger, but slower memory used on GPUs.">HBM</span> vs. <span class="glossary-term" data-definition="Static Random-Access Memory; fast, on-chip memory used for intermediate computations in GPUs.">SRAM</span>) to maximize throughput.</p>
       </div>
 
       <div class="concept-item">
@@ -99,7 +105,7 @@
 <h2 id="math">Mathematics</h2>
 <h3>Continuous State Space Model</h3>
 <div class="math-block">$$h'(t) = A h(t) + B x(t), \quad y(t) = C h(t)$$</div>
-<div class="math-explanation-box">The fundamental linear ODE that defines the evolution of the latent state $h(t)$ in a continuous <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$h(t)$</td><td>Latent state at time t</td></tr><tr><td>$x(t)$</td><td>Input signal at time t</td></tr><tr><td>$A, B, C$</td><td>System matrices defining state transitions and output mapping</td></tr></table></div>
+<div class="math-explanation-box">The fundamental linear ODE that defines the evolution of the latent state $h(t)$ in a continuous <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">SSM</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$h(t)$</td><td>Latent state at time t</td></tr><tr><td>$x(t)$</td><td>Input signal at time t</td></tr><tr><td>$A, B, C$</td><td>System matrices defining state transitions and output mapping</td></tr></table></div>
 <h3>Selective Discretization</h3>
 <div class="math-block">$$\bar{A} = \exp(\Delta A), \quad \bar{B} = (\Delta A)^{-1}(\exp(\Delta A) - I) \cdot \Delta B$$</div>
 <div class="math-explanation-box">In Mamba, the step size $\Delta$ and matrices $B$ and $C$ are functions of the input $x$, making the discretized matrices $\bar{A}$ and $\bar{B}$ time-varying.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\Delta$</td><td>Input-dependent step size (timescale)</td></tr><tr><td>$\bar{A}, \bar{B}$</td><td>Discretized transition and input matrices</td></tr></table></div>
@@ -228,11 +234,11 @@
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>
