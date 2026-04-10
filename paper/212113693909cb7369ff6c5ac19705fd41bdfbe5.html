@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acoustic classification in multifrequency echosounder data using deep convolutional neural networks - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Multifrequency Acoustic Data Preprocessing</a></li>
+        <li><a href="#section-1">U-Net Architecture for Echosounder Segmentation</a></li>
+        <li><a href="#section-2">Balanced Sampling and Handling Class Imbalance</a></li>
+        <li><a href="#section-3">Performance and Comparison with Traditional Methods</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Acoustic classification in multifrequency echosounder data using deep convolutional neural networks</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">U-Net for Acoustic Target Classification</div>
+        <div class="infobox-image"><img src="../assets/animations/212113693909cb7369ff6c5ac19705fd41bdfbe5.gif" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Modified U-Net (Encoder-Decoder with Skip Connections)</td></tr>
+          <tr><th>Key Innovation</th><td>End-to-end automatic feature learning from multifrequency (18, 38, 120, 200 kHz) echograms.</td></tr>
+          <tr><th>Performance Metric</th><td>F1 score of 0.87 (overall) and 0.94 (sandeel vs. other schools).</td></tr>
+          <tr><th>Computational Efficiency</th><td>Pixel-wise segmentation allowing for variable input sizes and efficient processing of large survey datasets.</td></tr>
+
+          <tr><th>Venue</th><td>ICES Journal of Marine Science</td></tr>
+          <tr><th>Year</th><td>2020</td></tr>
+          <tr><th>Citations</th><td>51</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1093/icesjms/fsz235" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">This paper introduces a deep learning strategy for automated acoustic target classification in multifrequency echosounder data using a convolutional neural network (CNN) based on the U-Net architecture. By learning spatial and frequency features directly from raw data, the method addresses the limitations of manual species identification and predefined feature extraction in acoustic trawl surveys. Tested on over a decade of Norwegian <span class="glossary-term" data-definition="A small, swim-bladder-less fish that often burrows in the seabed and forms dense schools in the water column.">sandeel</span> survey data, the model achieved an F1 score of 0.87 in distinguishing <span class="glossary-term" data-definition="A small, swim-bladder-less fish that often burrows in the seabed and forms dense schools in the water column.">sandeel</span> schools from other species and background, significantly outperforming traditional school classification algorithms.</p>
+<h2 id="section-0">Multifrequency Acoustic Data Preprocessing</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig1.jpeg" target="_blank">
+            <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig1.jpeg" class="thumbimage" alt="Figure 1">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 1:</b> 
+          </div>
+        </div>
+      </div>
+<p>Acoustic trawl surveys utilize echosounders to record backscattered soundwaves, which are essential for estimating fish abundance. In this study, data from four standard frequencies (18, 38, 120, and 200 kHz) were collected during the Norwegian <span class="glossary-term" data-definition="A small, swim-bladder-less fish that often burrows in the seabed and forms dense schools in the water column.">sandeel</span> surveys between 2007 and 2018. To ensure consistency across different vessel settings, the data were interpolated into a common time-range grid based on the 200-kHz resolution.</p>
+<p>This preprocessing transforms the volume <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> coefficient (sv) values into a four-channel 'image,' where each pixel represents a specific depth and time coordinate across the four frequencies. Missing pings were detected and filled with zero-intensity values (mapped to -75 dB) to maintain the temporal integrity of the <span class="glossary-term" data-definition="A visual representation of underwater acoustic returns, with intensity shown over time (horizontal) and depth (vertical).">echogram</span>s.</p>
+<p>The resulting dataset allows the convolutional neural network to treat multifrequency echosounder data similarly to a multispectral image, enabling the simultaneous analysis of frequency response and morphological features of fish schools. <b>Figure 1</b> shows how these channels are combined.</p>
+<h2 id="section-1">U-Net Architecture for Echosounder Segmentation</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig4.jpeg" target="_blank">
+            <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig4.jpeg" class="thumbimage" alt="Figure 4">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 4:</b> The network architecture, a slightly modiﬁed version of the original U-Net. The input is the 4  256  256 crops, and the 3  256
+          </div>
+        </div>
+      </div>
+<p>The researchers employed a modified U-Net architecture, a type of fully convolutional network (FCN) consisting of an encoder and a decoder. The encoder path maps the input image to a low-resolution representation, capturing high-level abstract features, while the decoder path recovers the spatial resolution to produce a pixel-wise classification map.</p>
+<p>A defining feature of the U-Net is the use of skip connections between corresponding layers of the encoder and decoder. These connections allow the network to pass high-resolution spatial information directly to the decoding stages, which is critical for the precise localization of small or irregularly shaped fish schools within the water column. <b>Figure 4</b> illustrates the overall architecture.</p>
+<p>Contrary to the original U-Net, batch normalization layers were inserted between each convolutional layer and its activation function. This modification helps stabilize the training process by reducing <span class="glossary-term" data-definition="The change in the distribution of network activations due to the update of parameters during training, addressed by batch normalization.">internal covariate shift</span>, leading to faster convergence and better generalization on unseen survey data.</p>
+<h2 id="section-2">Balanced Sampling and Handling Class Imbalance</h2>
+<p>A major challenge in training deep learning models for acoustic surveys is the extreme class imbalance; in the <span class="glossary-term" data-definition="A small, swim-bladder-less fish that often burrows in the seabed and forms dense schools in the water column.">sandeel</span> dataset, approximately 99.8% of pixels were classified as background, with only 0.1% each for <span class="glossary-term" data-definition="A small, swim-bladder-less fish that often burrows in the seabed and forms dense schools in the water column.">sandeel</span> and other fish species. To address this, the study implemented a balanced sampling strategy during training.</p>
+<p>Random 256x256 pixel crops were drawn from the <span class="glossary-term" data-definition="A visual representation of underwater acoustic returns, with intensity shown over time (horizontal) and depth (vertical).">echogram</span>s with specific probabilities to ensure the network was exposed to enough instances of fish schools and the seabed. This prevented the model from defaulting to a 'background-only' prediction and helped it learn the specific features of rare classes.</p>
+<p>Additionally, a weighted cross-entropy loss function was used, assigning higher penalties to misclassifications of <span class="glossary-term" data-definition="A small, swim-bladder-less fish that often burrows in the seabed and forms dense schools in the water column.">sandeel</span> and other fish species compared to background pixels. This further incentivized the network to prioritize the accurate identification of fish schools over the dominant background class.</p>
+<h2 id="section-3">Performance and Comparison with Traditional Methods</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig6.jpeg" target="_blank">
+            <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig6.jpeg" class="thumbimage" alt="Figure 6">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 6:</b> Precision/recall curves per year, where “sandeel” (positive) is compared to “other” and “background” (negatives) in a 20-pixel region
+          </div>
+        </div>
+      </div>
+<p>The performance of the U-Net model was evaluated against a traditional automated processing pipeline (the Korona pipeline in LSSS). The U-Net achieved an overall F1 score of 0.87 on the test set, while the benchmark method obtained a significantly lower F1 score of 0.77.</p>
+<p>Specifically, the network demonstrated high accuracy in separating <span class="glossary-term" data-definition="A small, swim-bladder-less fish that often burrows in the seabed and forms dense schools in the water column.">sandeel</span> schools from schools of other species, achieving an F1 score of 0.94. This indicates that the deep learning approach successfully captured the distinct multifrequency signatures and morphological differences between species. <b>Figure 6</b> shows the precision-recall curves across different years.</p>
+<p>The results show that the automated deep learning strategy is more robust than traditional threshold-based school detection algorithms, particularly in complex environments where fish schools are located close to the seabed or among other biological noise.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">U-Net Encoder-Decoder</div>
+        <p>A symmetrical neural network architecture where the encoder compresses input data into abstract features and the decoder reconstructs it into a high-resolution classification map.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Skip Connections</div>
+        <p>Connections that relay low-level spatial features from the encoder to the decoder, ensuring that fine details lost during compression are preserved for accurate pixel-wise labeling.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Multifrequency Interpolation</div>
+        <p>The process of aligning acoustic data from multiple frequencies onto a single coordinate grid, allowing them to be processed as multiple channels of a single image.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Weighted Cross Entropy</div>
+        <p>A variant of the standard loss function that adjusts for class imbalance by assigning different importance to errors based on the frequency of the class in the training data.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Morphological Closing</div>
+        <p>A binary image processing operation used to fill small gaps in manual annotations, creating more continuous and accurate training labels for the fish schools.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>F1 Score</h3>
+<div class="math-block">$$F1 = 2 \cdot \frac{\text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}$$</div>
+<div class="math-explanation-box">The F1 score is the harmonic mean of precision and recall, providing a single metric to evaluate the balance between false positives and false negatives.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\text{precision}$</td><td>Proportion of predicted positives that are correct</td></tr><tr><td>$\text{recall}$</td><td>Proportion of actual positives that are correctly identified</td></tr></table></div>
+<h3>Weighted Cross-Entropy Loss</h3>
+<div class="math-block">$$L = -\sum_{c=1}^{C} w_c y_c \log(\hat{y}_c)$$</div>
+<div class="math-explanation-box">A loss function used to train classifiers on imbalanced data by weighting the penalty for misclassifying rare classes higher than common ones.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$w_c$</td><td>Weight assigned to class c</td></tr><tr><td>$y_c$</td><td>True label for class c (one-hot encoded)</td></tr><tr><td>$\hat{y}_c$</td><td>Predicted probability for class c</td></tr></table></div>
+<h3>Area-Backscattering Coefficient</h3>
+<div class="math-block">$$s_a = \int_{z_1}^{z_2} s_v dz$$</div>
+<div class="math-explanation-box">The area-<span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> coefficient ($s_a$), calculated by integrating the volume <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> coefficient ($s_v$) over a depth range, used to estimate fish biomass.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$s_a$</td><td>Area-backscattering coefficient</td></tr><tr><td>$s_v$</td><td>Volume backscattering coefficient</td></tr><tr><td>$dz$</td><td>Change in depth</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig1.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Comparison of four frequency echograms (18, 38, 120, 200 kHz) alongside manual annotations and model predictions, demonstrating the network's effectiveness in segmenting sandeel schools.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig2.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> Echogram with four frequency channels (a–d, 18, 38, 120 and 200 kHz) and original (e) and modiﬁed (f) annotations, where black is<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Illustration of how manual bounding box annotations are refined using intensity thresholds and morphological operations to create high-quality training labels.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig3.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> (a) Small patch from an echogram (200-kHz channel)<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig4.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> The network architecture, a slightly modiﬁed version of the original U-Net. The input is the 4  256  256 crops, and the 3  256<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            The modified U-Net architecture diagram, showing the input of 4x256x256 crops, the contracting encoder path, the bottleneck with 1024 features, and the expanding decoder path with skip connections.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig5.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 5:</b> Illustration of evaluated pixels for computing precision/recall curves. (a) The 200-kHz echogram, (b) modiﬁed annotations where<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig6.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 6:</b> Precision/recall curves per year, where “sandeel” (positive) is compared to “other” and “background” (negatives) in a 20-pixel region<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Precision-recall curves for sandeel classification across different survey years, showing the consistency of the model's performance on various datasets.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/212113693909cb7369ff6c5ac19705fd41bdfbe5_fig7.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 7:</b> (a and b) The 200-kHz echograms. (c and d) Modiﬁed “sandeel” annotations in red (grey in print), the “ignore” pseudo class in<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Simrad EK60</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The scientific echosounder system used to collect the multifrequency data analyzed in this paper.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Large Scale Survey System (LSSS)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The software used for manual processing and annotation of the acoustic survey data.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Ammodytes marinus</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The specific species of sandeel that was the focus of the Norwegian acoustic surveys.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Convolutional Neural Network</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The class of deep learning models that forms the basis of the U-Net architecture used in this study.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

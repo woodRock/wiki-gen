@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fish target strengths for use in echo integrator surveys - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Echo Integration and Target Strength Fundamentals</a></li>
+        <li><a href="#section-1">In Situ Measurement Systems</a></li>
+        <li><a href="#section-2">Physoclist vs. Clupeoid Regression Models</a></li>
+        <li><a href="#section-3">Validation and Theoretical Consistency</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Fish target strengths for use in echo integrator surveys</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Standard Target Strength Equations for Fisheries Acoustics</div>
+        <table>
+          <tr><th>Architecture Type</th><td>Empirical Regression Analysis (Linearized TS-Length relationship)</td></tr>
+          <tr><th>Key Innovation</th><td>Derivation of universal TS-length equations for different swimbladder types at 38 kHz.</td></tr>
+          <tr><th>Performance Metric</th><td>Regression standard errors typically between 1.0 and 2.5 dB.</td></tr>
+          <tr><th>Computational Efficiency</th><td>Direct application of logarithmic formulas to echosounder data for real-time abundance estimation.</td></tr>
+
+          <tr><th>Venue</th><td>N/A</td></tr>
+          <tr><th>Year</th><td>1987</td></tr>
+          <tr><th>Citations</th><td>462</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1121/1.395298" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">This seminal paper establishes standardized empirical equations for fish target strength (TS) at <span class="glossary-term" data-definition="The standard operational frequency for scientific echosounder surveys of commercial fish stocks.">38 khz</span>, a critical parameter for converting echo integrator data into fish abundance. By synthesizing <span class="glossary-term" data-definition="Measurements taken in the natural environment of the subject, as opposed to controlled laboratory conditions.">in situ</span> measurements from dual-beam, split-beam, and single-beam systems across multiple species, the study provides robust regressions for <span class="glossary-term" data-definition="A fish with a closed swimbladder organ.">physoclist</span> (closed swimbladder) and <span class="glossary-term" data-definition="A member of the fish family Clupeidae, including herrings and sprats.">clupeoid</span> (open swimbladder) fishes. These equations, backed by theoretical modeling and caged-fish studies, have become foundational for acoustic biomass estimation in marine science.</p>
+<h2 id="section-0">Echo Integration and Target Strength Fundamentals</h2>
+<p>Fish target strength is a key quantity in the acoustic assessment of fish abundance. It is essential for expressing echo integrator measurements as quantities of fish. The calibrated output signal from the echosounder is squared and integrated over a defined range interval. The result is proportional to the sum of the <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> cross sections of the observed scatterers.</p>
+<p>Target Strength (TS) is the logarithmic expression of the <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> cross section. If individual echoes overlap, the integrator measures the cumulative <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> cross section, which can then be converted to numbers of fish by dividing by the appropriate mean <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> cross section.</p>
+<h2 id="section-1">In Situ Measurement Systems</h2>
+<p>The study reviews three primary methods for determining target strength in the field. The dual-beam system, introduced in 1974, uses two concentric circular beams to compensate for beam pattern loss by observing the ratio of echo strengths. The split-beam system, introduced in 1984, divides the transducer into quadrants and uses phase differences to specify the target direction and compensate for beam pattern.</p>
+<p>Single-beam systems can also be used, though they require a larger number of measurements to solve an integral equation, typically using linearized solutions like the Craig and Forbes method to derive target strength from echo intensity distributions.</p>
+<h2 id="section-2">Physoclist vs. Clupeoid Regression Models</h2>
+<p>A major biological difference affecting target strength is the swimbladder type. <span class="glossary-term" data-definition="A fish with a closed swimbladder organ.">physoclist</span>s, such as cod and pollock, have closed swimbladders and can regulate gas volume for buoyancy. <span class="glossary-term" data-definition="A member of the fish family Clupeidae, including herrings and sprats.">clupeoid</span>s, such as herring and sprat, are physostomes with open swimbladders that lack precise gas regulation.</p>
+<p>Regression analysis of <span class="glossary-term" data-definition="Measurements taken in the natural environment of the subject, as opposed to controlled laboratory conditions.">in situ</span> data reveals that <span class="glossary-term" data-definition="A fish with a closed swimbladder organ.">physoclist</span>s exhibit significantly higher target strengths—approximately 4.5 dB more than comparably sized <span class="glossary-term" data-definition="A member of the fish family Clupeidae, including herrings and sprats.">clupeoid</span>s. This difference is consistent across different measurement methods and is primarily attributed to the acoustic properties of the different swimbladder morphologies.</p>
+<h2 id="section-3">Validation and Theoretical Consistency</h2>
+<p>The <span class="glossary-term" data-definition="Measurements taken in the natural environment of the subject, as opposed to controlled laboratory conditions.">in situ</span> measurements were validated against 'ex situ' data, including tethered-single-fish measurements, caged-fish studies, and theoretical computations. Theoretical models based on the physical form of the swimbladder yielded results remarkably consistent with empirical observations, determining equations like TS = 20 log L - 66.9 for certain gadoids.</p>
+<p>The convergence of these diverse datasets—distinguished by time, place, and species—provides high confidence in the derived standard equations, despite the inherent variability caused by fish behavior and orientation.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Target Strength (TS)</div>
+        <p>A logarithmic measure of the proportion of incident sound energy reflected back to the source by an underwater target, typically a fish.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Physoclistous Fish</div>
+        <p>Fish with a closed swimbladder (e.g., cod, haddock) that can regulate their buoyancy by producing or resorbing gas, usually resulting in higher acoustic reflectivity.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Clupeoid Fish</div>
+        <p>Fish with an open swimbladder connected to the alimentary canal (e.g., herring, sprat), which typically results in lower target strengths compared to <span class="glossary-term" data-definition="A fish with a closed swimbladder organ.">physoclist</span>s.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Dual-Beam System</div>
+        <p>A method of measuring target strength directly by comparing the echo received on a narrow central beam and a wider concentric beam.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Split-Beam System</div>
+        <p>An advanced acoustic technique that uses the phase difference between signals received by different quadrants of a transducer to locate a fish and measure its target strength.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Target Strength Definition</h3>
+<div class="math-block">$$TS = 10 \log_{10}(\sigma / 4\pi)$$</div>
+<div class="math-explanation-box">Defines target strength in terms of the <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> cross-section ($\sigma$).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$TS$</td><td>Target Strength in decibels (dB)</td></tr><tr><td>$\sigma$</td><td>Backscattering cross-section</td></tr></table></div>
+<h3>Physoclist Standard Equation</h3>
+<div class="math-block">$$TS = 20 \log_{10}(L) - 67.4$$</div>
+<div class="math-explanation-box">Standard empirical regression for <span class="glossary-term" data-definition="A fish with a closed swimbladder organ.">physoclist</span>ous fish at <span class="glossary-term" data-definition="The standard operational frequency for scientific echosounder surveys of commercial fish stocks.">38 khz</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$L$</td><td>Mean fish length in centimeters (cm)</td></tr></table></div>
+<h3>Clupeoid Standard Equation</h3>
+<div class="math-block">$$TS = 20 \log_{10}(L) - 71.9$$</div>
+<div class="math-explanation-box">Standard empirical regression for <span class="glossary-term" data-definition="A member of the fish family Clupeidae, including herrings and sprats.">clupeoid</span> fish (herring and sprat) at <span class="glossary-term" data-definition="The standard operational frequency for scientific echosounder surveys of commercial fish stocks.">38 khz</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$L$</td><td>Mean fish length in centimeters (cm)</td></tr></table></div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Backscattering Cross-Section</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The equivalent area of a target that would scatter sound equally in all directions.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Simrad EK60</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A modern echosounder system that utilizes the split-beam principles established in this paper.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Echo Integration</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The mathematical process of summing acoustic returns to estimate the total biomass of fish schools.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Swimbladder</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The gas-filled organ in most fish that is responsible for 90% or more of their acoustic backscatter.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

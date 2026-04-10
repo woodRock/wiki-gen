@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ImageNet classification with deep convolutional neural networks - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">The ILSVRC 2012 Breakthrough</a></li>
+        <li><a href="#section-1">Architecture: Convolutional and Fully Connected Layers</a></li>
+        <li><a href="#section-2">Key Innovations: ReLU and Dropout</a></li>
+        <li><a href="#section-3">Data Augmentation and Overfitting</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">ImageNet classification with deep convolutional neural networks</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">AlexNet Convolutional Neural Network</div>
+        <div class="infobox-image"><img src="../assets/animations/abd1c342495432171beb7ca8fd9551ef13cbd0ff.gif" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Deep Convolutional Neural Network (CNN)</td></tr>
+          <tr><th>Key Innovation</th><td>Large-scale training on GPUs, ReLU activation, and Dropout regularization.</td></tr>
+          <tr><th>Performance Metric</th><td>15.3% top-5 error on ImageNet (winner of ILSVRC 2012).</td></tr>
+          <tr><th>Computational Efficiency</th><td>First major success of multi-GPU training for deep vision models.</td></tr>
+
+          <tr><th>Venue</th><td>Communications of the ACM</td></tr>
+          <tr><th>Year</th><td>2012</td></tr>
+          <tr><th>Citations</th><td>127985</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1145/3065386" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">ImageNet Classification with Deep <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al Neural Networks, often referred to as AlexNet, is the seminal paper that triggered the modern deep learning revolution. By training a large, deep <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al neural network on the 1.2 million images of the ImageNet LSVRC-2010 dataset, the authors achieved a <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model's top five predictions.">top-5 error</span> rate of 15.3%, shattering the previous state-of-the-art of 26.2%. This work demonstrated the power of GPUs for training deep networks and introduced key techniques like ReLU activations and Dropout that are now standard in the field.</p>
+<h2 id="section-0">The ILSVRC 2012 Breakthrough</h2>
+<p>In 2012, the ImageNet Large Scale Visual Recognition Challenge (<span class="glossary-term" data-definition="ImageNet Large Scale Visual Recognition Challenge; a premier computer vision competition.">ilsvrc</span>) provided a benchmark of over 1.2 million images across 1,000 categories. Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton entered a deep <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al neural network that significantly outperformed all other entries, which mostly relied on traditional hand-crafted features and support vector machines.</p>
+<p>This victory marked a paradigm shift in computer vision, proving that end-to-end representation learning from raw pixels was superior to engineered features. The magnitude of the improvement convinced the broader research community of the potential of deep learning.</p>
+<h2 id="section-1">Architecture: Convolutional and Fully Connected Layers</h2>
+<p>AlexNet consists of eight learned layers: five <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al layers followed by three fully connected layers. The first <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al layer filters the 224x224x3 input image with 96 <span class="glossary-term" data-definition="A small matrix of weights used in a convolutional layer to extract features from an image.">kernel</span>s of size 11x11x3. Subsequent layers use smaller <span class="glossary-term" data-definition="A small matrix of weights used in a convolutional layer to extract features from an image.">kernel</span>s (5x5 and 3x3) to capture increasingly complex features.</p>
+<p>To fit the large model into the limited memory of GPUs at the time (3GB NVIDIA GTX 580s), the network was split across two GPUs. Specific layers communicated between GPUs, while others operated independently, a precursor to modern distributed training strategies. <b>Figure 2</b> details this mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-GPU architecture.</p>
+<h2 id="section-2">Key Innovations: ReLU and Dropout</h2>
+<p>One of the most important technical contributions of the paper was the use of the Rectified Linear Unit (ReLU) activation function, $f(x) = \max(0, x)$. <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">prior</span> to AlexNet, saturating activations like Tanh or <span class="glossary-term" data-definition="A mathematical function having a characteristic 'S'-shaped curve.">sigmoid</span> were standard, but ReLUs allowed the network to train several times faster by mitigating the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem.</p>
+<p>To combat <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> in the large fully-connected layers, the authors employed 'Dropout.' This technique involves randomly setting the output of each hidden neuron to zero with a probability of 0.5 during training. This forces the network to learn more robust, redundant features and is now a fundamental tool for regularizing deep models.</p>
+<h2 id="section-3">Data Augmentation and Overfitting</h2>
+<p>Despite its depth, AlexNet was prone to <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> due to its 60 million <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s. The authors used two primary forms of data augmentation to artificially enlarge the dataset: generating image translations and horizontal reflections, and altering the intensities of the RGB channels using PCA-based color augmentation.</p>
+<p>These techniques, combined with Dropout, allowed the model to generalize effectively to unseen images, establishing a template for training large-scale vision models that persists today.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">ReLU (Rectified Linear Unit)</div>
+        <p>A non-saturating activation function that speeds up training by providing constant <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s for positive inputs.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Dropout</div>
+        <p>A <span class="glossary-term" data-definition="A technique used to prevent <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> by adding constraints or noise to the learning process.">regularization</span> technique where neurons are randomly ignored during training to prevent co-adaptation and <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Convolutional Layer</div>
+        <p>A layer that applies a set of learnable filters to the input to extract spatial features like edges, shapes, and textures.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Data Augmentation</div>
+        <p>The process of creating new training examples by applying transformations (crops, flips, color shifts) to existing data.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Overlapping Pooling</div>
+        <p>A technique used in AlexNet where the <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> regions overlap, which the authors found slightly reduced error rates.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>ReLU Activation</h3>
+<div class="math-block">$$f(x) = \max(0, x)$$</div>
+<div class="math-explanation-box">The simple thresholding function that replaced <span class="glossary-term" data-definition="A mathematical function having a characteristic 'S'-shaped curve.">sigmoid</span>/Tanh and enabled much faster training of deep networks.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x$</td><td>The input to the neuron</td></tr><tr><td>$f(x)$</td><td>The activated output</td></tr></table></div>
+<h3>Local Response Normalization (LRN)</h3>
+<div class="math-block">$$b^i_{x,y} = a^i_{x,y} / \left(k + \alpha \sum_{j=\max(0, i-n/2)}^{\min(N-1, i+n/2)} (a^j_{x,y})^2\right)^\beta$$</div>
+<div class="math-explanation-box">A normalization scheme used in AlexNet to encourage 'lateral inhibition' between feature maps (though it has mostly been replaced by Batch Normalization today).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$a^i_{x,y}$</td><td>Activity of a neuron computed by applying kernel i at (x,y)</td></tr><tr><td>$b^i_{x,y}$</td><td>The response-normalized activity</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> It contains eight learned layers —<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> A four-layer convolutional neural<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Detailed diagram of the AlexNet architecture, showing the split between two GPUs and the progression from convolutional to fully connected layers.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig3.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> An illustration of the architecture of our CNN, explicitly showing the delineation of responsibilities<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Visualization of the 96 convolutional kernels learned by the first layer, showing that the model successfully learned to detect edges and color blobs.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig4.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> Without dropout, our network ex-<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig5.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 5:</b> shows the convolutional kernels learned by the network’s two data-connected layers. The<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig6.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 6:</b> (Left) Eight ILSVRC-2010 test images and the ﬁve labels considered most probable by our model.<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>ImageNet</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The massive visual database that made the training of AlexNet possible.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>LeNet-5</b>
+          <span style="font-size: 0.8rem; color: #54595d;">An earlier CNN architecture for digit recognition that served as a foundation for AlexNet.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>VGGNet</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A successor to AlexNet that increased depth and used smaller 3x3 kernels throughout.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>GPU Computing</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The technology that enables parallel processing of neural network operations, critical for AlexNet's success.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

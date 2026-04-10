@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto-Encoding Variational Bayes - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Approximate Inference and the ELBO</a></li>
+        <li><a href="#section-1">The Reparameterization Trick</a></li>
+        <li><a href="#section-2">SGVB Estimator and AEVB Algorithm</a></li>
+        <li><a href="#section-3">Comparison with Traditional Methods</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+        <li><a href="#references">References</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">latent-space</span></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Auto-Encoding Variational Bayes</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Variational Autoencoders (VAEs)</div>
+        <div class="infobox-image"><img src="../assets/animations/5f5dc5b9a2ba710937e2c413b37b053cd673df02.gif" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Stochastic Variational Inference / Autoencoder</td></tr>
+          <tr><th>Key Innovation</th><td>Reparameterization trick for backpropagating through stochastic nodes.</td></tr>
+          <tr><th>Performance Metric</th><td>Efficient approximation of the Evidence Lower Bound (ELBO).</td></tr>
+          <tr><th>Computational Efficiency</th><td>Scales to large datasets using Stochastic Gradient Variational Bayes (SGVB).</td></tr>
+
+          <tr><th>Venue</th><td>International Conference on Learning Representations</td></tr>
+          <tr><th>Year</th><td>2013</td></tr>
+          <tr><th>Citations</th><td>17041</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">Auto-Encoding Variational Bayes introduced the Variational Autoencoder (VAE), a powerful generative model that combines the principles of Bayesian inference with deep learning. By introducing the 're<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization trick,' the authors enabled the efficient training of directed probabilistic graphical models with continuous <span class="glossary-term" data-definition="A variable that is not directly observed but is inferred from other variables.">latent variable</span>s using standard <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>. This work provided a scalable solution for approximate inference in complex datasets, leading to significant advancements in manifold learning and generative modeling.</p>
+<h2 id="section-0">Approximate Inference and the ELBO</h2>
+<p>A fundamental problem in Bayesian statistics is the intractability of the <span class="glossary-term" data-definition="The probability distribution of a latent variable given the observed data.">posterior</span> distribution $p(z|x)$ for complex models. The authors propose using a recognition model $q_\phi(z|x)$—an encoder—to approximate this true <span class="glossary-term" data-definition="The probability distribution of a latent variable given the observed data.">posterior</span>.</p>
+<p>The training objective is to maximize the Evidence Lower Bound (ELBO), which balances the reconstruction quality of the data with the similarity of the approximate <span class="glossary-term" data-definition="The probability distribution of a latent variable given the observed data.">posterior</span> to a <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">prior</span> distribution (typically a standard Gaussian). This ensures that the latent space is well-structured and can be sampled to generate new data.</p>
+<h2 id="section-1">The Reparameterization Trick</h2>
+<p>The most significant technical hurdle in training VAEs is that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> cannot flow through random sampling operations. If we sample $z$ directly from $q_\phi(z|x)$, the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> with respect to the encoder <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s $\phi$ is not well-defined.</p>
+<p>The authors solve this with the **re<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization trick**. Instead of sampling $z$ directly, they express $z$ as a deterministic transformation of an auxiliary noise variable $\epsilon$: $z = \mu + \sigma \odot \epsilon$, where $\epsilon \sim \mathcal{N}(0, I)$. This moves the <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span>ity into an input branch, allowing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s to flow through $\mu$ and $\sigma$ to the encoder.</p>
+<h2 id="section-2">SGVB Estimator and AEVB Algorithm</h2>
+<p>The paper introduces the <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> Variational Bayes (SGVB) estimator, which provides a way to compute <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s of the ELBO using mini-batches of data. By applying the re<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization trick, the ELBO becomes differentiable, enabling the use of standard <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> ascent algorithms like Adam.</p>
+<p>The Auto-Encoding Variational Bayes (AEVB) algorithm is the practical implementation of this framework, where the encoder and decoder (generative model) are neural networks trained jointly to minimize the total loss (reconstruction error plus KL divergence).</p>
+<h2 id="section-3">Comparison with Traditional Methods</h2>
+<p>Before VAEs, approximate inference often relied on computationally expensive methods like Mean Field Variational Inference or Markov Chain Monte Carlo (MCMC). These methods struggle to scale to the large, high-dimensional datasets common in modern machine learning.</p>
+<p>VAEs demonstrated superior performance in manifold learning and image generation, producing smooth latent representations where nearby points in $z$-space correspond to similar data points in $x$-space. While GANs often produce sharper images, VAEs offer a more stable training process and a principled probabilistic framework.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Encoder (Recognition Model)</div>
+        <p>A neural network that maps input data $x$ to the <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s of a latent distribution (mean and variance).</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Decoder (Generative Model)</div>
+        <p>A neural network that takes a sample from the latent space $z$ and attempts to reconstruct the original input $x$.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Reparameterization Trick</div>
+        <p>A method to rewrite a random variable so that it becomes differentiable with respect to its distribution's <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">KL Divergence</div>
+        <p>A mathematical measure of the difference between two probability distributions, used in VAEs to regularize the latent space.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">ELBO</div>
+        <p>Evidence Lower Bound; the objective function that VAEs maximize to train both the encoder and decoder.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Reparameterization Trick</h3>
+<div class="math-block">$$z = \mu + \sigma \odot \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)$$</div>
+<div class="math-explanation-box">Allows the model to sample from a distribution while remaining differentiable.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\mu$</td><td>Learned mean of the latent distribution</td></tr><tr><td>$\sigma$</td><td>Learned standard deviation</td></tr><tr><td>$\epsilon$</td><td>Random noise from a standard normal distribution</td></tr></table></div>
+<h3>The ELBO Objective</h3>
+<div class="math-block">$$\mathcal{L}(\theta, \phi; x^{(i)}) = -D_{KL}(q_\phi(z|x^{(i)}) || p_\theta(z)) + \mathbb{E}_{q_\phi(z|x^{(i)})}[\log p_\theta(x^{(i)}|z)]$$</div>
+<div class="math-explanation-box">The loss function combining the KL divergence (<span class="glossary-term" data-definition="A technique used to prevent <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> by adding constraints or noise to the learning process.">regularization</span>) and the expected log-likelihood (reconstruction).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$D_{KL}$</td><td>Kullback-Leibler divergence</td></tr><tr><td>$q_\phi$</td><td>The encoder (recognition) model</td></tr><tr><td>$p_\theta$</td><td>The decoder (generative) model</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/5f5dc5b9a2ba710937e2c413b37b053cd673df02_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> The type of directed graphical model under consideration. Solid lines denote the generative<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Illustration of the reparameterization trick, showing how the stochastic sampling node is 'moved' to allow gradients to flow back to the encoder.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/5f5dc5b9a2ba710937e2c413b37b053cd673df02_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> Comparison of our AEVB method to the wake-sleep algorithm, in terms of optimizing the<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Comparison of different estimators for the variational lower bound, showing the efficiency of the SGVB estimator.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/5f5dc5b9a2ba710937e2c413b37b053cd673df02_fig3.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> Comparison of AEVB to the wake-sleep algorithm and Monte Carlo EM, in terms of the<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/5f5dc5b9a2ba710937e2c413b37b053cd673df02_fig4.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> Visualisations of learned data manifold for generative models with two-dimensional latent<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Autoencoder</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The deterministic foundation that VAEs build upon with probabilistic principles.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Bayesian Inference</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The statistical framework for updating beliefs in the face of new evidence, which VAEs approximate.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Diffusion Models</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A more recent class of generative models that share some probabilistic foundations with VAEs.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Normalizing Flows</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A technique for creating more complex and flexible approximate posterior distributions.</span>
+        </div>
+</div>
+
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f87247fb37f6b48da0757d7a1acf38da44510cdb">Stochastic Back-propagation and Variational Inference in Deep Latent Gaussian Models</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Danilo Jimenez Rezende, S. Mohamed et al. (2014)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="484ad17c926292fbe0d5211540832a8c8a8e958b">Stochastic Backpropagation and Approximate Inference in Deep Generative Models</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Danilo Jimenez Rezende, S. Mohamed et al. (2014)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="6a667700100e228cb30a5d884258a0db921603fe">Black Box Variational Inference</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - R. Ranganath, S. Gerrish et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="695a2c95eacdbccb7a73d2f1e90e7b35b4b3d864">Deep AutoRegressive Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Karol Gregor, Ivo Danihelka et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5ffa8bf1bf3e39227be28de4ff6915d3b21eb52d">Deep Generative Stochastic Networks Trainable by Backprop</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yoshua Bengio, Eric Thibodeau-Laufer et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="bccb2f99a9d1c105699f5d88c479569085e2c7ba">Stochastic variational inference</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - M. Hoffman, D. Blei et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="51336c08ea621d9c1c724607daf86991b2931fa3">Fixed-Form Variational Posterior Approximation through Stochastic Linear Regression</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Tim Salimans, David A. Knowles (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="9ceb1dea15ac3df3d610fd0b3cc52b9a4e9141a3">Variational Bayesian Inference with Stochastic Search</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - J. Paisley, D. Blei et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="184ac0766262312ba76bbdece4e7ffad0aa8180b">Representation Learning: A Review and New Perspectives</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yoshua Bengio, Aaron C. Courville et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5a9ef216bf11f222438fff130c778267d39a9564">Practical Variational Inference for Neural Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Alex Graves (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="413c1142de9d91804d6d11c67ff3fed59c9fc279">Adaptive Subgradient Methods for Online Learning and Stochastic Optimization</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - John C. Duchi, Elad Hazan et al. (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="fba92da28358893996cd60755ee680166f856d02">To Center or Not to Center: That Is Not the Question—An Ancillarity–Sufficiency Interweaving Strategy (ASIS) for Boosting MCMC Efficiency</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yaming Yu, X. Meng (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="c63ef05c5f9c424b5cfeeed90dbe35eedf6cb8ec">Fast Inference in Sparse Coding Algorithms with Applications to Object Recognition</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - K. Kavukcuoglu, Marc'Aurelio Ranzato et al. (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="00cd1dab559a9671b692f39f14c1573ab2d1416b">Efficient Learning of Deep Boltzmann Machines</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - R. Salakhutdinov, H. Larochelle (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="e2b7f37cd97a7907b1b8a41138721ed06a0b76cd">Stacked Denoising Autoencoders: Learning Useful Representations in a Deep Network with a Local Denoising Criterion</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - P. Vincent, H. Larochelle et al. (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="63235595bd90cc41840795d4530ae53d69a56f06">A General Framework for the Parametrization of Hierarchical Models</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - O. Papaspiliopoulos, G. Roberts et al. (2007)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f9cf9b6291aded2a82652002511aea36b6c5057c">EM Algorithms for PCA and SPCA</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - S. Roweis (1997)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="4d98ce60f4f8ed822503b8d13b0605f8c5d74ca7">Gaussian Processes for Regression</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Christopher K. I. Williams, C. Rasmussen (1995)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="6dd01cd9c17d1491ead8c9f97597fbc61dead8ea">The "wake-sleep" algorithm for unsupervised neural networks.</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Geoffrey E. Hinton, P. Dayan et al. (1995)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f5821548720901c89b3b7481f7500d7cd64e99bd">Auto-association by multilayer perceptrons and singular value decomposition</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - H. Bourlard, Y. Kamp (1988)</span>
+        </li>
+      </ol>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

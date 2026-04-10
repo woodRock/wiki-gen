@@ -336,7 +336,6 @@ body {
   background: var(--wiki-gray-bg);
 }
 
-/* Responsive */
 /* Tags */
 .tag {
   display: inline-block;
@@ -348,6 +347,7 @@ body {
   white-space: nowrap;
 }
 
+/* Responsive */
 @media (max-width: 900px) {
   .wiki-content {
     flex-direction: column-reverse;

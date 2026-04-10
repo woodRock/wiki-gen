@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backpropagation Applied to Handwritten Zip Code Recognition - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Learning from Raw Pixels</a></li>
+        <li><a href="#section-1">Weight Sharing and Convolutions</a></li>
+        <li><a href="#section-2">Spatial Sub-sampling</a></li>
+        <li><a href="#section-3">Experimental Results on Zip Codes</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Backpropagation Applied to Handwritten Zip Code Recognition</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Convolutional Neural Networks (LeNet-style)</div>
+        <div class="infobox-image"><img src="../assets/animations/a8e8f3c8d4418c8d62e306538c9c1292635e9d27.gif" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Convolutional Neural Network (CNN)</td></tr>
+          <tr><th>Key Innovation</th><td>Local receptive fields, shared weights (convolutions), and spatial sub-sampling.</td></tr>
+          <tr><th>Performance Metric</th><td>1% error rate on training data; 9% on difficult zip code testing data.</td></tr>
+          <tr><th>Computational Efficiency</th><td>Significant reduction in parameters compared to fully connected networks due to weight sharing.</td></tr>
+
+          <tr><th>Venue</th><td>Neural Computation</td></tr>
+          <tr><th>Year</th><td>1989</td></tr>
+          <tr><th>Citations</th><td>11974</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1162/neco.1989.1.4.541" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead"><span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> Applied to Handwritten Zip Code Recognition is a foundational paper by Yann LeCun and colleagues that demonstrated the practical utility of <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al neural networks (<span class="glossary-term" data-definition="Convolutional Neural Network; a type of deep neural network most commonly applied to analyzing visual imagery.">cnn</span>s) for real-world pattern recognition. By training a mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-layer network directly on raw pixel images of handwritten digits from the U.S. Postal Service, the authors showed that local connection patterns and shared weights could automatically learn shift-invariant features. This work laid the groundwork for modern computer vision and proved that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> could effectively train deep, constrained architectures.</p>
+<h2 id="section-0">Learning from Raw Pixels</h2>
+<p>Before this paper, most pattern recognition systems relied on complex, hand-engineered feature extractors followed by a separate classifier. LeCun argued that the feature extractor should be part of the learning process itself.</p>
+<p>The proposed network takes a 16x16 pixel image as input and processes it through several layers of 'feature maps.' Each unit in a feature map is connected to a small local neighborhood in the previous layer, mimicking the <span class="glossary-term" data-definition="The specific region of the sensory space in which a stimulus will modify the firing of that neuron.">receptive field</span>s found in biological visual systems. This ensures that the model captures local spatial correlations before building up to higher-level representations.</p>
+<h2 id="section-1">Weight Sharing and Convolutions</h2>
+<p>A key innovation introduced in the paper is the concept of weight sharing. All units in a single feature map are constrained to use the same set of weights (a <span class="glossary-term" data-definition="A small matrix of weights used in a convolutional layer to extract features from an image.">kernel</span>), but applied at different locations. This operation is mathematically equivalent to a discrete <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>.</p>
+<p>Weight sharing provides two major benefits: first, it drastically reduces the number of free <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s, making the model easier to train and less prone to <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>. Second, it naturally implements 'shift <span class="glossary-term" data-definition="The property of remaining unchanged regardless of certain transformations, like translation or scaling.">invariance</span>,' meaning the network can recognize a digit regardless of its exact position within the input frame.</p>
+<h2 id="section-2">Spatial Sub-sampling</h2>
+<p>To build robustness against small distortions and variations in the input, the network alternates between <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al layers and sub-sampling layers. Each sub-sampling unit computes the average of a 2x2 neighborhood in the preceding feature map, then passes it through a non-linear activation.</p>
+<p>This process reduces the spatial resolution of the feature maps while increasing the number of features being tracked. By the time the signal reaches the final fully connected layers, the network has extracted a high-level, low-resolution representation of the digit that is invariant to many common noise factors.</p>
+<h2 id="section-3">Experimental Results on Zip Codes</h2>
+<p>The authors tested their architecture on a dataset of 9,298 handwritten digits provided by the US Postal Service. The results were highly competitive for the time, achieving a 1% error rate on the training set.</p>
+<p>On a particularly difficult test set of 7,291 digits, the network achieved a 9% error rate. This performance proved that neural networks could handle the 'garbage' and variability found in real-world data, leading to the deployment of similar systems for automated check and mail processing in the 1990s.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Local Receptive Field</div>
+        <p>A small region of the input image that a single neuron 'sees' and processes, allowing the model to capture local spatial features.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Weight Sharing</div>
+        <p>The technique of using the same weights for different neurons in a layer, which defines the <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al operation and reduces <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> count.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Feature Map</div>
+        <p>A set of neurons that all detect the same feature (e.g., a vertical edge) but at different locations across the input.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Shift Invariance</div>
+        <p>The property of a system to recognize a pattern correctly even if its position in the input changes.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Sub-sampling (Pooling)</div>
+        <p>The process of reducing the resolution of a feature map by aggregating information from local clusters of units.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Unit Activation</h3>
+<div class="math-block">$$x_j = f(\sum_i w_{ij} x_i + b_j)$$</div>
+<div class="math-explanation-box">The standard neuron activation function where $f$ is a <span class="glossary-term" data-definition="A mathematical function having a characteristic 'S'-shaped curve.">sigmoid</span>-like <span class="glossary-term" data-definition="A mathematical function where the output is not directly proportional to the input, essential for learning complex patterns.">non-linearity</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$w_{ij}$</td><td>Shared weight between unit i and unit j</td></tr><tr><td>$b_j$</td><td>Bias term for unit j</td></tr><tr><td>$f$</td><td>Non-linear activation function (typically tanh in this paper)</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/a8e8f3c8d4418c8d62e306538c9c1292635e9d27_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> The digits were written<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Diagram of the multi-layer network architecture, showing the input layer, convolutional layers (H1, H2), sub-sampling layers, and final output.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/a8e8f3c8d4418c8d62e306538c9c1292635e9d27_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> Examples of original zip codes (top) and normalized digits from the<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/a8e8f3c8d4418c8d62e306538c9c1292635e9d27_fig3.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> Network architecture.<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/a8e8f3c8d4418c8d62e306538c9c1292635e9d27_fig4.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> Log mean squared error (MSE) (top) and raw error rate (bottom)<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>LeNet-5</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The more advanced evolution of this architecture that became the standard for digit recognition.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Convolutional Neural Network</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The general class of models that this paper helped pioneer.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Backpropagation</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The algorithm used to train the network by calculating gradients through the layers.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>MNIST</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The classic dataset of handwritten digits that was later derived from the USPS data used here.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

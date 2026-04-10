@@ -1,5 +1,21 @@
 [
   {
+    "paper_id": "2c03df8b48bf3fa39054345bafabfeff15bfd11d",
+    "title": "Deep Residual Learning for Image Recognition",
+    "authors": [
+      "Kaiming He",
+      "X. Zhang",
+      "Shaoqing Ren",
+      "Jian Sun"
+    ],
+    "year": 2015,
+    "venue": "Computer Vision and Pattern Recognition",
+    "abstract": "",
+    "tags": [
+      "computer-vision"
+    ]
+  },
+  {
     "paper_id": "204e3073870fae3d05bcbc2f6a8e263d9b72e776",
     "title": "Attention Is All You Need",
     "authors": [
@@ -19,6 +35,227 @@
       "attention-mechanism",
       "transformer"
     ]
+  },
+  {
+    "paper_id": "a6cb366736791bcccc5c8639de5a8f9636bf87e8",
+    "title": "Adam: A Method for Stochastic Optimization",
+    "authors": [
+      "Diederik P. Kingma",
+      "Jimmy Ba"
+    ],
+    "year": 2014,
+    "venue": "International Conference on Learning Representations",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "abd1c342495432171beb7ca8fd9551ef13cbd0ff",
+    "title": "ImageNet classification with deep convolutional neural networks",
+    "authors": [
+      "A. Krizhevsky",
+      "I. Sutskever",
+      "Geoffrey E. Hinton"
+    ],
+    "year": 2012,
+    "venue": "Communications of the ACM",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "df2b0e26d0599ce3e70df8a9da02e51594e0e992",
+    "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+    "authors": [
+      "Jacob Devlin",
+      "Ming-Wei Chang",
+      "Kenton Lee",
+      "Kristina Toutanova"
+    ],
+    "year": 2019,
+    "venue": "North American Chapter of the Association for Computational Linguistics",
+    "abstract": "",
+    "tags": [
+      "transformer"
+    ]
+  },
+  {
+    "paper_id": "2e9d221c206e9503ceb452302d68d10e293f2a10",
+    "title": "Long Short-Term Memory",
+    "authors": [
+      "Sepp Hochreiter",
+      "J. Schmidhuber"
+    ],
+    "year": 1997,
+    "venue": "Neural Computation",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "162d958ff885f1462aeda91cd72582323fd6a1f4",
+    "title": "Gradient-based learning applied to document recognition",
+    "authors": [
+      "Yann LeCun",
+      "L. Bottou",
+      "Yoshua Bengio",
+      "P. Haffner"
+    ],
+    "year": 1998,
+    "venue": "Proceedings of the IEEE",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "90abbc2cf38462b954ae1b772fac9532e2ccd8b0",
+    "title": "Language Models are Few-Shot Learners",
+    "authors": [
+      "Tom B. Brown",
+      "Benjamin Mann",
+      "Nick Ryder",
+      "Melanie Subbiah",
+      "J. Kaplan",
+      "Prafulla Dhariwal",
+      "Arvind Neelakantan",
+      "Pranav Shyam",
+      "G. Sastry",
+      "Amanda Askell",
+      "S. Agarwal",
+      "Ariel Herbert-Voss",
+      "Gretchen Krueger",
+      "T. Henighan",
+      "R. Child",
+      "A. Ramesh",
+      "Daniel M. Ziegler",
+      "Jeff Wu",
+      "Clemens Winter",
+      "Christopher Hesse",
+      "Mark Chen",
+      "Eric Sigler",
+      "Ma-teusz Litwin",
+      "Scott Gray",
+      "Benjamin Chess",
+      "Jack Clark",
+      "Christopher Berner",
+      "Sam McCandlish",
+      "Alec Radford",
+      "I. Sutskever",
+      "Dario Amodei"
+    ],
+    "year": 2020,
+    "venue": "Neural Information Processing Systems",
+    "abstract": "",
+    "tags": [
+      "large-language-models"
+    ]
+  },
+  {
+    "paper_id": "34f25a8704614163c4095b3ee2fc969b60de4698",
+    "title": "Dropout: a simple way to prevent neural networks from overfitting",
+    "authors": [
+      "Nitish Srivastava",
+      "Geoffrey E. Hinton",
+      "A. Krizhevsky",
+      "I. Sutskever",
+      "R. Salakhutdinov"
+    ],
+    "year": 2014,
+    "venue": "Journal of machine learning research",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "052b1d8ce63b07fec3de9dbb583772d860b7c769",
+    "title": "Learning representations by back-propagating errors",
+    "authors": [
+      "D. Rumelhart",
+      "Geoffrey E. Hinton",
+      "Ronald J. Williams"
+    ],
+    "year": 1986,
+    "venue": "Nature",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "5f5dc5b9a2ba710937e2c413b37b053cd673df02",
+    "title": "Auto-Encoding Variational Bayes",
+    "authors": [
+      "Diederik P. Kingma",
+      "M. Welling"
+    ],
+    "year": 2013,
+    "venue": "International Conference on Learning Representations",
+    "abstract": "",
+    "tags": [
+      "latent-space"
+    ]
+  },
+  {
+    "paper_id": "a8e8f3c8d4418c8d62e306538c9c1292635e9d27",
+    "title": "Backpropagation Applied to Handwritten Zip Code Recognition",
+    "authors": [
+      "Yann LeCun",
+      "B. Boser",
+      "J. Denker",
+      "D. Henderson",
+      "R. Howard",
+      "W. Hubbard",
+      "L. Jackel"
+    ],
+    "year": 1989,
+    "venue": "Neural Computation",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "7bbc7595196a0606a07506c4fb1473e5e87f6082",
+    "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+    "authors": [
+      "Albert Gu",
+      "Tri Dao"
+    ],
+    "year": 2023,
+    "venue": "arXiv.org",
+    "abstract": "",
+    "tags": [
+      "transformer",
+      "attention-mechanism",
+      "large-language-models"
+    ]
+  },
+  {
+    "paper_id": "86ee1835a56722b76564119437070782fc90eb19",
+    "title": "Generative Adversarial Nets",
+    "authors": [
+      "I. Goodfellow",
+      "Jean Pouget-Abadie",
+      "Mehdi Mirza",
+      "Bing Xu",
+      "David Warde-Farley",
+      "Sherjil Ozair",
+      "Aaron C. Courville",
+      "Yoshua Bengio"
+    ],
+    "year": 2014,
+    "venue": "Neural Information Processing Systems",
+    "abstract": "",
+    "tags": []
+  },
+  {
+    "paper_id": "14fdab35cc6288083a38a92392af3f1da0b95a90",
+    "title": "KAN: Kolmogorov-Arnold Networks",
+    "authors": [
+      "Ziming Liu",
+      "Yixuan Wang",
+      "Sachin Vaidya",
+      "Fabian Ruehle",
+      "James Halverson",
+      "Marin Soljacic",
+      "Thomas Y. Hou",
+      "Max Tegmark"
+    ],
+    "year": 2024,
+    "venue": "International Conference on Learning Representations",
+    "abstract": "",
+    "tags": []
   },
   {
     "paper_id": "ee57e4d7a125f4ca8916284a857c3760d7d378d3",
@@ -43,6 +280,17 @@
       "transformer",
       "computer-vision"
     ]
+  },
+  {
+    "paper_id": "f49101078fb25f714a9813259ece149581017782",
+    "title": "Taylor expansion of the accumulated rounding error",
+    "authors": [
+      "S. Linnainmaa"
+    ],
+    "year": 1976,
+    "venue": "N/A",
+    "abstract": "",
+    "tags": []
   },
   {
     "paper_id": "7318a804566baadc9f4b4ca8255f78744e749a32",
