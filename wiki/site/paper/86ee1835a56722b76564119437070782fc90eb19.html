@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -30,16 +36,17 @@
         <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
         <li><a href="#references">References</a></li>
+        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div></div>
+      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">generative-models</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">optimization</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">latent-space</span></div>
     </aside>
 
     
     <article class="wiki-article">
       <h1 id="title">Generative Adversarial Nets</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Generative Adversarial Networks (GANs)</div>
@@ -57,20 +64,20 @@
         </table>
       </div>
 
-      
-      <p class="lead">Generative <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">adversarial</span> Nets (GANs) introduced a novel framework for estimating generative models via an <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">adversarial</span> process. By simultaneously training two models—a generator that captures the data distribution and a discriminator that estimates the probability that a sample came from the training data rather than the generator—this approach avoids the need for Markov chains or unrolling approximate inference networks. The resu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>ng minimax game leads to a powerful method for generating high-quality, realistic data samples, which has since transformed the field of generative modeling.</p>
+
+      <p class="lead">Generative <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">Adversarial</span> Nets (GANs) introduced a novel framework for estimating generative models via an <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">adversarial</span> process. By simultaneously training two models—a generator that captures the data distribution and a discriminator that estimates the probability that a sample came from the training data rather than the generator—this approach avoids the need for Markov chains or unrolling approximate inference networks. The resulting minimax game leads to a powerful method for generating high-quality, realistic data samples, which has since transformed the field of generative modeling.</p>
 <h2 id="section-0">The Adversarial Framework</h2>
 <p>The core idea of GANs is to frame generative modeling as a competition between two players. The **Generator ($G$)** takes a random noise vector as input and attempts to map it to the data space (e.g., an image). Its goal is to produce samples so realistic that they are indistinguishable from real training data.</p>
 <p>The **Discriminator ($D$)** is a binary classifier that takes an input and outputs the probability that it came from the real dataset rather than from $G$. During training, $D$ is optimized to correctly label real and fake samples, while $G$ is optimized to maximize the probability of $D$ making a mistake. This competition drives both models to improve until $G$ produces highly realistic samples.</p>
 <h2 id="section-1">The Minimax Objective Function</h2>
 <p>The training process is defined by a value function $V(D, G)$, which represents a minimax game. $D$ tries to maximize the log-likelihood of correctly identifying real and fake data, while $G$ tries to minimize the log-probability that $D$ identifies its samples as fake.</p>
-<p>In practice, especially early in training, the generator may be so poor that the discriminator can reject samples with high confidence. To address this, the authors suggest a non-saturating objective for the generator: instead of minimizing $\log(1 - D(G(z)))$, the generator can be trained to maximize $\log D(G(z))$. This provides stronger <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s for the generator when its performance is low.</p>
+<p>In practice, especially early in training, the generator may be so poor that the discriminator can reject samples with high confidence. To address this, the authors suggest a non-saturating objective for the generator: instead of minimizing $\log(1 - D(G(z)))$, the generator can be trained to maximize $\log D(G(z))$. This provides stronger gradients for the generator when its performance is low.</p>
 <h2 id="section-2">Theoretical Convergence</h2>
 <p>The paper provides a theoretical proof that if $G$ and $D$ have enough capacity, there exists a unique solution where $G$ perfectly recovers the data distribution and $D$ is equal to $1/2$ everywhere (meaning it can no longer distinguish between real and fake samples).</p>
 <p>This <span class="glossary-term" data-definition="A state in a game where no player can improve their outcome by changing their strategy alone.">equilibrium</span> point corresponds to the global minimum of the Jensen-Shannon divergence between the model's distribution and the true data distribution. While reaching this global optimum is challenging in practice due to the non-convex nature of neural network optimization, the framework provides a solid mathematical foundation for <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">adversarial</span> training.</p>
 <h2 id="section-3">Advantages and Limitations</h2>
 <p>GANs offer several advantages over previous generative models like Boltzmann machines or Variational Autoencoders (VAEs). They do not require an explicit <span class="glossary-term" data-definition="A function that describes the relative likelihood of a random variable taking on a given value.">probability density</span> function, avoiding the need for complex approximate inference or Markov chain sampling. Furthermore, they tend to produce sharper, more detailed images compared to the often-blurry outputs of VAEs.</p>
-<p>However, GANs are notoriously difficult to train. Issues such as '<span class="glossary-term" data-definition="When a generative model maps many different inputs to the same output, losing diversity in its samples.">mode <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span></span>' (where the generator produces a limited variety of samples) and training instability require careful <span class="glossary-term" data-definition="A configuration setting for a model that is not learned from the data, such as the dropout rate $p$.">hyper<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span></span> tuning and architectural choices. Despite these challenges, the GAN framework has inspired thousands of variations and applications in art, science, and industry.</p>
+<p>However, GANs are notoriously difficult to train. Issues such as '<span class="glossary-term" data-definition="When a generative model maps many different inputs to the same output, losing diversity in its samples.">mode collapse</span>' (where the generator produces a limited variety of samples) and training instability require careful <span class="glossary-term" data-definition="A configuration setting for a model that is not learned from the data, such as the dropout rate $p$.">hyperparameter</span> tuning and architectural choices. Despite these challenges, the GAN framework has inspired thousands of variations and applications in art, science, and industry.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
@@ -250,14 +257,29 @@
           <span style="font-size: 0.8rem; color: #54595d;"> - Olivier Breuleux, Yoshua Bengio et al. (2011)</span>
         </li>
       </ol>
+<h2 id="related">Related Papers</h2>
+<div class="related-grid">
+  <div class="related-card" onclick="window.location.href='../paper/5f5dc5b9a2ba710937e2c413b37b053cd673df02.html'">
+    <div class="related-card-title">Auto-Encoding Variational Bayes</div>
+    <div class="related-card-meta">2013 &bull; 17041 citations</div>
+  </div>
+  <div class="related-card" onclick="window.location.href='../paper/a6cb366736791bcccc5c8639de5a8f9636bf87e8.html'">
+    <div class="related-card-title">Adam: A Method for Stochastic Optimization</div>
+    <div class="related-card-meta">2014 &bull; 164663 citations</div>
+  </div>
+  <div class="related-card" onclick="window.location.href='../paper/abd1c342495432171beb7ca8fd9551ef13cbd0ff.html'">
+    <div class="related-card-title">ImageNet classification with deep convolutional neural networks</div>
+    <div class="related-card-meta">2012 &bull; 127985 citations</div>
+  </div>
+</div>
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

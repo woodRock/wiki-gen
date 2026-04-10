@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -30,6 +36,7 @@
         <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
         <li><a href="#references">References</a></li>
+        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -39,7 +46,7 @@
     
     <article class="wiki-article">
       <h1 id="title">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Deep Bidirectional Transformers</div>
@@ -57,20 +64,20 @@
         </table>
       </div>
 
-      
-      <p class="lead">BERT (Bidirectional Encoder Representations from Transformers) is a groundbreaking language representation model that introduced deep bidirectional <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>.">pre-training</span> for language understanding. Unlike previous models that processed text left-to-right or right-to-left, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference.</p>
+
+      <p class="lead">BERT (Bidirectional Encoder Representations from Transformers) is a groundbreaking language representation model that introduced deep bidirectional <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> for language understanding. Unlike previous models that processed text left-to-right or right-to-left, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference.</p>
 <h2 id="section-0">Bidirectional Pre-training</h2>
-<p>The fundamental technical innovation of BERT is applying the bidirectional training of Transformer, a popular attention model, to language modeling. Previous attempts at bidirectional models were limited because they were either a combination of two unidirectional models (left-to-right and right-to-left) or they allowed <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s to 'see themselves' in mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-layer architectures.</p>
-<p>BERT addresses this by using a 'Masked Language Model' (MLM) objective. During <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>.">pre-training</span>, some percentage of the input <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s are masked at random, and the model's goal is to predict the original vocabulary id of the masked word based only on its context. This allows the representation to fuse the left and the right context, which allows us to pre-train a deep bidirectional Transformer.</p>
+<p>The fundamental technical innovation of BERT is applying the bidirectional training of Transformer, a popular attention model, to language modeling. Previous attempts at bidirectional models were limited because they were either a combination of two unidirectional models (left-to-right and right-to-left) or they allowed tokens to 'see themselves' in multi-layer architectures.</p>
+<p>BERT addresses this by using a 'Masked Language Model' (MLM) objective. During <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span>, some percentage of the input tokens are masked at random, and the model's goal is to predict the original vocabulary id of the masked word based only on its context. This allows the representation to fuse the left and the right context, which allows us to pre-train a deep bidirectional Transformer.</p>
 <h2 id="section-1">The Masked Language Model (MLM)</h2>
-<p>In order to train a deep bidirectional representation, the authors simply mask 15% of the input <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s at random. Unlike standard directional models, the MLM objective allows the model to see the entire sequence, making it more effective at capturing nuanced linguistic relationships.</p>
+<p>In order to train a deep bidirectional representation, the authors simply mask 15% of the input tokens at random. Unlike standard directional models, the MLM objective allows the model to see the entire sequence, making it more effective at capturing nuanced linguistic relationships.</p>
 <p>To ensure the model doesn't become over-reliant on the '[MASK]' <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> during <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span> (where masks don't exist), the authors used a specific strategy: 80% of the time the <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> is replaced with [MASK], 10% of the time with a random <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>, and 10% of the time it is kept unchanged. This forces the model to maintain a valid contextual representation for every input <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>.</p>
 <h2 id="section-2">Next Sentence Prediction (NSP)</h2>
 <p>Many important downstream tasks such as Question Answering (QA) and Natural Language Inference (NLI) are based on understanding the relationship between two sentences, which is not directly captured by language modeling.</p>
-<p>To train a model that understands sentence relationships, BERT is pre-trained for a binarized 'next sentence prediction' task that can be generated from any monolingual corpus. When choosing sentences A and B for each <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>.">pre-training</span> example, 50% of the time B is the actual next sentence that follows A, and 50% of the time it is a random sentence from the corpus. The model then learns to predict whether B is the next sentence or not.</p>
+<p>To train a model that understands sentence relationships, BERT is pre-trained for a binarized 'next sentence prediction' task that can be generated from any monolingual corpus. When choosing sentences A and B for each <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> example, 50% of the time B is the actual next sentence that follows A, and 50% of the time it is a random sentence from the corpus. The model then learns to predict whether B is the next sentence or not.</p>
 <h2 id="section-3">Fine-Tuning BERT</h2>
-<p><span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span> BERT is relatively inexpensive. All <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s are fine-tuned jointly by simply adding one additional output layer for the specific task at hand. For sequence-level tasks, BERT uses the representation of the first <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in the sequence (the special [CLS] <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>).</p>
-<p>This unified architecture allows BERT to achieve state-of-the-art results on a wide variety of tasks with minimal task-specific architectural changes. The authors demonstrated this by breaking records on the <span class="glossary-term" data-definition="General Language Understanding Evaluation; a collection of diverse natural language understanding tasks.">glue</span> benchmark, SQuAD question answering, and several other competitive NLP leaderboards.</p>
+<p><span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">Fine-tuning</span> BERT is relatively inexpensive. All parameters are fine-tuned jointly by simply adding one additional output layer for the specific task at hand. For sequence-level tasks, BERT uses the representation of the first <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in the sequence (the special [CLS] <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>).</p>
+<p>This unified architecture allows BERT to achieve state-of-the-art results on a wide variety of tasks with minimal task-specific architectural changes. The authors demonstrated this by breaking records on the <span class="glossary-term" data-definition="General Language Understanding Evaluation; a collection of diverse natural language understanding tasks.">GLUE</span> benchmark, SQuAD question answering, and several other competitive NLP leaderboards.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
@@ -80,7 +87,7 @@
 
       <div class="concept-item">
         <div class="concept-title">Masked Language Model (MLM)</div>
-        <p>A <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>.">pre-training</span> task where certain words in a sentence are hidden, forcing the model to use surrounding context to predict them.</p>
+        <p>A <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> task where certain words in a sentence are hidden, forcing the model to use surrounding context to predict them.</p>
       </div>
 
       <div class="concept-item">
@@ -95,12 +102,12 @@
 
       <div class="concept-item">
         <div class="concept-title">[CLS] Token</div>
-        <p>A special classification <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> added to the beginning of every sequence, used as the aggre<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> representation for sequence-level tasks.</p>
+        <p>A special classification <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> added to the beginning of every sequence, used as the aggregate representation for sequence-level tasks.</p>
       </div>
 <h2 id="math">Mathematics</h2>
 <h3>Attention Weighting</h3>
 <div class="math-block">$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</div>
-<div class="math-explanation-box">The core attention mechanism used in each of BERT's layers to compute contextual relationships between <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$Q, K, V$</td><td>Query, Key, and Value matrices derived from the input</td></tr><tr><td>$d_k$</td><td>The dimension of the keys, used for scaling</td></tr></table></div>
+<div class="math-explanation-box">The core attention mechanism used in each of BERT's layers to compute contextual relationships between tokens.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$Q, K, V$</td><td>Query, Key, and Value matrices derived from the input</td></tr><tr><td>$d_k$</td><td>The dimension of the keys, used for scaling</td></tr></table></div>
 <h2 id="figures">Figures and Explanations</h2>
 
       <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
@@ -261,14 +268,21 @@
           <span style="font-size: 0.8rem; color: #54595d;"> - Alexis Conneau, Douwe Kiela et al. (2017)</span>
         </li>
       </ol>
+<h2 id="related">Related Papers</h2>
+<div class="related-grid">
+  <div class="related-card" onclick="window.location.href='../paper/204e3073870fae3d05bcbc2f6a8e263d9b72e776.html'">
+    <div class="related-card-title">Attention Is All You Need</div>
+    <div class="related-card-meta">2017 &bull; 172280 citations</div>
+  </div>
+</div>
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

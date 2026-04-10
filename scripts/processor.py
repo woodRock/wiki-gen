@@ -216,7 +216,6 @@ def process_pdf(pdf_path):
             'citation_count': paper.citationCount,
             'influential_citation_count': paper.influentialCitationCount,
             'pdf_filename': pdf_path.name,
-            'tags': extract_tags(paper),
             # LLM-generated content
             'summary': llm_content.get('summary', []),
             'key_points': llm_content.get('key_points', []),
@@ -231,6 +230,9 @@ def process_pdf(pdf_path):
             'animation_path': llm_content.get('animation_path'),
             'main_concept': llm_content.get('main_concept')
         }
+
+        # Extract tags using all available data
+        paper_data['tags'] = extract_tags(paper_data)
 
         # Store in database
         conn = get_connection()
@@ -293,35 +295,56 @@ def process_pdf(pdf_path):
         traceback.print_exc()
         return False
 
-def extract_tags(paper):
-    """Extract topic tags from paper metadata."""
+def extract_tags(paper_data):
+    """Extract topic tags from paper metadata and LLM-generated content."""
     tags = []
     
     # Extract from title and abstract
-    text = f"{paper.title} {(paper.abstract or '')}".lower()
+    parts = [
+        paper_data.get('title', ''),
+        paper_data.get('abstract', '') or '',
+        paper_data.get('lead_paragraph', '') or '',
+        paper_data.get('main_concept', '') or '',
+    ]
     
-    # Common ML/AI topics
-    topic_keywords = {
-        'transformer': 'transformer',
-        'attention': 'attention-mechanism',
-        'quantization': 'quantization',
-        'kv-cache': 'kv-cache',
-        'llm': 'large-language-models',
-        'language model': 'large-language-models',
-        'self-supervised': 'self-supervised-learning',
-        'jepa': 'jepa',
-        'world model': 'world-models',
-        'latent': 'latent-space',
-        'embedding': 'embeddings',
-        'vision': 'computer-vision',
-        'image': 'computer-vision',
+    # Add sections and concept breakdown if available
+    sections = paper_data.get('sections', [])
+    for section in sections:
+        parts.append(section.get('title', ''))
+        parts.append(section.get('content', ''))
+        
+    concepts = paper_data.get('concept_breakdown', [])
+    for concept in concepts:
+        parts.append(concept.get('concept', ''))
+        parts.append(concept.get('description', ''))
+        
+    text = ' '.join(parts).lower()
+    
+    # Robust keyword matching - same as in site_generator.py
+    TAG_KEYWORDS = {
+        "transformer": ["transformer", "attention is all you need", "bert", "gpt", "t5", "encoder-decoder"],
+        "attention-mechanism": ["attention mechanism", "self-attention", "multi-head attention", "cross-attention", "scaled dot-product"],
+        "computer-vision": ["image", "vision", "convolutional", "cnn", "object detection", "segmentation", "resnet", "vit", "visual"],
+        "large-language-models": ["large language model", "llm", "gpt", "language model", "foundation model", "instruction tuning", "rlhf", "chat"],
+        "generative-models": ["generative", "gan", "diffusion", "vae", "variational autoencoder", "image synthesis", "stable diffusion", "denoising"],
+        "recurrent-networks": ["recurrent", "lstm", "gru", "rnn", "sequence model", "seq2seq"],
+        "optimization": ["optimization", "gradient descent", "adam", "sgd", "learning rate", "convergence", "loss function"],
+        "regularization": ["regularization", "dropout", "batch normalization", "weight decay", "overfitting", "l2"],
+        "embeddings": ["embedding", "word2vec", "glove", "representation learning", "vector space", "token embedding"],
+        "quantization": ["quantization", "quantized", "int8", "mixed precision", "model compression", "pruning"],
+        "self-supervised-learning": ["self-supervised", "contrastive", "masked language model", "pretraining", "pre-training", "SimCLR", "BYOL"],
+        "world-models": ["world model", "model-based", "environment model", "dreamer", "imagination"],
+        "latent-space": ["latent space", "latent representation", "latent variable", "bottleneck", "encoding"],
+        "jepa": ["jepa", "joint embedding predictive", "energy-based"],
     }
     
-    for keyword, tag in topic_keywords.items():
-        if keyword in text:
-            tags.append(tag)
+    for tag, keywords in TAG_KEYWORDS.items():
+        for kw in keywords:
+            if kw.lower() in text:
+                tags.append(tag)
+                break
     
-    return list(set(tags))[:5]  # Max 5 tags
+    return list(set(tags))[:8]  # Max 8 tags
 
 def extract_glossary_terms(conn, paper_id, abstract):
     """Extract key terms from abstract for glossary."""

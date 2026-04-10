@@ -56,6 +56,7 @@ Inserts to DB, moves PDF, rebuilds site.
 | `/build` | Regenerate the static site from existing DB data |
 | `/reingest <filename or paper_id>` | Reprocess a paper from scratch |
 | `/fix-title <paper_id> <new title>` | Correct a wrong title in DB and site |
+| `/tidy <paper_id>` | Proofread and fix content issues (HTML, figures, LaTeX, etc.) |
 
 ## Content Schema
 

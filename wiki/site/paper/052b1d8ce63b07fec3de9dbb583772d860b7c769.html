@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -31,13 +37,13 @@
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div></div>
+      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">large-language-models</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">optimization</span></div>
     </aside>
 
     
     <article class="wiki-article">
       <h1 id="title">Learning representations by back-propagating errors</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">The Backpropagation Algorithm</div>
@@ -55,25 +61,25 @@
         </table>
       </div>
 
-      
-      <p class="lead">Learning representations by back-propagating errors is the seminal 1986 Nature paper that popularized the <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> algorithm for training mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-layer neural networks. David Rumelhart, Geoffrey Hinton, and Ronald Williams demonstrated that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> could learn <span class="glossary-term" data-definition="How a network encodes information about its environment in its hidden layers.">internal representation</span>s of data in hidden layers, effectively solving the <span class="glossary-term" data-definition="The problem of determining which components of a system are responsible for its success or failure.">credit assignment</span> problem that had limited earlier simple perceptrons. This work reignited interest in neural networks and provided the fundamental training mechanism for almost all modern deep learning architectures.</p>
+
+      <p class="lead">Learning representations by back-propagating errors is the seminal 1986 Nature paper that popularized the <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span> algorithm for training multi-layer neural networks. David Rumelhart, Geoffrey Hinton, and Ronald Williams demonstrated that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span> could learn internal representations of data in hidden layers, effectively solving the <span class="glossary-term" data-definition="The problem of determining which components of a system are responsible for its success or failure.">credit assignment</span> problem that had limited earlier simple perceptrons. This work reignited interest in neural networks and provided the fundamental training mechanism for almost all modern deep learning architectures.</p>
 <h2 id="section-0">Solving the Credit Assignment Problem</h2>
-<p>Before the popularization of <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, neural network research was stymied by the inability to train networks with hidden layers. While the perceptron learning rule could train a single layer, there was no principled way to determine how to adjust the weights of 'hidden' units that did not have a direct target output.</p>
-<p>Rumelhart and his colleagues applied the chain rule of calculus to show that error signals from the output layer could be propa<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span>d backward through the network. This allowed the system to determine exactly how much each hidden weight contributed to the final error, enabling the simultaneous optimization of all <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s in a deep architecture.</p>
+<p>Before the popularization of <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, neural network research was stymied by the inability to train networks with hidden layers. While the perceptron learning rule could train a single layer, there was no principled way to determine how to adjust the weights of 'hidden' units that did not have a direct target output.</p>
+<p>Rumelhart and his colleagues applied the chain rule of calculus to show that error signals from the output layer could be propagated backward through the network. This allowed the system to determine exactly how much each hidden weight contributed to the final error, enabling the simultaneous optimization of all parameters in a deep architecture.</p>
 <h2 id="section-1">Learning Internal Representations</h2>
-<p>The paper's most significant claim is that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> allows a network to discover its own <span class="glossary-term" data-definition="How a network encodes information about its environment in its hidden layers.">internal representation</span>s of the data. To prove this, the authors used several tasks, including the 'family tree' problem and the XOR problem.</p>
-<p>In the family tree task, the network learned to encode abstract concepts like 'generation' and 'branch' in its <span class="glossary-term" data-definition="A neuron in a neural network layer that is not directly connected to the input or output.">hidden unit</span>s, despite never being explicitly told about these relationships. This demonstrated that neural networks were not just simple classifiers, but could develop complex, hierarchical features from raw data—a precursor to the 'deep features' identified in modern <span class="glossary-term" data-definition="Convolutional Neural Network; a type of deep neural network most commonly applied to analyzing visual imagery.">cnn</span>s.</p>
+<p>The paper's most significant claim is that <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span> allows a network to discover its own internal representations of the data. To prove this, the authors used several tasks, including the 'family tree' problem and the XOR problem.</p>
+<p>In the family tree task, the network learned to encode abstract concepts like 'generation' and 'branch' in its hidden units, despite never being explicitly told about these relationships. This demonstrated that neural networks were not just simple classifiers, but could develop complex, hierarchical features from raw data—a precursor to the 'deep features' identified in modern CNNs.</p>
 <h2 id="section-2">The Backpropagation Procedure</h2>
-<p>The <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> procedure consists of two main passes. In the **<span class="glossary-term" data-definition="The initial computation of the function's output values.">forward pass</span>**, an input vector is processed through the network to produce an output. The difference between this output and the desired target is used to calculate an error (or loss) function.</p>
-<p>In the **backward pass**, the partial derivative of the error with respect to each weight is computed by working from the output layer back to the input. The weights are then adjusted in the direction that most rapidly reduces the error. The authors found that a simple '<span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span>' term could be added to speed up learning and help the network navi<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> narrow valleys in the error surface.</p>
+<p>The <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span> procedure consists of two main passes. In the **<span class="glossary-term" data-definition="The initial computation of the function&#x27;s output values.">forward pass</span>**, an input vector is processed through the network to produce an output. The difference between this output and the desired target is used to calculate an error (or loss) function.</p>
+<p>In the **backward pass**, the partial derivative of the error with respect to each weight is computed by working from the output layer back to the input. The weights are then adjusted in the direction that most rapidly reduces the error. The authors found that a simple '<span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span>' term could be added to speed up learning and help the network navigate narrow valleys in the error surface.</p>
 <h2 id="section-3">Historical Significance</h2>
-<p>While the core mathematics of <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> had been described earlier (e.g., by Linnainmaa and Werbos), it was the 1986 Rumelhart paper that made the algorithm accessible and demonstrated its power on meaningful problems.</p>
-<p>This work ended the first 'AI winter' and established the connectionist paradigm. It provided the empirical evidence that mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-layer networks could learn complex non-linear mappings, laying the foundation for every subsequent breakthrough in deep learning, from AlexNet to modern large language models.</p>
+<p>While the core mathematics of <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span> had been described earlier (e.g., by Linnainmaa and Werbos), it was the 1986 Rumelhart paper that made the algorithm accessible and demonstrated its power on meaningful problems.</p>
+<p>This work ended the first 'AI winter' and established the connectionist paradigm. It provided the empirical evidence that multi-layer networks could learn complex non-linear mappings, laying the foundation for every subsequent breakthrough in deep learning, from AlexNet to modern large language models.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
         <div class="concept-title">Hidden Units</div>
-        <p>Neurons in a network that are neither part of the input nor the output, responsible for learning abstract <span class="glossary-term" data-definition="How a network encodes information about its environment in its hidden layers.">internal representation</span>s.</p>
+        <p>Neurons in a network that are neither part of the input nor the output, responsible for learning abstract internal representations.</p>
       </div>
 
       <div class="concept-item">
@@ -83,12 +89,12 @@
 
       <div class="concept-item">
         <div class="concept-title">Generalized Delta Rule</div>
-        <p>The specific update rule derived in the paper for adjusting weights in mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-layer networks.</p>
+        <p>The specific update rule derived in the paper for adjusting weights in multi-layer networks.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Momentum</div>
-        <p>A technique introduced to accelerate <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>."><span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> descent</span> by adding a fraction of the previous weight change to the current one.</p>
+        <p>A technique introduced to accelerate <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative gradient.">gradient descent</span> by adding a fraction of the previous weight change to the current one.</p>
       </div>
 
       <div class="concept-item">
@@ -98,7 +104,7 @@
 <h2 id="math">Mathematics</h2>
 <h3>Hidden Unit Gradient</h3>
 <div class="math-block">$$\frac{\partial E}{\partial y_i} = \sum_j \frac{\partial E}{\partial y_j} \frac{\partial y_j}{\partial y_i}$$</div>
-<div class="math-explanation-box">The core recursive step of <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, showing how the error <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> at unit $i$ is derived from the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s of all units $j$ in the subsequent layer.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$E$</td><td>Total error function</td></tr><tr><td>$y_i$</td><td>Output of hidden unit i</td></tr></table></div>
+<div class="math-explanation-box">The core recursive step of <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, showing how the error <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> at unit $i$ is derived from the gradients of all units $j$ in the subsequent layer.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$E$</td><td>Total error function</td></tr><tr><td>$y_i$</td><td>Output of hidden unit i</td></tr></table></div>
 <h3>Weight Update with Momentum</h3>
 <div class="math-block">$$\Delta w(t) = -\eta \frac{\partial E}{\partial w} + \alpha \Delta w(t-1)$$</div>
 <div class="math-explanation-box">The weight update rule combining the current <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> with a <span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span> term $\alpha$ to stabilize learning.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\eta$</td><td>Learning rate</td></tr><tr><td>$\alpha$</td><td>Momentum coefficient</td></tr></table></div>
@@ -127,11 +133,11 @@
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

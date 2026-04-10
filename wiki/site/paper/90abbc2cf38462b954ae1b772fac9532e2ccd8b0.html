@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -30,6 +36,7 @@
         <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
         <li><a href="#references">References</a></li>
+        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -39,7 +46,7 @@
     
     <article class="wiki-article">
       <h1 id="title">Language Models are Few-Shot Learners</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Few-Shot Learning at Scale</div>
@@ -57,17 +64,17 @@
         </table>
       </div>
 
-      
-      <p class="lead">GPT-3 (Generative Pre-trained Transformer 3) is a massive autoregressive language model with 175 billion <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s that demonstrates remarkable few-shot learning capabilities. By training on hundreds of billions of words, GPT-3 can perform a wide variety of NLP tasks—including translation, question-answering, and cloze tasks—without any <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>, often matching the performance of specialized state-of-the-art models. This paper marks a significant shift towards general-purpose AI systems that can adapt to new tasks through simple natural language prompts.</p>
+
+      <p class="lead">GPT-3 (Generative Pre-trained Transformer 3) is a massive autoregressive language model with 175 billion parameters that demonstrates remarkable few-shot learning capabilities. By training on hundreds of billions of words, GPT-3 can perform a wide variety of NLP tasks—including translation, question-answering, and cloze tasks—without any <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>, often matching the performance of specialized state-of-the-art models. This paper marks a significant shift towards general-purpose AI systems that can adapt to new tasks through simple natural language prompts.</p>
 <h2 id="section-0">Scaling Laws and the 175B Parameter Model</h2>
-<p>GPT-3 represents a 10x increase in scale over its predecessor, GPT-2. The researchers found that as language models grow in size, they develop emergent capabilities that are not present in smaller models. The 175 billion <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> version of GPT-3 uses the same basic Transformer architecture as previous models but with increased depth (96 layers) and width (12,288-dimensional <span class="glossary-term" data-definition="A mathematical representation of a word or <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> as a high-dimensional vector.">embedding</span>s).</p>
+<p>GPT-3 represents a 10x increase in scale over its predecessor, GPT-2. The researchers found that as language models grow in size, they develop emergent capabilities that are not present in smaller models. The 175 billion <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> version of GPT-3 uses the same basic Transformer architecture as previous models but with increased depth (96 layers) and width (12,288-dimensional embeddings).</p>
 <p>This massive scale allows the model to capture a vast amount of world knowledge and linguistic patterns from its training data, which included Common Crawl, WebText2, Books1, Books2, and Wikipedia. The results suggest that for many tasks, performance follows a power-law relationship with model size, data, and compute.</p>
 <h2 id="section-1">In-Context Learning: Zero, One, and Few-Shot</h2>
 <p>A key contribution of the GPT-3 paper is the formalization of 'in-context learning.' Unlike traditional models that require thousands of labeled examples and <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> updates (<span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>) to learn a new task, GPT-3 can be 'conditioned' using a natural language prompt.</p>
-<p>In the **few-shot** setting, the model is given a short description of the task and a few examples (typically 10 to 100) within its <span class="glossary-term" data-definition="The maximum number of <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s a model can 'see' at once; for GPT-3, this is 2048 <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s.">context window</span>. In the **one-shot** setting, only a single example is provided. In the **<span class="glossary-term" data-definition="Performing a task with no examples, only a description.">zero-shot</span>** setting, only the task description is given. GPT-3's ability to succeed in these settings suggests it has learned a generalized 'meta-learning' capability during <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>.">pre-training</span>.</p>
+<p>In the **few-shot** setting, the model is given a short description of the task and a few examples (typically 10 to 100) within its <span class="glossary-term" data-definition="The maximum number of tokens a model can &#x27;see&#x27; at once; for GPT-3, this is 2048 tokens.">context window</span>. In the **one-shot** setting, only a single example is provided. In the **<span class="glossary-term" data-definition="Performing a task with no examples, only a description.">zero-shot</span>** setting, only the task description is given. GPT-3's ability to succeed in these settings suggests it has learned a generalized 'meta-learning' capability during <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span>.</p>
 <h2 id="section-2">Task Performance and Limitations</h2>
-<p>GPT-3 was evaluated on over 50 NLP datasets. It achieved state-of-the-art performance on several 'closed-book' question-answering tasks and demonstrated strong capabilities in translation and reasoning. However, it still struggles with certain tasks that require deep common sense or complex mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-step reasoning, such as the WSC (Winograd Schema Challenge).</p>
-<p>Furthermore, the model can sometimes generate <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span>ed or toxic content, reflecting the <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span>es present in its large-scale training data. The researchers acknowledge these limitations and emphasize the need for further work in safety and <span class="glossary-term" data-definition="A steering rule that causes flockmates to face the same direction.">alignment</span>.</p>
+<p>GPT-3 was evaluated on over 50 NLP datasets. It achieved state-of-the-art performance on several 'closed-book' question-answering tasks and demonstrated strong capabilities in translation and reasoning. However, it still struggles with certain tasks that require deep common sense or complex multi-step reasoning, such as the WSC (Winograd Schema Challenge).</p>
+<p>Furthermore, the model can sometimes generate biased or toxic content, reflecting the biases present in its large-scale training data. The researchers acknowledge these limitations and emphasize the need for further work in safety and <span class="glossary-term" data-definition="A steering rule that causes flockmates to face the same direction.">alignment</span>.</p>
 <h2 id="section-3">The Shift from Fine-Tuning to Prompting</h2>
 <p>The success of GPT-3 challenges the dominant paradigm of pre-train-then-fine-tune. By showing that a sufficiently large model can adapt to tasks via prompting, GPT-3 opens up new possibilities for how humans interact with AI. Prompt engineering—the art of crafting the right input to guide the model—has since emerged as a critical skill for utilizing these large-scale foundation models.</p>
 <h2 id="concepts">Concept Breakdown</h2>
@@ -84,7 +91,7 @@
 
       <div class="concept-item">
         <div class="concept-title">Autoregressive Model</div>
-        <p>A model that predicts the next <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in a sequence based on all previous <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s, typical of the GPT series.</p>
+        <p>A model that predicts the next <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in a sequence based on all previous tokens, typical of the GPT series.</p>
       </div>
 
       <div class="concept-item">
@@ -458,14 +465,21 @@
           <span style="font-size: 0.8rem; color: #54595d;"> - Yixin Nie, Adina Williams et al. (2019)</span>
         </li>
       </ol>
+<h2 id="related">Related Papers</h2>
+<div class="related-grid">
+  <div class="related-card" onclick="window.location.href='../paper/7318a804566baadc9f4b4ca8255f78744e749a32.html'">
+    <div class="related-card-title">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</div>
+    <div class="related-card-meta">2024 &bull; 26 citations</div>
+  </div>
+</div>
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

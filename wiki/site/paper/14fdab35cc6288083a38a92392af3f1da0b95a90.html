@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -33,13 +39,13 @@
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div></div>
+      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">quantization</span></div>
     </aside>
 
     
     <article class="wiki-article">
       <h1 id="title">KAN: Kolmogorov-Arnold Networks</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Kolmogorov-Arnold Networks (KANs)</div>
@@ -57,53 +63,53 @@
         </table>
       </div>
 
-      
-      <p class="lead">Kolmogorov-Arnold Networks (<span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s) are a novel class of neural network architectures that challenge the dominance of Mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-Layer Perceptrons (MLPs). Inspired by the Kolmogorov-Arnold representation theorem, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s replace fixed activation functions on nodes with learnable activation functions on edges, <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ized as splines. This structural shift allows <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s to achieve superior accuracy and interpretability compared to MLPs, particularly in scientific computing tasks, while demonstrating faster neural scaling laws.</p>
+
+      <p class="lead">Kolmogorov-Arnold Networks (KANs) are a novel class of neural network architectures that challenge the dominance of Multi-Layer Perceptrons (MLPs). Inspired by the Kolmogorov-Arnold representation theorem, KANs replace fixed activation functions on nodes with learnable activation functions on edges, parameterized as splines. This structural shift allows KANs to achieve superior accuracy and interpretability compared to MLPs, particularly in scientific computing tasks, while demonstrating faster neural scaling laws.</p>
 <h2 id="section-0">Theoretical Foundation: The Kolmogorov-Arnold Theorem</h2>
-<p>The mathematical bedrock of <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s is the Kolmogorov-Arnold representation theorem, which states that any mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>variate continuous function can be represented as a finite sum of continuous <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s of a single variable. While MLPs are based on the Universal Approximation Theorem, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s directly implement the structure suggested by Kolmogorov and Arnold.</p>
-<p>Specifically, for a function of $n$ variables, the theorem guarantees a representation using $2n+1$ inner functions and a set of outer functions. <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s generalize this by stacking these structures into mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>ple layers, creating a deep architecture that can learn complex hierarchical representations.</p>
+<p>The mathematical bedrock of KANs is the Kolmogorov-Arnold representation theorem, which states that any multivariate continuous function can be represented as a finite sum of continuous univariate functions of a single variable. While MLPs are based on the Universal Approximation Theorem, KANs directly implement the structure suggested by Kolmogorov and Arnold.</p>
+<p>Specifically, for a function of $n$ variables, the theorem guarantees a representation using $2n+1$ inner functions and a set of outer functions. KANs generalize this by stacking these structures into multiple layers, creating a deep architecture that can learn complex hierarchical representations.</p>
 <h2 id="section-1">Architecture: Learnable Edges vs. Fixed Nodes</h2>
-<p>In a traditional MLP, data is mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plied by a fixed linear weight and then passed through a fixed activation function (like ReLU or <span class="glossary-term" data-definition="A mathematical function having a characteristic 'S'-shaped curve.">sigmoid</span>) at the node. <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s eliminate linear weights entirely. Instead, each edge in the network is a learnable <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>, typically represented as a <span class="glossary-term" data-definition="A specific type of spline used for its efficiency and stability in approximating functions.">b-spline</span>.</p>
-<p>Nodes in a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> simply perform a summation of the incoming signals from the edges. This 'weight-on-edge' approach allows the network to adapt its activation functions locally to the data, enabling much greater flexibility in function approximation. <b>Figure 1</b> compares this structure directly with the MLP.</p>
+<p>In a traditional MLP, data is multiplied by a fixed linear weight and then passed through a fixed activation function (like ReLU or <span class="glossary-term" data-definition="A mathematical function having a characteristic &#x27;S&#x27;-shaped curve.">Sigmoid</span>) at the node. KANs eliminate linear weights entirely. Instead, each edge in the network is a learnable <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>, typically represented as a <span class="glossary-term" data-definition="A specific type of spline used for its efficiency and stability in approximating functions.">B-spline</span>.</p>
+<p>Nodes in a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">KAN</span> simply perform a summation of the incoming signals from the edges. This 'weight-on-edge' approach allows the network to adapt its activation functions locally to the data, enabling much greater flexibility in function approximation. <b>Figure 1</b> compares this structure directly with the MLP.</p>
 <h2 id="section-2">Spline Parameterization and Grid Extension</h2>
-<p>To make the edge functions learnable, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s use <span class="glossary-term" data-definition="A specific type of spline used for its efficiency and stability in approximating functions.">b-spline</span>s, which are piecewise polynomial functions defined by a grid of points. The grid density can be increased during training—a process called 'grid extension'—allowing the network to refine its approximation of complex functions without retraining from scratch.</p>
-<p>Each edge function is a combination of a base function (like <span class="glossary-term" data-definition="Sigmoid Linear Unit; a common activation function used as a basis in <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> edge functions.">silu</span>) and a spline component. This hybrid approach ensures that the network has a global 'shape' while being able to capture fine-grained local details.</p>
+<p>To make the edge functions learnable, KANs use B-splines, which are piecewise polynomial functions defined by a grid of points. The grid density can be increased during training—a process called 'grid extension'—allowing the network to refine its approximation of complex functions without retraining from scratch.</p>
+<p>Each edge function is a combination of a base function (like <span class="glossary-term" data-definition="Sigmoid Linear Unit; a common activation function used as a basis in KAN edge functions.">SiLU</span>) and a spline component. This hybrid approach ensures that the network has a global 'shape' while being able to capture fine-grained local details.</p>
 <h2 id="section-3">Interpretability and AI for Science</h2>
-<p>One of the most significant advantages of <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s is their interpretability. Because the edge functions are univariate, they can be easily visualized and often simplified into symbolic mathematical expressions. This makes <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s ideal 'collaborators' for scientists looking to discover physical or mathematical laws.</p>
-<p>The researchers demonstrated this by using <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s to rediscover the knot polynomial relation in mathematics and scaling laws in condensed matter physics. By pruning weak connections and performing symbolic regression on the learned edge functions, users can extract human-readable formulas from the trained model.</p>
+<p>One of the most significant advantages of KANs is their interpretability. Because the edge functions are univariate, they can be easily visualized and often simplified into symbolic mathematical expressions. This makes KANs ideal 'collaborators' for scientists looking to discover physical or mathematical laws.</p>
+<p>The researchers demonstrated this by using KANs to rediscover the knot polynomial relation in mathematics and scaling laws in condensed matter physics. By pruning weak connections and performing symbolic regression on the learned edge functions, users can extract human-readable formulas from the trained model.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
         <div class="concept-title">Kolmogorov-Arnold Representation Theorem</div>
-        <p>A theorem stating that mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>variate continuous functions can be decomposed into a sum of <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s, providing the theoretical basis for <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s.</p>
+        <p>A theorem stating that multivariate continuous functions can be decomposed into a sum of univariate functions, providing the theoretical basis for KANs.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Learnable Activation Function</div>
-        <p>Instead of fixed functions like ReLU, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s use <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s on edges that are optimized during the training process.</p>
+        <p>Instead of fixed functions like ReLU, KANs use univariate functions on edges that are optimized during the training process.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">B-Splines</div>
-        <p>Piecewise polynomial functions used to <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ize the activation functions on <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> edges, allowing for flexible and local control of function shape.</p>
+        <p>Piecewise polynomial functions used to parameterize the activation functions on <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">KAN</span> edges, allowing for flexible and local control of function shape.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Grid Extension</div>
-        <p>A technique in <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s where the number of spline <span class="glossary-term" data-definition="The discrete points that define the segments of a spline function.">grid points</span> is increased to improve the resolution of the learned functions during training.</p>
+        <p>A technique in KANs where the number of spline <span class="glossary-term" data-definition="The discrete points that define the segments of a spline function.">grid points</span> is increased to improve the resolution of the learned functions during training.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Symbolic Regression</div>
-        <p>The process of identifying simple mathematical formulas that approximate the learned <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s in a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>, enhancing interpretability.</p>
+        <p>The process of identifying simple mathematical formulas that approximate the learned univariate functions in a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">KAN</span>, enhancing interpretability.</p>
       </div>
 <h2 id="math">Mathematics</h2>
 <h3>KAN Layer Transformation</h3>
 <div class="math-block">$$y_q = \sum_{p=1}^{n} \phi_{q,p}(x_p)$$</div>
-<div class="math-explanation-box">The transformation for a single <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> layer, where the output node $y_q$ is the sum of <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s $\phi_{q,p}$ applied to each input $x_p$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x_p$</td><td>p-th input variable</td></tr><tr><td>$\phi_{q,p}$</td><td>Learnable univariate activation function on the edge between input p and output q</td></tr><tr><td>$y_q$</td><td>q-th output node</td></tr></table></div>
+<div class="math-explanation-box">The transformation for a single <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">KAN</span> layer, where the output node $y_q$ is the sum of univariate functions $\phi_{q,p}$ applied to each input $x_p$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x_p$</td><td>p-th input variable</td></tr><tr><td>$\phi_{q,p}$</td><td>Learnable univariate activation function on the edge between input p and output q</td></tr><tr><td>$y_q$</td><td>q-th output node</td></tr></table></div>
 <h3>Edge Function Decomposition</h3>
 <div class="math-block">$$\phi(x) = w \cdot (b(x) + \text{spline}(x))$$</div>
-<div class="math-explanation-box">The <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization of a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> edge function, combining a basis function $b(x)$ and a learnable spline.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$b(x)$</td><td>Basis function, typically SiLU(x)</td></tr><tr><td>$\text{spline}(x)$</td><td>The B-spline component of the activation function</td></tr><tr><td>$w$</td><td>An overall scaling weight</td></tr></table></div>
+<div class="math-explanation-box">The parameterization of a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">KAN</span> edge function, combining a basis function $b(x)$ and a learnable spline.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$b(x)$</td><td>Basis function, typically SiLU(x)</td></tr><tr><td>$\text{spline}(x)$</td><td>The B-spline component of the activation function</td></tr><tr><td>$w$</td><td>An overall scaling weight</td></tr></table></div>
 <h2 id="figures">Figures and Explanations</h2>
 
       <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
@@ -410,11 +416,11 @@
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

@@ -8,13 +8,19 @@
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
+  <div class="reading-progress"></div>
   <header class="wiki-header">
-    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     
     <aside class="wiki-sidebar">
@@ -39,7 +45,7 @@
     
     <article class="wiki-article">
       <h1 id="title">Deep Residual Learning for Image Recognition</h1>
-      
+
       
       <div class="infobox">
         <div class="infobox-title">Deep Residual Learning (ResNets)</div>
@@ -57,19 +63,19 @@
         </table>
       </div>
 
-      
-      <p class="lead">Deep Residual Learning for Image Recognition introduced ResNets, a groundbreaking neural network architecture that enabled the training of substantially deeper networks by using <span class="glossary-term" data-definition="A connection in a neural network that skips one or more layers.">skip connection</span>s. By reformulating layers as learning residual functions with reference to the layer inputs, the authors addressed the degradation problem where accuracy saturates and then rapidly diminishes as network depth increases. ResNets won the <span class="glossary-term" data-definition="ImageNet Large Scale Visual Recognition Challenge; a premier computer vision competition.">ilsvrc</span> 2015 competition and have since become a foundational component of modern computer vision and deep learning.</p>
+
+      <p class="lead">Deep Residual Learning for Image Recognition introduced ResNets, a groundbreaking neural network architecture that enabled the training of substantially deeper networks by using skip connections. By reformulating layers as learning residual functions with reference to the layer inputs, the authors addressed the degradation problem where accuracy saturates and then rapidly diminishes as network depth increases. ResNets won the <span class="glossary-term" data-definition="ImageNet Large Scale Visual Recognition Challenge; a premier computer vision competition.">ILSVRC</span> 2015 competition and have since become a foundational component of modern computer vision and deep learning.</p>
 <h2 id="section-0">The Degradation Problem</h2>
-<p>As neural networks grew deeper, researchers encountered a counterintuitive phenomenon: adding more layers led to higher training error, a problem distinct from <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>. This 'degradation' suggested that deep systems were difficult to optimize. If a shallow architecture can be augmented with <span class="glossary-term" data-definition="A function that returns its input unchanged: $f(x) = x$.">identity mapping</span>s to form a deeper counterpart, the deeper model should, in theory, perform at least as well as the shallow one.</p>
-<p>However, experiments showed that standard solvers struggled to find these identity solutions. ResNets address this by explicitly allowing the network to learn the difference, or residual, between the input and the desired output, making <span class="glossary-term" data-definition="A function that returns its input unchanged: $f(x) = x$.">identity mapping</span>s much easier to learn. <b>Figure 1</b> illustrates this residual learning block.</p>
+<p>As neural networks grew deeper, researchers encountered a counterintuitive phenomenon: adding more layers led to higher training error, a problem distinct from <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>. This 'degradation' suggested that deep systems were difficult to optimize. If a shallow architecture can be augmented with identity mappings to form a deeper counterpart, the deeper model should, in theory, perform at least as well as the shallow one.</p>
+<p>However, experiments showed that standard solvers struggled to find these identity solutions. ResNets address this by explicitly allowing the network to learn the difference, or residual, between the input and the desired output, making identity mappings much easier to learn. <b>Figure 1</b> illustrates this residual learning block.</p>
 <h2 id="section-1">Residual Learning Blocks and Shortcuts</h2>
-<p>The core of the ResNet is the residual block. Instead of trying to directly learn a mapping $H(x)$, the block is designed to learn $F(x) = H(x) - x$. The final output is then obtained by adding the input back: $y = F(x) + x$. This 'identity shortcut connection' skip-layers without adding extra <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s or computational complexity.</p>
-<p>These shortcuts allow <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s to flow more easily through the network during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, mitigating the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem. In many cases, the residual functions $F(x)$ are small, and the shortcut connections provide a 'highway' for information to pass through the deep stack.</p>
+<p>The core of the ResNet is the residual block. Instead of trying to directly learn a mapping $H(x)$, the block is designed to learn $F(x) = H(x) - x$. The final output is then obtained by adding the input back: $y = F(x) + x$. This 'identity shortcut connection' skip-layers without adding extra parameters or computational complexity.</p>
+<p>These shortcuts allow gradients to flow more easily through the network during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, mitigating the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem. In many cases, the residual functions $F(x)$ are small, and the shortcut connections provide a 'highway' for information to pass through the deep stack.</p>
 <h2 id="section-2">Architecture: VGG-style and Bottleneck Designs</h2>
-<p>The paper explores several ResNet architectures, including a 34-layer plain network and its residual counterpart. For deeper networks like ResNet-50, 101, and 152, the authors introduced 'bottleneck' blocks. These blocks use 1x1 <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>s to reduce and then restore dimensions, which significantly improves computational efficiency while maintaining high depth.</p>
-<p>This design allowed the 152-layer ResNet to achieve state-of-the-art results while having lower complexity (<span class="glossary-term" data-definition="Floating Point Operations; a measure of computational complexity.">flops</span>) than the 16-layer VGG-16 network. The consistency of these results across different depths demonstrated the robustness of the residual learning framework.</p>
+<p>The paper explores several ResNet architectures, including a 34-layer plain network and its residual counterpart. For deeper networks like ResNet-50, 101, and 152, the authors introduced 'bottleneck' blocks. These blocks use 1x1 convolutions to reduce and then restore dimensions, which significantly improves computational efficiency while maintaining high depth.</p>
+<p>This design allowed the 152-layer ResNet to achieve state-of-the-art results while having lower complexity (<span class="glossary-term" data-definition="Floating Point Operations; a measure of computational complexity.">FLOPs</span>) than the 16-layer VGG-16 network. The consistency of these results across different depths demonstrated the robustness of the residual learning framework.</p>
 <h2 id="section-3">Impact and Legacy</h2>
-<p>ResNets revolutionized deep learning by proving that depth was not just limited by hardware, but by architectural design. The principles of residual learning have been adopted far beyond image recognition, influencing the design of Transformers (which use <span class="glossary-term" data-definition="Addition of the input to a sub-layer's output: output = LayerNorm(x + Sublayer(x)). Facilitates <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> flow through deep networks by providing shortcut paths that bypass individual layers.">residual connection</span>s), GANs, and various reinforcement learning agents.</p>
+<p>ResNets revolutionized deep learning by proving that depth was not just limited by hardware, but by architectural design. The principles of residual learning have been adopted far beyond image recognition, influencing the design of Transformers (which use residual connections), GANs, and various reinforcement learning agents.</p>
 <p>The paper remains one of the most cited works in artificial intelligence, and ResNet-50 continues to serve as a standard benchmark and backbone for countless computer vision applications.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
@@ -90,12 +96,12 @@
 
       <div class="concept-item">
         <div class="concept-title">Bottleneck Design</div>
-        <p>A residual block variant using 1x1, 3x3, and 1x1 <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>s to reduce computational cost in very deep networks.</p>
+        <p>A residual block variant using 1x1, 3x3, and 1x1 convolutions to reduce computational cost in very deep networks.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Vanishing Gradient</div>
-        <p>A problem in deep learning where <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s become extremely small during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, preventing weights from updating; ResNets miti<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> this via shortcuts.</p>
+        <p>A problem in deep learning where gradients become extremely small during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, preventing weights from updating; ResNets mitigate this via shortcuts.</p>
       </div>
 <h2 id="math">Mathematics</h2>
 <h3>Residual Block Output</h3>
@@ -297,11 +303,11 @@
 </article>
 
   </main>
-  
+
   <footer class="wiki-footer">
     <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
-  
+
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>
