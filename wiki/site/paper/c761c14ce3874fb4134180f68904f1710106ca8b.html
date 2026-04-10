@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRILLSCAN: An automated open‐source software for processing and analysis of echosounder data from the Antarctic krill fishery - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Automated Processing Pipeline</a></li>
+        <li><a href="#section-1">Krill Swarm Detection and Integration</a></li>
+        <li><a href="#section-2">Data Compression and Satellite Transfer</a></li>
+        <li><a href="#section-3">Comparative Validation with Manual Scrutinization</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+        <li><a href="#references">References</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">KRILLSCAN: An automated open‐source software for processing and analysis of echosounder data from the Antarctic krill fishery</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">KRILLSCAN Automated Processing Software</div>
+        <div class="infobox-image"><img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig1.jpeg" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Automated Processing Pipeline (Python-based)</td></tr>
+          <tr><th>Key Innovation</th><td>Open-source automation of krill swarm detection and 100x data compression for remote monitoring.</td></tr>
+          <tr><th>Performance Metric</th><td>0.96 correlation with manual LSSS analysis; 6% NASC underestimation.</td></tr>
+          <tr><th>Computational Efficiency</th><td>Near-real-time processing (faster than data generation) on standard consumer hardware.</td></tr>
+
+          <tr><th>Venue</th><td>Fisheries Management and Ecology</td></tr>
+          <tr><th>Year</th><td>2024</td></tr>
+          <tr><th>Citations</th><td>2</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1111/fme.12739" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">KRILLSCAN is an automated, open-source Python-based software developed to process and analyze echosounder data from the Antarctic krill fishery. It addresses the need for rapid, transparent, and reproducible biomass estimation, enabling near-real-time data analysis and transfer from fishing vessels of opportunity. The software automates noise removal, bottom detection, and swarm identification, achieving a high correlation (0.96) with traditional manual <span class="glossary-term" data-definition="The detailed expert review of acoustic data to identify and quantify biological targets.">scrutinization</span> while compressing data by up to 100 times for satellite transmission.</p>
+<h2 id="section-0">Automated Processing Pipeline</h2>
+<p>KRILLSCAN utilizes a dual-thread architecture to handle echosounder data in real-time. One thread performs an IO loop that scans for new proprietary Simrad .raw files, while a parallel communications loop manages data transmission. The software employs standardized scientific Python modules, including 'echopy' and 'pyecholab2', to clean the raw signal by removing impulse and background noise.</p>
+<p>After noise removal, the volume backscatter matrices for each frequency (typically 38 and 120 kHz) are loaded into memory. This automated pipeline ensures that data is processed faster than it is generated, a critical requirement for onboard deployment on fishing vessels where specialized scientific personnel may not be present.</p>
+<h2 id="section-1">Krill Swarm Detection and Integration</h2>
+<p>A core component of KRILLSCAN is its swarm detection algorithm, based on the SHAPES method. This algorithm identifies contiguous patches of backscatter that exceed a predefined threshold (set to -70 dB for krill). It employs a series of image <span class="glossary-term" data-definition="Image processing techniques like erosion and dilation used to refine the shapes of detected objects.">morphological operations</span>, specifically erosion and dilation, to suppress noise and refine the outlines of detected swarms.</p>
+<p>The software integrates the backscatter within these detection masks to calculate the Nautical Area Scattering Coefficient (<span class="glossary-term" data-definition="Nautical Area Scattering Coefficient; the standard integrated measure of acoustic backscatter used in fisheries.">nasc</span>), a standard metric for biomass distribution. <b>Figure 3</b> shows the graphical interface where these masks are overlaid on the <span class="glossary-term" data-definition="A visual representation of underwater acoustic returns, with intensity shown over time (horizontal) and depth (vertical).">echogram</span> for visual verification.</p>
+<h2 id="section-2">Data Compression and Satellite Transfer</h2>
+<p>To overcome the bandwidth limitations of satellite communication in the Southern Ocean, KRILLSCAN implements aggressive data compression. Processed raw <span class="glossary-term" data-definition="A visual representation of underwater acoustic returns, with intensity shown over time (horizontal) and depth (vertical).">echogram</span>s are stored in the open <span class="glossary-term" data-definition="An open data format for array-oriented scientific data.">netcdf</span> format in 10-minute 'snippets'. These files, along with 1-minute averaged <span class="glossary-term" data-definition="Nautical Area Scattering Coefficient; the standard integrated measure of acoustic backscatter used in fisheries.">nasc</span> tables, can be compressed up to 100 times compared to the original raw data.</p>
+<p>This reduction allows for a 4-hour survey block to be transmitted as a 2–5 MiB file via email. This capability enables remote monitoring and quality control by shore-based scientists, allowing fishing vessels to act as 'platforms of opportunity' for continuous ecosystem monitoring. <b>Figure 2</b> illustrates this remote data flow.</p>
+<h2 id="section-3">Comparative Validation with Manual Scrutinization</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig5.png" target="_blank">
+            <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig5.png" class="thumbimage" alt="Figure 5">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 5:</b> 
+          </div>
+        </div>
+      </div>
+<p>The accuracy of KRILLSCAN was tested against traditional manual <span class="glossary-term" data-definition="The detailed expert review of acoustic data to identify and quantify biological targets.">scrutinization</span> using the Large Scale Survey System (LSSS). Analysis of data from Norwegian krill surveys (2011–2023) showed that KRILLSCAN's automated <span class="glossary-term" data-definition="Nautical Area Scattering Coefficient; the standard integrated measure of acoustic backscatter used in fisheries.">nasc</span> estimates were strongly correlated (0.96) with manual results. While the software slightly underestimated total <span class="glossary-term" data-definition="Nautical Area Scattering Coefficient; the standard integrated measure of acoustic backscatter used in fisheries.">nasc</span> by approximately 6%, this offset was consistent across the encountered biomass range.</p>
+<p>This consistency, combined with the reproducibility of open-source algorithms, offers a significant advantage over manual analysis, which can be prone to operator bias. <b>Figure 5</b> displays the strong linear relationship between the automated and manual results across various survey years.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Nautical Area Scattering Coefficient (NASC)</div>
+        <p>A standard unit ($m^2/nmi^2$) used in fisheries acoustics to quantify the total sound backscattered from a specific area, serving as a proxy for biological biomass.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">SHAPES Algorithm</div>
+        <p>A morphological processing technique used to identify and isolate contiguous biological aggregations, such as krill swarms, from background noise and other acoustic targets.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">NetCDF</div>
+        <p>The Network Common Data Form; a self-describing, machine-independent data format used by KRILLSCAN to ensure interoperability and open access to processed acoustic data.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Adaptive Feedback Management (FBM)</div>
+        <p>A fisheries management strategy that uses real-time data to dynamically adjust catch limits and spatial allocations based on current stock status.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Platforms of Opportunity</div>
+        <p>Non-scientific vessels, such as commercial fishing boats, that are equipped with automated systems to collect valuable scientific data during their normal operations.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Nautical Area Scattering Coefficient (NASC)</h3>
+<div class="math-block">$$s_A = 4\pi (1852)^2 \int_{z_1}^{z_2} s_v dz$$</div>
+<div class="math-explanation-box">The <span class="glossary-term" data-definition="Nautical Area Scattering Coefficient; the standard integrated measure of acoustic backscatter used in fisheries.">nasc</span> formula integrates the volume <span class="glossary-term" data-definition="The reflection of acoustic waves back towards the source after hitting a target like a fish or the seabed.">backscattering</span> coefficient ($s_v$) over a specific depth range ($z_1$ to $z_2$) to produce a standard area-based measure of backscatter.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$s_A$</td><td>Nautical Area Scattering Coefficient ($m^2/nmi^2$)</td></tr><tr><td>$s_v$</td><td>Volume backscattering coefficient</td></tr><tr><td>$dz$</td><td>Depth interval</td></tr></table></div>
+<h3>Coefficient of Variation (CV)</h3>
+<div class="math-block">$$CV = \frac{\sigma}{\mu}$$</div>
+<div class="math-explanation-box">Used to assess the relative variability and agreement between the automated KRILLSCAN results and manual LSSS <span class="glossary-term" data-definition="The detailed expert review of acoustic data to identify and quantify biological targets.">scrutinization</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\sigma$</td><td>Standard deviation of the NASC differences</td></tr><tr><td>$\mu$</td><td>Mean NASC value</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig1.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig2.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Data flow chart showing the end-to-end process from onboard raw data collection to KRILLSCAN processing, satellite transfer, and final shore-based biomass estimation.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig3.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Screenshot of the KRILLSCAN Graphical User Interface, demonstrating the red swarm detection masks overlaid on multifrequency echograms and real-time NASC graphs.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig4.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig5.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 5:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Regression analysis comparing LSSS and KRILLSCAN results, confirming a 0.96 correlation and establishing the reliability of the automated system.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig6.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 6:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig7.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 7:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig8.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 8:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig9.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 9:</b> shows maps of NASC along the survey transects for each<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig10.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 10:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig11.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 11:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig12.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 12:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig13.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 13:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig14.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 14:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig15.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 15:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig16.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 16:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig17.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 17:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig18.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 18:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/c761c14ce3874fb4134180f68904f1710106ca8b_fig19.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 19:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Euphausia superba</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The Antarctic krill, a keystone species of the Southern Ocean ecosystem and the primary focus of this software.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>CCAMLR</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The international commission responsible for the sustainable management of Antarctic marine living resources.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>LSSS</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The proprietary Large Scale Survey System software used as the gold-standard benchmark for acoustic data analysis.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Open-Source Science</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The movement towards making scientific research and data, including processing software like KRILLSCAN, accessible to all.</span>
+        </div>
+</div>
+
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b5b18142b7faaff7f721dcad278e5c3512e996de">Classification of acoustic survey data: A comparison between seven teams of experts</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Johanna Fall, Harald Gjøsæter et al. (2024)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="886e581b73389bb6ee099566b115bdfedec9cc44">What is needed to implement a sustainable expansion of the Antarctic krill fishery in the Southern Ocean?</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - P. Trathan (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b6676d09dc7c04e24f901d5a170ccd90fe4e9b11">Distribution and biomass estimation of Antarctic krill (Euphausia superba) off the South Orkney Islands during 2011–2020</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - G. Skaret, G. Macaulay et al. (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="0b03910a32f0e8554500251165ed274f468b97d3">Using a risk assessment framework to spatially and temporally spread the fishery catch limit for Antarctic krill in the west Antarctic Peninsula: A template for krill fisheries elsewhere</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - V. Warwick‐Evans, A. Constable et al. (2022)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="76c8bf92060456e1fd11336195e69bdccfd8089f">A statistical assessment of the density of Antarctic krill based on “chaotic” acoustic data collected by a commercial fishing vessel</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yunxia Zhao, Xinliang Wang et al. (2022)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="9ad03d14e6d15c5211cc28ad3dd50736d19d23d7">Remote sizing of fish-like targets using broadband acoustics</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Rokas Kubilius, G. Macaulay et al. (2020)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="3fe3924a5315fbb5b5cd0edf98533b8c61a3bbdf">Machine intelligence and the data-driven future of marine science</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - K. Malde, N. Handegard et al. (2020)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="212113693909cb7369ff6c5ac19705fd41bdfbe5">Acoustic classification in multifrequency echosounder data using deep convolutional neural networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Olav Brautaset, A. U. Waldeland et al. (2020)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="9128f5961ac6fa8b573505909cc304d7b5ce260f">Summer distribution and demography of Antarctic krill Euphausia superba Dana, 1850 (Euphausiacea) at the South Orkney Islands, 2011–2015</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - B. Krafft, L. Krag et al. (2018)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="6a773d8506b9f38ab920ea049170acb933c1ec5d">Measurement of the volume-backscattering spectrum from an aggregation of Antarctic krill and inference of their length-frequency distribution</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - K. Amakasu, T. Mukai et al. (2017)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="d0d866d43d3827f6cc45550353ad083316146845">Acoustic identification of marine species using a feature library</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - R. Korneliussen, Y. Heggelund et al. (2016)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="6428dfc8bb8ea1239d7c45acf7246bb16e5d9c39">Horizontal niche partitioning of humpback and fin whales around the West Antarctic Peninsula: evidence from a concurrent whale and krill survey</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - H. Herr, S. Viquerat et al. (2016)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="671a01733240d30b04d49e6cbb8d9a90e3b19827">Measuring in situ krill tilt orientation by stereo photogrammetry: examples for Euphausia superba and Meganyctiphanes norvegica</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Rokas Kubilius, E. Ona et al. (2015)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="19b3648c9fbcde2fef18076890b07b8aefb33c34">An Antarctic krill (Euphausia superba) hotspot: population characteristics, abundance and vertical structure explored from a krill fishing vessel</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - B. Krafft, G. Skaret et al. (2015)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="ca6ee9cb8281c5ff2146dbd18e4259986ef94dea">Interannual variability in Antarctic krill (Euphausia superba) density at South Georgia, Southern Ocean: 1997–2013</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Sophie Fielding, J. Watkins et al. (2014)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="90292870132c0ca4115873353fe071e6c927f2e1">Size Selection of Antarctic Krill (Euphausia superba) in Trawls</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - L. Krag, B. Herrmann et al. (2014)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="1ec2bc19bfe9d1418ef6eef75761009eecac6e33">Long-term evaluation of scientific-echosounder performance</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - H. Knudsen (2009)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="67d54fd8a413d7358efa9178d64fe38dd30b7fb1">Variations in the biomass of Antarctic krill (Euphausia superba) around the South Shetland Islands, 1996–2006</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - C. Reiss, Anthony M. Cossio et al. (2008)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="98dfb116a9dc728974901453900f71a2bee2903b">A post-processing technique to estimate the signal-to-noise ratio and remove echosounder background noise</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - A. D. Robertis, I. Higginbottom (2007)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b9af488d9258f4d12fd282d3142249eb648a47b6">The Fishery on Antarctic Krill: Defining an Ecosystem Approach to Management</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - R. Hewitt, E. Low (2000)</span>
+        </li>
+      </ol>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

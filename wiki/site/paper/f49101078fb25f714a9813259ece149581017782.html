@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taylor expansion of the accumulated rounding error - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Rounding Error and Taylor Expansion</a></li>
+        <li><a href="#section-1">Discovery of Reverse-Mode AD</a></li>
+        <li><a href="#section-2">The Link to Backpropagation</a></li>
+        <li><a href="#section-3">Historical Context and Legacy</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Taylor expansion of the accumulated rounding error</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Reverse-Mode Automatic Differentiation</div>
+        <div class="infobox-image"><img src="../assets/animations/f49101078fb25f714a9813259ece149581017782.gif" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Algorithmic Differentiation / Numerical Analysis</td></tr>
+          <tr><th>Key Innovation</th><td>Reverse-mode accumulation of partial derivatives in computational graphs.</td></tr>
+          <tr><th>Performance Metric</th><td>Computational cost of gradients proportional to the cost of the function itself.</td></tr>
+          <tr><th>Computational Efficiency</th><td>O(1) pass for all partial derivatives relative to the function evaluation pass.</td></tr>
+
+          <tr><th>Venue</th><td>N/A</td></tr>
+          <tr><th>Year</th><td>1976</td></tr>
+          <tr><th>Citations</th><td>300</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1007/BF01931367" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">Seppo Linnainmaa's 1970 Master's thesis and subsequent 1976 paper, 'Taylor expansion of the accumulated rounding error,' introduced what is now known as reverse-mode automatic differentiation (AD). While originally developed to estimate the rounding errors of numerical algorithms, Linnainmaa's method provided the first general and efficient algorithm for computing the partial derivatives of a composite function. This mathematical breakthrough is the direct algorithmic ancestor of the <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> algorithm used to train modern neural networks.</p>
+<h2 id="section-0">Rounding Error and Taylor Expansion</h2>
+<p>Linnainmaa's primary goal was to solve a problem in numerical stability: how to quantify the cumulative effect of rounding errors in a long sequence of floating-point operations. He proposed using a first-order Taylor expansion to linearize the error propagation.</p>
+<p>By treating each elementary operation in a program as a node in a computational graph, he realized that the total error could be expressed as a weighted sum of the individual errors introduced at each step. The weights in this sum are the partial derivatives of the final output with respect to the intermediate values.</p>
+<h2 id="section-1">Discovery of Reverse-Mode AD</h2>
+<p>To compute these weights efficiently, Linnainmaa described an algorithm that traverses the computational graph in reverse order (from output to inputs). This '<span class="glossary-term" data-definition="The subsequent computation of derivatives by moving backward through the operation graph.">reverse pass</span>' allows for the simultaneous calculation of all partial derivatives with a computational complexity that is a small constant mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>ple of the original function evaluation.</p>
+<p>This was a major improvement over 'forward-mode' differentiation, which requires a separate pass for each input variable. Linnainmaa's method proved that for functions with many inputs and a single output—exactly the case for loss functions in machine learning—<span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s could be calculated with incredible efficiency.</p>
+<h2 id="section-2">The Link to Backpropagation</h2>
+<p>While Linnainmaa did not explicitly apply his method to neural networks, the algorithm he described is identical to the '<span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>' algorithm popularized by Rumelhart, Hinton, and Williams in 1986. Linnainmaa's work provided the pure mathematical and algorithmic framework for what would become the engine of the deep learning revolution.</p>
+<p>Historians of AI, such as Jürgen Schmidhuber, have identified Linnainmaa as the originator of the core algorithm, noting that his 1970 thesis was the first to detail the efficient reverse-mode pass for arbitrary differentiable computational graphs.</p>
+<h2 id="section-3">Historical Context and Legacy</h2>
+<p>Linnainmaa's work was initially published in Finnish in 1970 and later in English in 1976. Due to its focus on numerical analysis and its initial publication language, it remained relatively unknown to the early neural network community.</p>
+<p>Today, Linnainmaa is recognized as a pioneer of automatic differentiation. His algorithm is implemented in every major deep learning framework, including TensorFlow and PyTorch, which use reverse-mode AD to compute the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s necessary for training massive models with billions of <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Automatic Differentiation (AD)</div>
+        <p>A set of techniques to numerically evaluate the derivative of a function specified by a computer program.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Reverse Mode</div>
+        <p>An AD method that computes derivatives by working backward from the output, especially efficient for functions with many <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Computational Graph</div>
+        <p>A directed graph where nodes represent mathematical operations and edges represent the flow of data.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Partial Derivative</div>
+        <p>The derivative of a mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>variate function with respect to one variable while holding others constant.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Rounding Error</div>
+        <p>The difference between the result produced by a given algorithm using exact arithmetic and the result produced by the same algorithm using finite-precision floating-point arithmetic.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Error Propagation Weight</h3>
+<div class="math-block">$$w_i = \frac{\partial f}{\partial x_i}$$</div>
+<div class="math-explanation-box">Linnainmaa defined weights $w_i$ as the partial derivatives of the result $f$ with respect to the intermediate value $x_i$, calculated via the chain rule in reverse.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$f$</td><td>Final output or result of the computation</td></tr><tr><td>$x_i$</td><td>An intermediate or input variable in the sequence of operations</td></tr></table></div>
+<h3>The Chain Rule (Reverse)</h3>
+<div class="math-block">$$\delta_i = \sum_{j \in \text{children}(i)} \delta_j \frac{\partial x_j}{\partial x_i}$$</div>
+<div class="math-explanation-box">The fundamental recursive step of reverse-mode AD, where the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> at node $i$ is the sum of <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s from its dependent nodes $j$, scaled by local derivatives.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\delta_i$</td><td>The 'adjoint' or gradient of the output with respect to node i</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/f49101078fb25f714a9813259ece149581017782_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> ca. 1 = d4.2d2.1 + d4.J~.l + da.ads.2d2, r The<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/f49101078fb25f714a9813259ece149581017782_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> are inactive (as they are e.g.<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Backpropagation</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The application of reverse-mode AD to training artificial neural networks.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Chain Rule</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The basic rule of calculus that enables automatic differentiation.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Numerical Stability</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The property of an algorithm to remain accurate despite rounding errors, which was Linnainmaa's original focus.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>PyTorch / TensorFlow</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Modern software libraries that rely entirely on the reverse-mode AD algorithm described by Linnainmaa.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

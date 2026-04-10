@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAN: Kolmogorov-Arnold Networks - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Theoretical Foundation: The Kolmogorov-Arnold Theorem</a></li>
+        <li><a href="#section-1">Architecture: Learnable Edges vs. Fixed Nodes</a></li>
+        <li><a href="#section-2">Spline Parameterization and Grid Extension</a></li>
+        <li><a href="#section-3">Interpretability and AI for Science</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+        <li><a href="#references">References</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">KAN: Kolmogorov-Arnold Networks</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Kolmogorov-Arnold Networks (KANs)</div>
+        <div class="infobox-image"><img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig1.png" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Edge-Activation Network (Spline-based)</td></tr>
+          <tr><th>Key Innovation</th><td>Replacing linear weights with learnable univariate activation functions on edges.</td></tr>
+          <tr><th>Performance Metric</th><td>Faster neural scaling laws ($N^{-4}$ vs $N^{-2}$ for specific tasks) and higher accuracy with fewer parameters.</td></tr>
+          <tr><th>Computational Efficiency</th><td>More parameter-efficient for function fitting, though currently slower per-parameter training due to spline evaluation.</td></tr>
+
+          <tr><th>Venue</th><td>International Conference on Learning Representations</td></tr>
+          <tr><th>Year</th><td>2024</td></tr>
+          <tr><th>Citations</th><td>1543</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.48550/arXiv.2404.19756" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">Kolmogorov-Arnold Networks (<span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s) are a novel class of neural network architectures that challenge the dominance of Mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>-Layer Perceptrons (MLPs). Inspired by the Kolmogorov-Arnold representation theorem, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s replace fixed activation functions on nodes with learnable activation functions on edges, <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ized as splines. This structural shift allows <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s to achieve superior accuracy and interpretability compared to MLPs, particularly in scientific computing tasks, while demonstrating faster neural scaling laws.</p>
+<h2 id="section-0">Theoretical Foundation: The Kolmogorov-Arnold Theorem</h2>
+<p>The mathematical bedrock of <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s is the Kolmogorov-Arnold representation theorem, which states that any mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>variate continuous function can be represented as a finite sum of continuous <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s of a single variable. While MLPs are based on the Universal Approximation Theorem, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s directly implement the structure suggested by Kolmogorov and Arnold.</p>
+<p>Specifically, for a function of $n$ variables, the theorem guarantees a representation using $2n+1$ inner functions and a set of outer functions. <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s generalize this by stacking these structures into mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>ple layers, creating a deep architecture that can learn complex hierarchical representations.</p>
+<h2 id="section-1">Architecture: Learnable Edges vs. Fixed Nodes</h2>
+<p>In a traditional MLP, data is mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plied by a fixed linear weight and then passed through a fixed activation function (like ReLU or <span class="glossary-term" data-definition="A mathematical function having a characteristic 'S'-shaped curve.">sigmoid</span>) at the node. <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s eliminate linear weights entirely. Instead, each edge in the network is a learnable <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>, typically represented as a <span class="glossary-term" data-definition="A specific type of spline used for its efficiency and stability in approximating functions.">b-spline</span>.</p>
+<p>Nodes in a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> simply perform a summation of the incoming signals from the edges. This 'weight-on-edge' approach allows the network to adapt its activation functions locally to the data, enabling much greater flexibility in function approximation. <b>Figure 1</b> compares this structure directly with the MLP.</p>
+<h2 id="section-2">Spline Parameterization and Grid Extension</h2>
+<p>To make the edge functions learnable, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s use <span class="glossary-term" data-definition="A specific type of spline used for its efficiency and stability in approximating functions.">b-spline</span>s, which are piecewise polynomial functions defined by a grid of points. The grid density can be increased during training—a process called 'grid extension'—allowing the network to refine its approximation of complex functions without retraining from scratch.</p>
+<p>Each edge function is a combination of a base function (like <span class="glossary-term" data-definition="Sigmoid Linear Unit; a common activation function used as a basis in <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> edge functions.">silu</span>) and a spline component. This hybrid approach ensures that the network has a global 'shape' while being able to capture fine-grained local details.</p>
+<h2 id="section-3">Interpretability and AI for Science</h2>
+<p>One of the most significant advantages of <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s is their interpretability. Because the edge functions are univariate, they can be easily visualized and often simplified into symbolic mathematical expressions. This makes <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s ideal 'collaborators' for scientists looking to discover physical or mathematical laws.</p>
+<p>The researchers demonstrated this by using <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s to rediscover the knot polynomial relation in mathematics and scaling laws in condensed matter physics. By pruning weak connections and performing symbolic regression on the learned edge functions, users can extract human-readable formulas from the trained model.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Kolmogorov-Arnold Representation Theorem</div>
+        <p>A theorem stating that mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>variate continuous functions can be decomposed into a sum of <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s, providing the theoretical basis for <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Learnable Activation Function</div>
+        <p>Instead of fixed functions like ReLU, <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s use <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s on edges that are optimized during the training process.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">B-Splines</div>
+        <p>Piecewise polynomial functions used to <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ize the activation functions on <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> edges, allowing for flexible and local control of function shape.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Grid Extension</div>
+        <p>A technique in <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>s where the number of spline <span class="glossary-term" data-definition="The discrete points that define the segments of a spline function.">grid points</span> is increased to improve the resolution of the learned functions during training.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Symbolic Regression</div>
+        <p>The process of identifying simple mathematical formulas that approximate the learned <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s in a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span>, enhancing interpretability.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>KAN Layer Transformation</h3>
+<div class="math-block">$$y_q = \sum_{p=1}^{n} \phi_{q,p}(x_p)$$</div>
+<div class="math-explanation-box">The transformation for a single <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> layer, where the output node $y_q$ is the sum of <span class="glossary-term" data-definition="A function that takes only one input variable.">univariate function</span>s $\phi_{q,p}$ applied to each input $x_p$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x_p$</td><td>p-th input variable</td></tr><tr><td>$\phi_{q,p}$</td><td>Learnable univariate activation function on the edge between input p and output q</td></tr><tr><td>$y_q$</td><td>q-th output node</td></tr></table></div>
+<h3>Edge Function Decomposition</h3>
+<div class="math-block">$$\phi(x) = w \cdot (b(x) + \text{spline}(x))$$</div>
+<div class="math-explanation-box">The <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>ization of a <span class="glossary-term" data-definition="Kolmogorov-Arnold Network; a neural network with learnable functions on its edges.">kan</span> edge function, combining a basis function $b(x)$ and a learnable spline.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$b(x)$</td><td>Basis function, typically SiLU(x)</td></tr><tr><td>$\text{spline}(x)$</td><td>The B-spline component of the activation function</td></tr><tr><td>$w$</td><td>An overall scaling weight</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> 1: Multi-Layer Perceptrons (MLPs) vs. Kolmogorov-Arnold Networks (KANs)<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Diagram contrasting the MLP architecture (fixed node activations, learnable weights) with the KAN architecture (learnable edge activations, summation nodes).
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> 1: Our proposed Kolmogorov-Arnold networks are in honor of two great late mathematicians, Andrey<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Illustration of the Kolmogorov-Arnold representation theorem as a two-layer KAN-like structure.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig3.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> 2: Left: Notations of activations that flow through the network. Right: an activation function is<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig4.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> 4: An example of how to do symbolic regression with KAN.<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig5.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 5:</b> 1: KANs are interepretable for simple symbolic tasks<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig6.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 6:</b> 2: Unsupervised learning of a toy task. KANs can identify groups of dependent variables, i.e.,<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig7.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 7:</b> 3: Knot dataset, supervised mode. With KANs, we rediscover Deepmind’s results that signature is<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig8.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 8:</b> 4: Knot dataset, unsupervised mode. With KANs, we rediscover three mathematical relations in the<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig9.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 9:</b> 5: Results for the Mosaic Model. Top: phase diagram. Middle and Bottom: KANs can obtain both<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig10.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 10:</b> 6: Human-KAN collaboration to discover mobility edges of GAAM and MAAM. The human user can<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig11.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 11:</b> 1: Should I use KANs or MLPs?<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig12.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 12:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig13.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 13:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig14.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 14:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig15.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 15:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/14fdab35cc6288083a38a92392af3f1da0b95a90_fig16.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 16:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Multi-Layer Perceptron (MLP)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The traditional neural network architecture that KANs aim to improve upon.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Splines</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The mathematical curves used to define the learnable functions in KANs.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Symbolic AI</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A subfield of AI concerned with representing knowledge using symbols and logic, which KANs bridge through symbolic regression.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Neural Scaling Laws</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Power-law relationships describing how model performance improves with increased parameters or data.</span>
+        </div>
+</div>
+
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="26d46ca94df7b11a0fb876762cb5d6d525c4e7da">On the expressiveness and spectral bias of KANs</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yixuan Wang, Jonathan W. Siegel et al. (2024)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="412d575565db92e91127a31c9d5aeb1d86ed78b6">Rigor with machine learning from field theory to the Poincaré conjecture</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Sergei Gukov, James Halverson et al. (2024)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="605b60082b8c6b9d403f7fa56127dd4d76427df4">A Resource Model For Neural Scaling Law</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Jinyeop Song, Ziming Liu et al. (2024)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="ce25592a014564604dd0f70900b414258ac4733e">Sharp Lower Bounds on the Manifold Widths of Sobolev and Besov Spaces</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Jonathan W. Siegel (2024)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="d5aa02bcdbb5d2b39cfd9440fe0cdb6932737ee3">PirateNets: Physics-informed Deep Learning with Residual Adaptive Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Sifan Wang, Bowen Li et al. (2024)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="42c1751ba10dc6714f9506e65d68b2b49667db99">Deep Neural Networks and Finite Elements of Any Order on Arbitrary Dimensions</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Juncai He, Jinchao Xu (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="0d49d3f471ef64b9dfbfb5cf95f8ee828ade6f92">On the Kolmogorov neural networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Aysu Ismayilova, V. Ismailov (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="edb548fe7574d99454b352ffdb61bca93c3072ba">Sparse Autoencoders Find Highly Interpretable Features in Language Models</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Hoagy Cunningham, Aidan Ewart et al. (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="10a178bb3df685de6fc86d167f5dba2afa2110fc">On the Optimal Expressive Power of ReLU DNNs and Its Application in Approximation With the Kolmogorov Superposition Theorem</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Juncai He (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="40e1f5912213a300321b9988b9eb9bdb4b58c8f4">Multi-stage Neural Networks: Function Approximator of Machine Precision</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yongjian Wang, Ching-Yao Lai (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="a72ba8dc49a6a842f69c312ac9a037a0f33b74f5">The Clock and the Pizza: Two Stories in Mechanistic Explanation of Neural Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Ziqian Zhong, Ziming Liu et al. (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="be3ecf03c30561b6be525398d85a1cd6aea12de8">Separable Physics-Informed Neural Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Junwoo Cho, Seungtae Nam et al. (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f8029060e91209f048b3f9882f2cdd3607785ccd">Seeing is Believing: Brain-Inspired Modular Training for Mechanistic Interpretability</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Ziming Liu, Eric Gan et al. (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="9e4980cb927b803d375c5796f4a2eb3a7fe0555d">The Quantization Model of Neural Scaling</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Eric J. Michaud, Ziming Liu et al. (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="f680d47a51a0e470fcb228bf0110c026535ead1b">Progress measures for grokking via mechanistic interpretability</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Neel Nanda, Lawrence Chan et al. (2023)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="588fb9567802a277cd969a94bf125f008924a472">Exact New Mobility Edges between Critical and Localized States.</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Xiaoxia Zhou, Yongjian Wang et al. (2022)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="183c3a44e5439a3b6bff526ec95bf8274c8fef98">Exponentially Convergent Multiscale Finite Element Method</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yifan Chen, T. Hou et al. (2022)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b0d08f752190c771916f4020c9b757c3c5d124d4">FC-PINO: High Precision Physics-Informed Neural Operators via Fourier Continuation</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Ha Maust, Valentin Duruisseaux et al. (2022)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="04a06e425a107015bbb18bb00eb10f94bc3f3766">Optimal Approximation Rates for Deep ReLU Neural Networks on Sobolev and Besov Spaces</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Jonathan W. Siegel (2022)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="0f91f9299ee0b4850952689d57d802c40f7a0a1c">Reentrant delocalization transition in one-dimensional photonic quasicrystals</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - S. Vaidya, Christina Jörg et al. (2022)</span>
+        </li>
+      </ol>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

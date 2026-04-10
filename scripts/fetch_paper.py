@@ -27,7 +27,7 @@ sch = SemanticScholar(api_key=S2_API_KEY)
 
 INGEST_DIR = Path("ingest")
 ASSETS_DIR = Path("wiki/site/assets")
-OUTPUT_DIR = Path("/tmp/wiki-gen")
+OUTPUT_DIR = Path("/Users/woodj/.gemini/tmp/wiki-gen")
 
 
 def ensure_dirs():
@@ -78,28 +78,82 @@ def extract_figures(pdf_path, paper_id):
     seen_captions = set()
 
     for page_num, page in enumerate(doc):
-        for img_idx, img in enumerate(page.get_images(full=True)):
-            xref = img[0]
-            base_image = doc.extract_image(xref)
-            if not base_image:
-                continue
-            image_bytes = base_image["image"]
-            image_ext = base_image["ext"]
-            if len(image_bytes) < 10000:
-                continue
+        caption = extract_caption(page)
+        if not caption or caption in seen_captions:
+            continue
+        
+        # We found a new figure caption. Let's try to get the image.
+        images = page.get_images(full=True)
+        
+        if images:
+            # Traditional image extraction
+            for img_idx, img in enumerate(images):
+                xref = img[0]
+                base_image = doc.extract_image(xref)
+                if not base_image: continue
+                image_bytes = base_image["image"]
+                image_ext = base_image["ext"]
+                
+                if len(image_bytes) < 10000: continue
+                
+                filename = f"{paper_id}_fig{len(figures) + 1}.{image_ext}"
+                filepath = ASSETS_DIR / "figures" / filename
+                filepath.parent.mkdir(parents=True, exist_ok=True)
+                with open(filepath, "wb") as f:
+                    f.write(image_bytes)
 
-            caption = extract_caption(page)
-            if caption and caption in seen_captions:
-                continue
-            if caption:
                 seen_captions.add(caption)
+                figures.append({
+                    'filename': filename,
+                    'caption': caption,
+                    'page': page_num + 1,
+                    'index': len(figures) + 1
+                })
+                break # Only take one image per caption/page for now
+        else:
+            # Vector graphics or no images found - try to find the figure area
+            # We look for the drawings (lines, rectangles, etc.) on the page
+            drawings = page.get_drawings()
+            if drawings:
+                # Merge all drawing rectangles to find the extent of vector graphics
+                bbox = None
+                for d in drawings:
+                    if bbox is None:
+                        bbox = d["rect"]
+                    else:
+                        bbox = bbox | d["rect"] # Union of rectangles
+                
+                # Heuristic: also include the area above the caption if it's nearby
+                # This is a bit complex, so for now let's just use the drawings bbox
+                # if it's reasonably large but not the whole page.
+                
+                if bbox and bbox.width > 50 and bbox.height > 50:
+                    # Add a small margin
+                    bbox = bbox + (-10, -10, 10, 10)
+                    # Clip to page boundaries
+                    bbox = bbox & page.rect
+                    
+                    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2), clip=bbox)
+                else:
+                    # Fallback to whole page if drawings are too small or not found
+                    # but only if the page doesn't have too much text (avoid full text pages as figures)
+                    if len(page.get_text()) < 2000:
+                        pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+                    else:
+                        continue
+            else:
+                # No drawings, no images. Only render if it's a very low-text page
+                if len(page.get_text()) < 1000:
+                    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+                else:
+                    continue
 
-            filename = f"{paper_id}_fig{len(figures) + 1}.{image_ext}"
+            filename = f"{paper_id}_fig{len(figures) + 1}.png"
             filepath = ASSETS_DIR / "figures" / filename
             filepath.parent.mkdir(parents=True, exist_ok=True)
-            with open(filepath, "wb") as f:
-                f.write(image_bytes)
-
+            pix.save(str(filepath))
+            
+            seen_captions.add(caption)
             figures.append({
                 'filename': filename,
                 'caption': caption,

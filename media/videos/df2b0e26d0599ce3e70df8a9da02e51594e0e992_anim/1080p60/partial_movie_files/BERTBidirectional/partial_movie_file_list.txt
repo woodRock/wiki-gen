@@ -1,0 +1,13 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/3544663784_1253636071_223132457.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_3801024623_1214514074.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_1432596116_2076649148.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_3303733411_2542846763.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_111042677_2374935452.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_1432596116_1358291991.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_794687448_2507536472.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_4073496654_1953484705.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_2535767983_4152008681.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_3239407185_3528330458.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_1636890948_4246266419.mp4'
+file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/df2b0e26d0599ce3e70df8a9da02e51594e0e992_anim/1080p60/partial_movie_files/BERTBidirectional/260329756_2872842549_3854085860.mp4'

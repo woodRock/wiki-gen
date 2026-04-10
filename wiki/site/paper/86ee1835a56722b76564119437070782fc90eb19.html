@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generative Adversarial Nets - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">The Adversarial Framework</a></li>
+        <li><a href="#section-1">The Minimax Objective Function</a></li>
+        <li><a href="#section-2">Theoretical Convergence</a></li>
+        <li><a href="#section-3">Advantages and Limitations</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+        <li><a href="#references">References</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Generative Adversarial Nets</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Generative Adversarial Networks (GANs)</div>
+        <div class="infobox-image"><img src="../assets/figures/86ee1835a56722b76564119437070782fc90eb19_fig1.png" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Adversarial Generative Framework</td></tr>
+          <tr><th>Key Innovation</th><td>Minimax game between a Generator and a Discriminator.</td></tr>
+          <tr><th>Performance Metric</th><td>Ability to generate sharp, realistic samples without explicit density estimation.</td></tr>
+          <tr><th>Computational Efficiency</th><td>Backpropagation-based training; no need for complex sampling during training.</td></tr>
+
+          <tr><th>Venue</th><td>Neural Information Processing Systems</td></tr>
+          <tr><th>Year</th><td>2014</td></tr>
+          <tr><th>Citations</th><td>2328</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">Generative <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">adversarial</span> Nets (GANs) introduced a novel framework for estimating generative models via an <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">adversarial</span> process. By simultaneously training two models—a generator that captures the data distribution and a discriminator that estimates the probability that a sample came from the training data rather than the generator—this approach avoids the need for Markov chains or unrolling approximate inference networks. The resu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>ng minimax game leads to a powerful method for generating high-quality, realistic data samples, which has since transformed the field of generative modeling.</p>
+<h2 id="section-0">The Adversarial Framework</h2>
+<p>The core idea of GANs is to frame generative modeling as a competition between two players. The **Generator ($G$)** takes a random noise vector as input and attempts to map it to the data space (e.g., an image). Its goal is to produce samples so realistic that they are indistinguishable from real training data.</p>
+<p>The **Discriminator ($D$)** is a binary classifier that takes an input and outputs the probability that it came from the real dataset rather than from $G$. During training, $D$ is optimized to correctly label real and fake samples, while $G$ is optimized to maximize the probability of $D$ making a mistake. This competition drives both models to improve until $G$ produces highly realistic samples.</p>
+<h2 id="section-1">The Minimax Objective Function</h2>
+<p>The training process is defined by a value function $V(D, G)$, which represents a minimax game. $D$ tries to maximize the log-likelihood of correctly identifying real and fake data, while $G$ tries to minimize the log-probability that $D$ identifies its samples as fake.</p>
+<p>In practice, especially early in training, the generator may be so poor that the discriminator can reject samples with high confidence. To address this, the authors suggest a non-saturating objective for the generator: instead of minimizing $\log(1 - D(G(z)))$, the generator can be trained to maximize $\log D(G(z))$. This provides stronger <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s for the generator when its performance is low.</p>
+<h2 id="section-2">Theoretical Convergence</h2>
+<p>The paper provides a theoretical proof that if $G$ and $D$ have enough capacity, there exists a unique solution where $G$ perfectly recovers the data distribution and $D$ is equal to $1/2$ everywhere (meaning it can no longer distinguish between real and fake samples).</p>
+<p>This <span class="glossary-term" data-definition="A state in a game where no player can improve their outcome by changing their strategy alone.">equilibrium</span> point corresponds to the global minimum of the Jensen-Shannon divergence between the model's distribution and the true data distribution. While reaching this global optimum is challenging in practice due to the non-convex nature of neural network optimization, the framework provides a solid mathematical foundation for <span class="glossary-term" data-definition="A setting involving two competing agents with opposing goals.">adversarial</span> training.</p>
+<h2 id="section-3">Advantages and Limitations</h2>
+<p>GANs offer several advantages over previous generative models like Boltzmann machines or Variational Autoencoders (VAEs). They do not require an explicit <span class="glossary-term" data-definition="A function that describes the relative likelihood of a random variable taking on a given value.">probability density</span> function, avoiding the need for complex approximate inference or Markov chain sampling. Furthermore, they tend to produce sharper, more detailed images compared to the often-blurry outputs of VAEs.</p>
+<p>However, GANs are notoriously difficult to train. Issues such as '<span class="glossary-term" data-definition="When a generative model maps many different inputs to the same output, losing diversity in its samples.">mode <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span></span>' (where the generator produces a limited variety of samples) and training instability require careful <span class="glossary-term" data-definition="A configuration setting for a model that is not learned from the data, such as the dropout rate $p$.">hyper<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span></span> tuning and architectural choices. Despite these challenges, the GAN framework has inspired thousands of variations and applications in art, science, and industry.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Generator (G)</div>
+        <p>A neural network that learns to create fake data from a latent noise vector, aiming to mimic the real data distribution.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Discriminator (D)</div>
+        <p>A neural network that acts as a judge, learning to distinguish between real data and the fake data produced by the generator.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Minimax Game</div>
+        <p>A mathematical framework where one player tries to maximize their gain while the other tries to minimize it, leading to a competitive <span class="glossary-term" data-definition="A state in a game where no player can improve their outcome by changing their strategy alone.">equilibrium</span>.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Jensen-Shannon Divergence</div>
+        <p>A measure of similarity between two probability distributions, which the GAN objective implicitly minimizes.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Latent Space</div>
+        <p>The low-dimensional space of random noise (z) that serves as the input to the generator.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Minimax Value Function</h3>
+<div class="math-block">$$\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{data}(x)}[\log D(x)] + \mathbb{E}_{z \sim p_z(z)}[\log(1 - D(G(z)))]$$</div>
+<div class="math-explanation-box">The fundamental objective of GANs, where the discriminator $D$ maximizes its ability to classify real/fake, and the generator $G$ minimizes the probability of being caught.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$D(x)$</td><td>Discriminator's probability that real sample x is real</td></tr><tr><td>$G(z)$</td><td>Generator's output for noise vector z</td></tr><tr><td>$D(G(z))$</td><td>Discriminator's probability that generated sample G(z) is real</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/86ee1835a56722b76564119437070782fc90eb19_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> for a less formal, more pedagogical<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Visual representation of the adversarial training process, showing how the generator's distribution (green) eventually aligns with the data distribution (black) as the discriminator (blue) reaches an equilibrium of 0.5.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/86ee1835a56722b76564119437070782fc90eb19_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> Visualization of samples from the model. Rightmost column shows the nearest training example of<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Variational Autoencoder (VAE)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A different class of generative models based on probabilistic graphical models and approximate inference.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Deep Convolutional GAN (DCGAN)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">An influential extension of the original GAN that used convolutional layers for more stable image generation.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Mode Collapse</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A common failure mode in GAN training where the generator only learns to produce a few types of samples.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Wasserstein GAN (WGAN)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A variant that uses the Earth Mover's distance to improve training stability and avoid vanishing gradients.</span>
+        </div>
+</div>
+
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="eb7ee0bc355652654990bcf9f92f124688fde493">InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Xi Chen, Yan Duan et al. (2016)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="438697e4d608ca87ff28fa6b4ad28be124d4fc0f">A Role for Fragment-Based Drug Design in Developing Novel Lead Compounds for Central Nervous System Targets</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Michael J. Wasko, Kendy A. Pellegrene et al. (2015)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="fb180bea71bf830773e6c47764fb457d3a79cf14">Molecular Docking and Structure-Based Drug Design Strategies</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - L. Ferreira, Ricardo N Dos Santos et al. (2015)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="331f0fb3b6176c6e463e0401025b04f6ace9ccd3">Neural Variational Inference and Learning in Belief Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - A. Mnih, Karol Gregor (2014)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="484ad17c926292fbe0d5211540832a8c8a8e958b">Stochastic Backpropagation and Approximate Inference in Deep Generative Models</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Danilo Jimenez Rezende, S. Mohamed et al. (2014)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="d891dc72cbd40ffaeefdc79f2e7afe1e530a23ad">Intriguing properties of neural networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Christian Szegedy, Wojciech Zaremba et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5f5dc5b9a2ba710937e2c413b37b053cd673df02">Auto-Encoding Variational Bayes</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Diederik P. Kingma, M. Welling (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5656fa5aa6e1beeb98703fc53ec112ad227c49ca">Multi-Prediction Deep Boltzmann Machines</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - I. Goodfellow, Mehdi Mirza et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="695a2c95eacdbccb7a73d2f1e90e7b35b4b3d864">Deep AutoRegressive Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Karol Gregor, Ivo Danihelka et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="2f7ad26514bce4df6c8ebc42c90383ef3a974df4">Pylearn2: a machine learning research library</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - I. Goodfellow, David Warde-Farley et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5ffa8bf1bf3e39227be28de4ff6915d3b21eb52d">Deep Generative Stochastic Networks Trainable by Backprop</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yoshua Bengio, Eric Thibodeau-Laufer et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="d9704f8119d6ba748230b4f2ad59f0e8c64fdfb0">Generalized Denoising Auto-Encoders as Generative Models</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yoshua Bengio, L. Yao et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b7b915d508987b73b61eccd2b237e7ed099a2d29">Maxout Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - I. Goodfellow, David Warde-Farley et al. (2013)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="abd1c342495432171beb7ca8fd9551ef13cbd0ff">ImageNet classification with deep convolutional neural networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - A. Krizhevsky, I. Sutskever et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="855d0f722d75cc56a66a00ede18ace96bafee6bd">Theano: new features and speed improvements</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Frédéric Bastien, Pascal Lamblin et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="e33cbb25a8c7390aec6a398e36381f4f7770c283">Deep Neural Networks for Acoustic Modeling in Speech Recognition</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Geoffrey E. Hinton, L. Deng et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="d0965d8f9842f2db960b36b528107ca362c00d1a">Better Mixing via Deep Representations</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yoshua Bengio, Grégoire Mesnil et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="0060745e006c5f14ec326904119dca19c6545e51">Improving neural networks by preventing co-adaptation of feature detectors</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Geoffrey E. Hinton, Nitish Srivastava et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="6bf0414dae4f10c7e54fb9e5e8af5d0d0cab290b">A Generative Process for Contractive Auto-Encoders</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Salah Rifai, Yoshua Bengio et al. (2012)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="d1c67346e46b4d0067b3c2e5d3b959a8bc24b28c">Quickly Generating Representative Samples from an RBM-Derived Process</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Olivier Breuleux, Yoshua Bengio et al. (2011)</span>
+        </li>
+      </ol>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

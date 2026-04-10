@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flocks, herds, and schools: a distributed behavioral model - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">The Distributed Behavioral Model</a></li>
+        <li><a href="#section-1">The Three Fundamental Steering Rules</a></li>
+        <li><a href="#section-2">Neighborhood and Perception</a></li>
+        <li><a href="#section-3">Impact on Computer Graphics and Science</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Flocks, herds, and schools: a distributed behavioral model</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Boids Model of Collective Motion</div>
+        <div class="infobox-image"><img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig1.png" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Distributed Agent-Based Model</td></tr>
+          <tr><th>Key Innovation</th><td>Emergent group behavior through simple local steering rules: Separation, Alignment, Cohesion.</td></tr>
+          <tr><th>Performance Metric</th><td>First model to produce lifelike flocking behavior in computer graphics; standard for agent-based simulations.</td></tr>
+          <tr><th>Computational Efficiency</th><td>Localized interactions allow for large-scale simulations with high frame rates.</td></tr>
+
+          <tr><th>Venue</th><td>International Conference on Computer Graphics and Interactive Techniques</td></tr>
+          <tr><th>Year</th><td>1987</td></tr>
+          <tr><th>Citations</th><td>10538</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1145/280811.281008" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">Craig Reynolds' 1987 paper, 'Flocks, Herds, and Schools: A Distributed Behavioral Model,' introduced the '<span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>s' model, a groundbreaking approach to simulating collective motion in computer graphics. By breaking down complex group behavior into three simple local rules—<span class="glossary-term" data-definition="A steering rule that keeps flockmates from colliding.">separation</span>, <span class="glossary-term" data-definition="A steering rule that causes flockmates to face the same direction.">alignment</span>, and <span class="glossary-term" data-definition="A steering rule that keeps flockmates together by moving toward their center of mass.">cohesion</span>—Reynolds demonstrated that lifelike aggregate motion could emerge from the interactions of individual agents without a centralized leader. This model revolutionized character animation and found applications across diverse fields, including biological modeling, robotics, and artificial life.</p>
+<h2 id="section-0">The Distributed Behavioral Model</h2>
+<p>Before Reynolds' work, animating groups of creatures often relied on scripted paths or global controllers, which lacked the organic feel of natural flocks. Reynolds proposed a distributed model where each '<span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>' (a simulated bird-like object) makes its own steering decisions based on its immediate neighbors.</p>
+<p>This approach shifts the complexity from the group level to the interaction level, allowing for emergent behaviors that are both dynamic and realistic. The model assumes that each agent has access to limited information about the positions and velocities of nearby <span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>s, rather than a global view of the entire flock.</p>
+<h2 id="section-1">The Three Fundamental Steering Rules</h2>
+<p>The core of the <span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>s model consists of three simple steering behaviors that are applied to each agent at every time step:</p>
+<p>1. **<span class="glossary-term" data-definition="A steering rule that keeps flockmates from colliding.">separation</span>**: Steer to avoid crowding or colliding with nearby flockmates. This ensures that agents maintain a safe personal space.
+2. **<span class="glossary-term" data-definition="A steering rule that causes flockmates to face the same direction.">alignment</span>**: Steer towards the average heading of nearby flockmates. This rule synchronizes the velocity and direction of the group.
+3. **<span class="glossary-term" data-definition="A steering rule that keeps flockmates together by moving toward their center of mass.">cohesion</span>**: Steer to move towards the average position (center of mass) of nearby flockmates. This keeps the flock together as a cohesive unit.</p>
+<p>Together, these rules balance the competing needs for individual safety, group synchronization, and collective unity.</p>
+<h2 id="section-2">Neighborhood and Perception</h2>
+<p>A critical aspect of the <span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>s model is the concept of a 'neighborhood.' A <span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span> only reacts to flockmates within a certain distance and angle, simulating a natural field of vision and perception. This localization is what makes the model 'distributed' rather than 'centralized.'</p>
+<p>If the neighborhood is too small, the flock may break apart into isolated individuals. If it is too large, the <span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>s may become overwhelmed by distant information, leading to sluggish or unrealistic motion. Modern implementations often use spatial partitioning (like quadtrees or grids) to efficiently identify neighbors in large-scale simulations.</p>
+<h2 id="section-3">Impact on Computer Graphics and Science</h2>
+<p>The <span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>s model had an immediate and lasting impact on the field of computer graphics, most notably in the animation of massive battle scenes and wildlife in films like *Batman Returns* and *The Lion King*. Beyond entertainment, the model provided a foundation for the study of self-organizing systems in biology and physics.</p>
+<p>In robotics, the principles of flocking are used to coordinate swarms of autonomous drones and underwater vehicles. In social science, similar models help explain human crowd dynamics and the spread of information through social networks. Reynolds' work remains one of the most cited and influential papers in the history of SIGGRAPH.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Boid</div>
+        <p>A simulated bird-like agent that follows local rules to achieve complex group behavior.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Separation</div>
+        <p>A steering behavior that prevents agents from colliding by applying a repulsive force from nearby neighbors.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Alignment</div>
+        <p>A steering behavior that matches an agent's velocity with its neighbors, ensuring uniform flock movement.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Cohesion</div>
+        <p>A steering behavior that pulls agents toward the center of their local neighborhood, maintaining group unity.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Emergence</div>
+        <p>The process where complex, large-scale patterns arise from the simple, local interactions of individual components.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Steering Force Vector</h3>
+<div class="math-block">$$\vec{F}_{steering} = \vec{v}_{desired} - \vec{v}_{current}$$</div>
+<div class="math-explanation-box">Reynolds defines steering as a force applied to an agent's current velocity to reach a desired target state.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\vec{F}_{steering}$</td><td>The resulting steering force vector</td></tr><tr><td>$\vec{v}_{desired}$</td><td>The target velocity according to the flocking rules</td></tr><tr><td>$\vec{v}_{current}$</td><td>The current velocity of the boid</td></tr></table></div>
+<h3>Cohesion Rule (Center of Mass)</h3>
+<div class="math-block">$$\vec{C} = \frac{1}{N} \sum_{i=1}^{N} \vec{p}_i$$</div>
+<div class="math-explanation-box">The <span class="glossary-term" data-definition="A steering rule that keeps flockmates together by moving toward their center of mass.">cohesion</span> steering vector is directed toward the average position of all <span class="glossary-term" data-definition="A term coined by Craig Reynolds to describe a simulated bird-like agent.">boid</span>s within the local neighborhood.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\vec{C}$</td><td>The center of mass of the local neighborhood</td></tr><tr><td>$\vec{p}_i$</td><td>The position of the i-th neighbor</td></tr><tr><td>$N$</td><td>The number of neighbors in the perception radius</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Visual demonstration of the three boids rules showing how individual force vectors combine to produce complex flocking patterns.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig3.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig4.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig5.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 5:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig6.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 6:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig7.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 7:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig8.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 8:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig9.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 9:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig10.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 10:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig11.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 11:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig12.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 12:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig13.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 13:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig14.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 14:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/dd9bad150d7c8051c5515997af2ea29c191e50e5_fig15.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 15:</b> <br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Particle Systems</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A technique in computer graphics that uses large numbers of small particles to simulate fuzzy phenomena like fire and clouds.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Artificial Life</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The study of systems related to life, its processes, and its evolution through simulations using computer models and robotics.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Swarm Intelligence</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The collective behavior of decentralized, self-organized systems, typically natural or artificial.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Emergent Behavior</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Complex patterns and properties that arise from the interaction of simpler entities.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

@@ -1,2 +1,0 @@
-description = "Fix a paper's title in the database and regenerate the site."
-prompt = "Use the 'fix-title' skill to update the title for the given paper ID: {{args}}"

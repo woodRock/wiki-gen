@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mamba: Linear-Time Sequence Modeling with Selective State Spaces - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">From Linear SSMs to Selective Selection</a></li>
+        <li><a href="#section-1">Hardware-Aware Parallel Scan</a></li>
+        <li><a href="#section-2">The Mamba Block Architecture</a></li>
+        <li><a href="#section-3">Empirical Performance and Scaling</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">attention-mechanism</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">large-language-models</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">transformer</span></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Selective State Space Models (S6)</div>
+        <div class="infobox-image"><img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig1.png" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Selective State Space Model (SSM)</td></tr>
+          <tr><th>Key Innovation</th><td>Input-dependent (selective) transition matrices and a hardware-aware parallel scan algorithm.</td></tr>
+          <tr><th>Performance Metric</th><td>5x higher throughput than Transformers; state-of-the-art performance on million-length sequences.</td></tr>
+          <tr><th>Computational Efficiency</th><td>Linear scaling in sequence length ($O(L)$) for both training and inference.</td></tr>
+
+          <tr><th>Venue</th><td>arXiv.org</td></tr>
+          <tr><th>Year</th><td>2023</td></tr>
+          <tr><th>Citations</th><td>6401</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">Mamba is a breakthrough sequence modeling architecture that introduces selective state space models (<span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>s) to achieve linear-time scaling and high-performance across modalities like language, genomics, and audio. By allowing <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s to be functions of the input, Mamba enables content-based reasoning—a key limitation of previous subquadratic architectures. Combined with a hardware-aware parallel algorithm, Mamba matches or exceeds Transformer performance while offering 5x higher throughput and the ability to process million-length sequences.</p>
+<h2 id="section-0">From Linear SSMs to Selective Selection</h2>
+<p>Traditional State Space Models (<span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>s) are linear time-invariant (<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>) systems that map an input sequence to an output sequence through an intermediate latent state. While efficient due to their <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al representation, <span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span> systems struggle with content-based reasoning because their transition matrices are fixed and independent of the input.</p>
+<p>Mamba introduces 'Selection' by making the <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s ($B$, $C$, and $\Delta$) functions of the input $x$. This allows the model to 'selectively' propa<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> or forget information based on the current <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>, enabling it to handle discrete modalities like language where certain words (like 'if' or 'else') dictate the importance of subsequent information.</p>
+<h2 id="section-1">Hardware-Aware Parallel Scan</h2>
+<p>The introduction of input-dependency breaks the <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>al property of <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>s, seemingly requiring a slow <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> computation. Mamba overcomes this through a hardware-aware parallel scan algorithm. Instead of materializing the full expanded state in slow GPU memory (<span class="glossary-term" data-definition="High Bandwidth Memory; the primary, larger, but slower memory used on GPUs.">hbm</span>), the model performs the discretization and recurrence in fast <span class="glossary-term" data-definition="Static Random-Access Memory; fast, on-chip memory used for intermediate computations in GPUs.">sram</span>.</p>
+<p>By utilizing the memory hierarchy of modern GPUs, Mamba achieves the efficiency of <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>s while maintaining the flexibility of <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> models. This allows the model to scale linearly with sequence length, making it practical for processing extremely long contexts that would be computationally prohibitive for Transformers' $O(L^2)$ attention.</p>
+<h2 id="section-2">The Mamba Block Architecture</h2>
+<p>The Mamba architecture simplifies the standard deep learning stack by integrating the selective <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> into a streamlined block. Unlike Transformers, which alternate between attention and MLP layers, Mamba uses a single homogenous block that combines linear projections, 1D <span class="glossary-term" data-definition="A mathematical operation on two functions that produces a third function expressing how the shape of one is modified by the other.">convolution</span>s, and the selective <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>.</p>
+<p>This design removes the need for attention mechanisms entirely, significantly reducing the memory footprint for <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>s in autoregressive generation, enabling O(1) per-<span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> attention at the cost of O(n) memory.">kv cache</span>s during inference. The result is a model that is both faster to train and more efficient to deploy, particularly for long-generation tasks.</p>
+<h2 id="section-3">Empirical Performance and Scaling</h2>
+<p>In language modeling benchmarks, Mamba-3B matches the performance of Transformers twice its size. It demonstrates consistent improvements as the sequence length increases, whereas Transformers often suffer from performance degradation or memory exhaustion beyond their training window.</p>
+<p>Beyond language, Mamba excels in genomics (long DNA sequences) and audio modeling, where its ability to handle millions of time steps with linear complexity provides a decisive advantage over previous state-of-the-art architectures.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Selective SSM (S6)</div>
+        <p>A state space model where the <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span>s vary with the input, allowing the model to choose which information to keep or discard.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Parallel Scan</div>
+        <p>A technique to compute <span class="glossary-term" data-definition="A mathematical operation where each element in a sequence is the sum of all preceding elements.">prefix sum</span>s or recurrences in parallel, adapted in Mamba for hardware-efficient <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span> updates.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Linear Scaling</div>
+        <p>Computational complexity that grows proportionally to the sequence length ($O(L)$), enabling processing of very long sequences.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Hardware-Awareness</div>
+        <p>Designing algorithms to minimize data movement between different levels of GPU memory (<span class="glossary-term" data-definition="High Bandwidth Memory; the primary, larger, but slower memory used on GPUs.">hbm</span> vs. <span class="glossary-term" data-definition="Static Random-Access Memory; fast, on-chip memory used for intermediate computations in GPUs.">sram</span>) to maximize throughput.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Discretization</div>
+        <p>The process of converting a continuous-time state space model into a discrete-time version for digital computation.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Continuous State Space Model</h3>
+<div class="math-block">$$h'(t) = A h(t) + B x(t), \quad y(t) = C h(t)$$</div>
+<div class="math-explanation-box">The fundamental linear ODE that defines the evolution of the latent state $h(t)$ in a continuous <span class="glossary-term" data-definition="State Space Model; a mathematical model used to describe systems via state variables.">ssm</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$h(t)$</td><td>Latent state at time t</td></tr><tr><td>$x(t)$</td><td>Input signal at time t</td></tr><tr><td>$A, B, C$</td><td>System matrices defining state transitions and output mapping</td></tr></table></div>
+<h3>Selective Discretization</h3>
+<div class="math-block">$$\bar{A} = \exp(\Delta A), \quad \bar{B} = (\Delta A)^{-1}(\exp(\Delta A) - I) \cdot \Delta B$$</div>
+<div class="math-explanation-box">In Mamba, the step size $\Delta$ and matrices $B$ and $C$ are functions of the input $x$, making the discretized matrices $\bar{A}$ and $\bar{B}$ time-varying.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\Delta$</td><td>Input-dependent step size (timescale)</td></tr><tr><td>$\bar{A}, \bar{B}$</td><td>Discretized transition and input matrices</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig1.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> (Overview.) Structured SSMs independently map each channel (e.g. 𝐷= 5) of an input 𝑥to output 𝑦through a higher<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Comparison of the selective SSM selection mechanism vs. standard LTI SSMs, highlighting how parameters change based on the input tokens.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> (Left) The standard version of the Copying task involves constant spacing between input and output elements and is easily<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Diagram of the Mamba block architecture, showing the integration of convolutions and selective SSMs.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig3.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 3:</b> (Architecture.) Our simplified block design combines the H3 block, which is the basis of most SSM architectures, with<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig4.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 4:</b> (Scaling Laws.) Models of size ≈125𝑀to ≈1.3𝐵parameters, trained on the Pile. Mamba scales better than all other<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig5.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 5:</b> (DNA Scaling Laws.) Pretraining on the HG38 (human genome) dataset. (Left) Fixing short context length 210 = 1024 and<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig6.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 6:</b> (Great Apes DNA Classification.) Accuracy after fine-<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig7.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 7:</b> Our efficient SSM scan is faster than the best attention implementation that we know of<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig8.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 8:</b> (Scaling laws: extra ablations.) (Left) Instead of (Right) Instead of<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/7bbc7595196a0606a07506c4fb1473e5e87f6082_fig9.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 9:</b> (Audio Pretraining (YouTubeMix) Ablations.) As a uniformly-sampled “continuous” signal modality, audio waveforms actu-<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Structured State Space Models (S4)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The predecessor to Mamba that introduced efficient initialization and parameterization for SSMs.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Transformer</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The dominant architecture for sequence modeling that Mamba aims to replace for long-context tasks.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Linear Attention</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A class of attention mechanisms that also achieve linear complexity but often lack the reasoning power of SSMs.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>FlashAttention</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A hardware-aware algorithm for Transformers that inspired Mamba's memory-efficient parallel scan.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

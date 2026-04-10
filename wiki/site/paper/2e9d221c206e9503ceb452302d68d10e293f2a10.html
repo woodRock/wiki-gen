@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Long Short-Term Memory - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">📚 Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+  </header>
+  
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">The Vanishing Gradient Problem</a></li>
+        <li><a href="#section-1">The Memory Cell and Gating Mechanism</a></li>
+        <li><a href="#section-2">Constant Error Carousel (CEC)</a></li>
+        <li><a href="#section-3">Impact on Deep Learning</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#see-also">See Also</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Long Short-Term Memory</h1>
+      
+      
+      <div class="infobox">
+        <div class="infobox-title">Long Short-Term Memory (LSTM)</div>
+        <div class="infobox-image"><img src="../assets/animations/2e9d221c206e9503ceb452302d68d10e293f2a10.gif" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Gated Recurrent Neural Network</td></tr>
+          <tr><th>Key Innovation</th><td>Constant Error Carousel (CEC) and gating mechanisms (Input, Output, Forget gates).</td></tr>
+          <tr><th>Performance Metric</th><td>Ability to learn dependencies over 1000+ time steps where standard RNNs fail.</td></tr>
+          <tr><th>Computational Efficiency</th><td>O(1) per time step and parameter; local in space and time.</td></tr>
+
+          <tr><th>Venue</th><td>Neural Computation</td></tr>
+          <tr><th>Year</th><td>1997</td></tr>
+          <tr><th>Citations</th><td>102893</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1162/neco.1997.9.8.1735" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+      
+      <p class="lead">Long Short-Term Memory (LSTM) is a landmark <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> neural network (RNN) architecture designed to overcome the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem, enabling the learning of long-range dependencies in sequential data. By introducing a novel 'constant error carousel' (<span class="glossary-term" data-definition="Constant Error Carousel; the mechanism that prevents gradient decay in LSTMs.">cec</span>) and a system of gating units, LSTM allows <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s to flow through time without decaying or exploding. This architecture revolutionized sequence modeling and served as the state-of-the-art for tasks like speech recognition, translation, and handwriting synthesis for over two decades.</p>
+<h2 id="section-0">The Vanishing Gradient Problem</h2>
+<p>Before LSTM, training <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> Neural Networks (RNNs) on long sequences was notoriously difficult. As <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s are backpropa<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span>d through time, they are repeatedly mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plied by the weights of the <span class="glossary-term" data-definition="A connection that loops back to an earlier stage, though LeNet-5 is primarily feed-forward."><span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> connection</span>s. If these weights are small, the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> vanishes exponentially, making it impossible for the network to learn long-term dependencies.</p>
+<p>Hochreiter and Schmidhuber identified this fundamental flaw and proposed a structural solution: a memory cell that can maintain its state over long periods. This led to the creation of the LSTM, which uses a linear unit with a fixed self-connection of weight 1.0, ensuring that the error signal remains constant as it flows back through time.</p>
+<h2 id="section-1">The Memory Cell and Gating Mechanism</h2>
+<p>The core of the LSTM is the memory cell, which acts as a storage unit for information. Access to this cell is controlled by three specialized '<span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span>s':</p>
+<p>1. **Input <span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span>**: Decides which new information from the current input and previous hidden state should be stored in the memory cell.
+2. **Forget <span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span>**: (Added in later versions, but conceptualized here) Determines which information is no longer relevant and should be discarded from the cell.
+3. **Output <span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span>**: Controls which part of the current memory <span class="glossary-term" data-definition="The internal 'memory' of an LSTM unit.">cell state</span> should be used to calculate the hidden state and output of the network.</p>
+<p>These <span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span>s are themselves neural networks with <span class="glossary-term" data-definition="A mathematical function having a characteristic 'S'-shaped curve.">sigmoid</span> activations, allowing the LSTM to learn to selectively remember or forget information based on the context of the sequence.</p>
+<h2 id="section-2">Constant Error Carousel (CEC)</h2>
+<p>The <span class="glossary-term" data-definition="Constant Error Carousel; the mechanism that prevents gradient decay in LSTMs.">cec</span> is the theoretical heart of the LSTM. It refers to the linear unit within the memory cell that has a self-<span class="glossary-term" data-definition="A connection that loops back to an earlier stage, though LeNet-5 is primarily feed-forward."><span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> connection</span> with a fixed weight of 1. By avoiding the non-linear activations typically found in RNN <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> loops, the <span class="glossary-term" data-definition="Constant Error Carousel; the mechanism that prevents gradient decay in LSTMs.">cec</span> prevents the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> from being squashed or blown up during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span>.</p>
+<p>This 'carousel' allows error signals to circulate indefinitely, effectively bridging the gap between distant events in a sequence. The gating units act as the 'doors' to this carousel, ensuring that it is only updated with meaningful data and only influences the output when necessary.</p>
+<h2 id="section-3">Impact on Deep Learning</h2>
+<p>The introduction of LSTM was a turning point for artificial intelligence. It proved that neural networks could handle complex, real-world temporal data. For many years, LSTMs were the backbone of major commercial AI systems, including Google's speech recognition and Apple's Siri.</p>
+<p>While Transformers have largely superseded LSTMs for many large-scale language tasks due to their parallelization capabilities, the principles of gating and residual-like connections (found in the <span class="glossary-term" data-definition="Constant Error Carousel; the mechanism that prevents gradient decay in LSTMs.">cec</span>) remain central to modern deep learning architecture design.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Memory Cell</div>
+        <p>A container that holds information over time, protected by gating units to maintain long-term dependencies.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Gating</div>
+        <p>The use of mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative units to regulate the flow of information into, out of, and within the memory cell.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Vanishing Gradient</div>
+        <p>The tendency of <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>s to become zero during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> that is needed in the calculation of the weights to be used in the network.">backpropagation</span> in deep or <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> networks, which LSTM prevents.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">CEC</div>
+        <p>Constant Error Carousel; the linear internal state of an LSTM cell that preserves the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> signal over time.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Backpropagation Through Time (BPTT)</div>
+        <p>The algorithm used to train <span class="glossary-term" data-definition="Having a connection that loops back to an earlier stage or time step.">recurrent</span> networks by unfolding them into a deep feed-forward network.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Cell State Update</h3>
+<div class="math-block">$$c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t$$</div>
+<div class="math-explanation-box">The current <span class="glossary-term" data-definition="The internal 'memory' of an LSTM unit.">cell state</span> $c_t$ is a combination of the previous state (filtered by the forget <span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> $f_t$) and the new candidate state (filtered by the input <span class="glossary-term" data-definition="A mu<span class="glossary-term" data-definition="Linear Time-Invariant; a system whose behavior does not change over time, regardless of the input.">lti</span>plicative unit that controls information flow.">gate</span> $i_t$).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$c_t$</td><td>Memory cell state at time t</td></tr><tr><td>$f_t, i_t$</td><td>Forget and Input gate activations</td></tr><tr><td>$\tilde{c}_t$</td><td>Candidate values for the memory cell</td></tr></table></div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>Recurrent Neural Network (RNN)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The broader class of neural networks that LSTM belongs to.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Gated Recurrent Unit (GRU)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A simplified version of LSTM that combines the input and forget gates.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Vanishing Gradient Problem</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The core optimization challenge that LSTM was designed to solve.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Transformer</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The current dominant architecture for sequence modeling that evolved from many of the same concepts.</span>
+        </div>
+</div>
+</article>
+
+  </main>
+  
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+  
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

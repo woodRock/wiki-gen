@@ -1,2 +1,0 @@
-description = "Regenerate the wiki static site from the existing database."
-prompt = "Use the 'build' skill to regenerate the static site."
