@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-column deep neural networks for image classification - Research Wiki</title>
+  <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+</head>
+<body>
+  <div class="reading-progress"></div>
+  <header class="wiki-header">
+    <a href="../index.html" class="wiki-logo">&#128218; Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+    <nav class="wiki-nav">
+      <a href="../timeline.html">Timeline</a>
+      <a href="../graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
+  </header>
+
+  <main class="wiki-content">
+    
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">Rectified Linear Units (ReLU) and Accelerated Training</a></li>
+        <li><a href="#section-1">Cross-GPU Parallelization and Distributed Architecture</a></li>
+        <li><a href="#section-2">Local Response Normalization and Overlapping Pooling</a></li>
+        <li><a href="#section-3">Regularization Strategies: Dropout and Data Augmentation</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#see-also">See Also</a></li>
+        <li><a href="#references">References</a></li>
+
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">computer-vision</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">latent-space</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">optimization</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">regularization</span></div>
+    </aside>
+
+    
+    <article class="wiki-article">
+      <h1 id="title">Multi-column deep neural networks for image classification</h1>
+
+      
+      <div class="infobox">
+        <div class="infobox-title">AlexNet</div>
+        <div class="infobox-image"><img src="../assets/animations/398c296d0cc7f9d180f84969f8937e6d3a413796.gif" alt="Concept"></div>
+        <table>
+          <tr><th>Architecture Type</th><td>Deep Convolutional Neural Network (CNN)</td></tr>
+          <tr><th>Key Innovation</th><td>Non-saturating ReLU activations and Dropout regularization</td></tr>
+          <tr><th>Performance Metric</th><td>15.3% top-5 error on ILSVRC-2012</td></tr>
+          <tr><th>Computational Efficiency</th><td>Parallelized across two NVIDIA GTX 580 GPUs over 6 days</td></tr>
+
+          <tr><th>Venue</th><td>2012 IEEE Conference on Computer Vision and Pattern Recognition</td></tr>
+          <tr><th>Year</th><td>2012</td></tr>
+          <tr><th>Citations</th><td>4038</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.1109/CVPR.2012.6248110" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+
+
+      <p class="lead">ImageNet Classification with Deep Convolutional Neural Networks, commonly known as AlexNet, is a seminal work that triggered the deep learning revolution in computer vision. Introduced by Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton, the model achieved a record-breaking 15.3% <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rate in the <span class="glossary-term" data-definition="ImageNet Large Scale Visual Recognition Challenge; a premier computer vision competition.">ILSVRC</span>-2012 competition, outperforming the runner-up by over 10 percentage points. It demonstrated that large, deep convolutional neural networks (CNNs) could be efficiently trained on GPUs using techniques like ReLU activations and Dropout to handle massive datasets and mitigate <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span>.</p>
+<h2 id="section-0">Rectified Linear Units (ReLU) and Accelerated Training</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/398c296d0cc7f9d180f84969f8937e6d3a413796_fig1.jpeg" target="_blank">
+            <img src="../assets/figures/398c296d0cc7f9d180f84969f8937e6d3a413796_fig1.jpeg" class="thumbimage" alt="Figure 1">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 1:</b> Without dropout, our network ex-
+          </div>
+        </div>
+      </div>
+<p>The authors identify saturating nonlinearities, such as the <span class="glossary-term" data-definition="A sigmoid-shaped mathematical function used as an activation non-linearity.">hyperbolic tangent</span> ($tanh(x)$) and the <span class="glossary-term" data-definition="A mathematical function having a characteristic &#x27;S&#x27;-shaped curve.">sigmoid</span> function, as primary bottlenecks in training deep networks via <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative gradient.">gradient descent</span>. To address this, they employ Rectified Linear Units (ReLUs), defined as $f(x) = max(0, x)$. ReLUs are non-saturating, meaning their derivatives do not vanish for positive inputs, which significantly accelerates the <span class="glossary-term" data-definition="The point at which an optimization algorithm has found a stable solution (usually a local minimum).">convergence</span> of the <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative gradient.">gradient descent</span> (SGD) process. </p>
+<p>Empirical results in the paper demonstrate that a four-layer <span class="glossary-term" data-definition="Convolutional Neural Network; a type of deep neural network most commonly applied to analyzing visual imagery.">CNN</span> with ReLUs reaches a 25% training error rate on the CIFAR-10 dataset six times faster than an equivalent network using tanh neurons. This acceleration was crucial for the feasibility of training the 60-million-<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> AlexNet architecture on the 1.2 million images of the ImageNet dataset. <b>Figure 1</b> highlights this stark difference in learning dynamics, showing that faster learning is essential for fitting large models to massive datasets within reasonable timeframes.</p>
+<h2 id="section-1">Cross-GPU Parallelization and Distributed Architecture</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/398c296d0cc7f9d180f84969f8937e6d3a413796_fig2.png" target="_blank">
+            <img src="../assets/figures/398c296d0cc7f9d180f84969f8937e6d3a413796_fig2.png" class="thumbimage" alt="Figure 2">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 2:</b> (Left) Eight ILSVRC-2010 test images and the ﬁve labels considered most probable by our model.
+          </div>
+        </div>
+      </div>
+<p>Due to the memory constraints of the hardware available at the time—specifically the 3GB limit of the NVIDIA GTX 580—the authors developed a sophisticated parallelization scheme to split the network across two GPUs. The 60 million parameters and 650,000 neurons are distributed such that half of the kernels (or neurons) reside on each GPU. </p>
+<p>A key architectural innovation is the restricted connectivity between these GPUs: communication only occurs at specific layers. For instance, the third convolutional layer takes input from all <span class="glossary-term" data-definition="A small matrix of weights used in a convolutional layer to extract features from an image.">kernel</span> maps in the second layer, but the fourth convolutional layer only takes input from maps residing on the same GPU. This 'columnar' approach, as illustrated in <b>Figure 2</b>, allows for a precise balance between computational throughput and inter-GPU communication overhead. This distributed setup reduced the top-1 and <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rates by 1.7% and 1.2%, respectively, compared to a single-GPU model with half as many kernels.</p>
+<h2 id="section-2">Local Response Normalization and Overlapping Pooling</h2>
+<p>While ReLUs do not require input normalization to prevent saturation, the authors introduced a 'Local Response Normalization' (LRN) scheme to aid <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span>. Inspired by lateral inhibition in biological neurons, LRN creates competition for high activities among neuron outputs computed using different kernels at the same spatial position. This scheme implements a form of brightness normalization that reduced the top-1 error rate by 1.4%. </p>
+<p>Additionally, the architecture utilizes overlapping <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> to summarize the outputs of neighboring groups of neurons. Unlike traditional <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> where the stride equals the window size (e.g., $s=2, z=2$), AlexNet uses a stride of $s=2$ with a window size of $z=3$. The authors noted that this overlapping scheme makes the model slightly more difficult to overfit during training and reduced the <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rate by 0.3% compared to non-overlapping <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> of equivalent output dimensions.</p>
+<h2 id="section-3">Regularization Strategies: Dropout and Data Augmentation</h2>
+<p>To combat substantial <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span> in the 60-million-<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> model, the authors employed two primary forms of data augmentation and a novel <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> technique called 'Dropout'. Data augmentation involved generating image translations, horizontal reflections, and performing PCA-based color augmentation on RGB channels. This artificially enlarged the training set by a factor of 2048, allowing the network to learn translation and illumination <span class="glossary-term" data-definition="The property of remaining unchanged regardless of certain transformations, like translation or scaling.">invariance</span>. </p>
+<p>Dropout, applied to the first two fully-connected layers, consists of setting the output of each hidden neuron to zero with a probability of 0.5. This prevents 'co-adaptation' of neurons, forcing them to learn more robust features that are useful in conjunction with random subsets of other neurons. At test time, all neurons are used, but their outputs are scaled by 0.5 to approximate the geometric mean of the predictive distributions. While Dropout doubled the number of iterations required for <span class="glossary-term" data-definition="The point at which an optimization algorithm has found a stable solution (usually a local minimum).">convergence</span>, it was indispensable for preventing the network from memorizing the training data.</p>
+<h2 id="concepts">Concept Breakdown</h2>
+
+      <div class="concept-item">
+        <div class="concept-title">Top-5 Error Rate</div>
+        <p>The fraction of test images for which the correct label is not among the five labels considered most probable by the model.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Lateral Inhibition</div>
+        <p>A biological process where an excited neuron reduces the activity of its neighbors, implemented in AlexNet via Local Response Normalization.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Stochastic Gradient Descent (SGD) with Momentum</div>
+        <p>An optimization algorithm that updates weights using the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> of the loss function, enhanced by a <span class="glossary-term" data-definition="An optimization technique that helps accelerate SGD in the relevant direction and dampens oscillations.">momentum</span> term to accelerate learning and dampen oscillations.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Saturating Nonlinearity</div>
+        <p>Activation functions like <span class="glossary-term" data-definition="A mathematical function having a characteristic &#x27;S&#x27;-shaped curve.">sigmoid</span> or tanh that flatten out (saturate) at extreme values, causing gradients to become near-zero and slowing down training.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>Rectified Linear Unit (ReLU)</h3>
+<div class="math-block">$$f(x) = \max(0, x)$$</div>
+<div class="math-explanation-box">A simple thresholding function that outputs the input directly if it is positive, and zero otherwise. It solves the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem for positive inputs.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x$</td><td>The weighted sum of inputs to the neuron</td></tr><tr><td>$f(x)$</td><td>The activated output of the neuron</td></tr></table></div>
+<h3>Local Response Normalization</h3>
+<div class="math-block">$$b^i_{x,y} = a^i_{x,y} / \left(k + \alpha \sum_{j=\max(0,i-n/2)}^{\min(N-1,i+n/2)} (a^j_{x,y})^2\right)^\beta$$</div>
+<div class="math-explanation-box">Normalizes the activity of a neuron based on the activity of 'n' adjacent <span class="glossary-term" data-definition="A small matrix of weights used in a convolutional layer to extract features from an image.">kernel</span> maps at the same spatial position. It encourages 'competition' between different feature detectors.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$a^i_{x,y}$</td><td>Original activity of neuron from kernel i at position (x,y)</td></tr><tr><td>$b^i_{x,y}$</td><td>Normalized response</td></tr><tr><td>$n$</td><td>The number of adjacent kernel maps to consider in the sum</td></tr><tr><td>$k, \alpha, \beta$</td><td>Hyper-parameters (constants) determined via validation</td></tr></table></div>
+<h3>Weight Update with Momentum</h3>
+<div class="math-block">$$v_{i+1} := 0.9 \cdot v_i - 0.0005 \cdot \epsilon \cdot w_i - \epsilon \cdot \left\langle \frac{\partial L}{\partial w} \right\rangle_{D_i}$$</div>
+<div class="math-explanation-box">The update rule for the network's weights, incorporating <span class="glossary-term" data-definition="An optimization technique that helps accelerate SGD in the relevant direction and dampens oscillations.">momentum</span> (0.9) and <span class="glossary-term" data-definition="A regularization technique that adds a small penalty (usually L2 norm) to the loss function to keep weights small and prevent overfitting.">weight decay</span> (0.0005) to optimize the learning process.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$v_i$</td><td>The momentum variable at iteration i</td></tr><tr><td>$w_i$</td><td>The weight value at iteration i</td></tr><tr><td>$L$</td><td>The objective (loss) function</td></tr><tr><td>$\epsilon$</td><td>The learning rate</td></tr></table></div>
+<h2 id="figures">Figures and Explanations</h2>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/398c296d0cc7f9d180f84969f8937e6d3a413796_fig1.jpeg" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 1:</b> Without dropout, our network ex-<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            Comparison of training speeds between ReLU and tanh units. The solid line (ReLU) reaches a 25% error rate on CIFAR-10 six times faster than the dashed line (tanh), illustrating the efficiency of non-saturating neurons.
+          </div>
+        </div>
+      </div>
+
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/398c296d0cc7f9d180f84969f8937e6d3a413796_fig2.png" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure 2:</b> (Left) Eight ILSVRC-2010 test images and the ﬁve labels considered most probable by our model.<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            The detailed 8-layer architecture of AlexNet. It shows the split between two GPUs, with the first layer using 96 kernels of 11x11, and subsequent layers connected in a specific GPU-restricted pattern.
+          </div>
+        </div>
+      </div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>ImageNet (ILSVRC)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The large-scale visual recognition challenge that served as the benchmark for this work.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>VGGNet</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A subsequent iteration of deep CNNs that used smaller (3x3) filters and increased depth.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Dropout (Neural Networks)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The regularization technique introduced by Hinton et al. and popularized by this paper.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>CUDA-Convnet</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The high-performance GPU library written by Krizhevsky to implement the convolutions in this paper.</span>
+        </div>
+</div>
+
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="9ab0de951cc9cdf16887b1f841f8da6affc9c0de">Traffic sign recognition with multi-scale Convolutional Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - P. Sermanet, Yann LeCun (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="22fe619996b59c09cb73be40103a123d2e328111">The German Traffic Sign Recognition Benchmark: A multi-class classification competition</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - J. Stallkamp, Marc Schlipsing et al. (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="260a7615bbffec052d67dffde5bcf9b4687b50ee">Convolutional Neural Network Committees for Handwritten Character Classification</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - D. Ciresan, U. Meier et al. (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5a47ba057a858f8c024d2518cc3731fc7eb40de1">Flexible, High Performance Convolutional Neural Networks for Image Classification</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - D. Ciresan, U. Meier et al. (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="6f568d757d2c1ab42f2006faa25690b74c3d2d44">The Importance of Encoding Versus Training with Sparse Coding and Vector Quantization</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - A. Coates, A. Ng (2011)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="1455b7dcb47146ca3095a88388f53ecf37c436bc">Chinese Handwriting Recognition Contest 2010</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Chenglin Liu, Fei Yin et al. (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="5d21006fa32ff69f6b0a646f26ce0db84f2f4d33">Evaluation of Pooling Operations in Convolutional Architectures for Object Recognition</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Dominik Scherer, Andreas C. Müller et al. (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="b98cd08b75ebf2bd1d1ec47c51ef75777a7e64bd">Deep, Big, Simple Neural Nets for Handwritten Digit Recognition</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - D. Ciresan, U. Meier et al. (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="0d2336389dff3031910bd21dd1c44d1b4cd51725">Why Does Unsupervised Pre-training Help Deep Learning?</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - D. Erhan, Aaron C. Courville et al. (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="687a0ce2ec2711ef206e2486cd56d192a88b3145">Performance and Scalability of GPU-Based Convolutional Neural Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Daniel Strigl, Klaus Kofler et al. (2010)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="3fa5450f1c0795527939cfef5fbe3912c4dab3ab">Large-scale object recognition with CUDA-accelerated hierarchical neural networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Rafael Uetz, Sven Behnke (2009)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="dad5b50078ea2e8bfe980413d5f8ef20ecad7519">Overfitting in the selection of classifier ensembles: a comparative study between PSO and GA</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - E. Santos, Luiz Oliveira et al. (2008)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="ccd52aff02b0f902f4ce7247c4fee7273014c41c">Unsupervised Learning of Invariant Feature Hierarchies with Applications to Object Recognition</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Marc'Aurelio Ranzato, F. Huang et al. (2007)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="ad33d1fa8628cb55c32fb52feb537f65184c3b29">Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structure</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - R. Salakhutdinov, Geoffrey E. Hinton (2007)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="71e3d9fc53ba14c2feeb7390f0dc99076553b05a">Robust Object Recognition with Cortex-Like Mechanisms</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Thomas Serre, Lior Wolf et al. (2007)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="355d44f53428b1ac4fb2ab468d593c720640e5bd">Greedy Layer-Wise Training of Deep Networks</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yoshua Bengio, Pascal Lamblin et al. (2006)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="932c2a02d462abd75af018125413b1ceaa1ee3f4">Efficient Learning of Sparse Representations with an Energy-Based Model</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Marc'Aurelio Ranzato, Christopher S. Poultney et al. (2006)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="fc69333d926981875ec93db72279f592aeef642c">An implicit segmentation-based method for recognition of handwritten strings of characters</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - P. Cavalin, A. Britto et al. (2006)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="62f6a3e4be802aad88b34af2e49a9c0c90ed4caa">Parallel, distributed and network-based processing</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - P. Cremonesi (2006)</span>
+        </li>
+
+        <li class="reference-item">
+          <a class="reference-link" data-paper-id="3c2cc902a62cf2ab2f639079e119b2958b183f90">Estimating accurate multi-class probabilities with support vector machines</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Jonathan Milgram, M. Cheriet et al. (2005)</span>
+        </li>
+      </ol>
+</article>
+
+  </main>
+
+  <footer class="wiki-footer">
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
+  </footer>
+
+  <script src="../assets/js/wiki.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</body>
+</html>

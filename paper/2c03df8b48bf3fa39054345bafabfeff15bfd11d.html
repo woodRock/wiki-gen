@@ -33,9 +33,7 @@
         <li><a href="#section-3">Impact and Legacy</a></li>
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
-        <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
-        <li><a href="#references">References</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -64,24 +62,20 @@
       </div>
 
 
-      <p class="lead">Deep Residual Learning for Image Recognition introduced ResNets, a groundbreaking neural network architecture that enabled the training of substantially deeper networks by using skip connections. By reformulating layers as learning residual functions with reference to the layer inputs, the authors addressed the degradation problem where accuracy saturates and then rapidly diminishes as network depth increases. ResNets won the <span class="glossary-term" data-definition="ImageNet Large Scale Visual Recognition Challenge; a premier computer vision competition.">ILSVRC</span> 2015 competition and have since become a foundational component of modern computer vision and deep learning.</p>
+      <p class="lead">Deep Residual Learning for Image Recognition introduced ResNets, a groundbreaking neural network architecture that enabled the training of substantially deeper networks by using skip connections. By reformulating layers as learning residual functions with reference to the layer inputs, the authors addressed the degradation problem where accuracy saturates and then rapidly diminishes as network depth increases. ResNets won the <span class="glossary-term" data-definition="The ImageNet Large Scale Visual Recognition Challenge, an annual competition in computer vision.">ILSVRC</span> 2015 competition and have since become a foundational component of modern computer vision and deep learning.</p>
 <h2 id="section-0">The Degradation Problem</h2>
-<p>As neural networks grew deeper, researchers encountered a counterintuitive phenomenon: adding more layers led to higher training error, a problem distinct from <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>. This 'degradation' suggested that deep systems were difficult to optimize. If a shallow architecture can be augmented with identity mappings to form a deeper counterpart, the deeper model should, in theory, perform at least as well as the shallow one.</p>
-<p>However, experiments showed that standard solvers struggled to find these identity solutions. ResNets address this by explicitly allowing the network to learn the difference, or residual, between the input and the desired output, making identity mappings much easier to learn. <b>Figure 1</b> illustrates this residual learning block.</p>
+<p>As neural networks grew deeper, researchers encountered a counterintuitive phenomenon: adding more layers led to higher training error, a problem distinct from <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span>. This "degradation" suggested that deep systems were difficult to optimize. If a shallow architecture can be augmented with identity mappings to form a deeper counterpart, the deeper model should, in theory, perform at least as well as the shallow one. ResNets address this issue by explicitly allowing the network to learn the difference, or residual, between the input and the desired output, making identity mappings much easier to optimize.</p>
 <h2 id="section-1">Residual Learning Blocks and Shortcuts</h2>
-<p>The core of the ResNet is the residual block. Instead of trying to directly learn a mapping $H(x)$, the block is designed to learn $F(x) = H(x) - x$. The final output is then obtained by adding the input back: $y = F(x) + x$. This 'identity shortcut connection' skip-layers without adding extra parameters or computational complexity.</p>
-<p>These shortcuts allow gradients to flow more easily through the network during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, mitigating the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem. In many cases, the residual functions $F(x)$ are small, and the shortcut connections provide a 'highway' for information to pass through the deep stack.</p>
+<p>The core of the ResNet is the residual block. Instead of trying to directly learn a mapping $$H(x)$$, the block is designed to learn $$F(x) = H(x) - x$$. The final output is then obtained by adding the input back: $$y = F(x) + x$$. These "identity shortcut connections" skip layers without adding extra parameters or computational complexity. These shortcuts allow gradients to flow more easily through the network during <span class="glossary-term" data-definition="A method used in artificial neural networks to calculate a gradient that is needed in the calculation of the weights to be used in the network.">backpropagation</span>, mitigating the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem. In many cases, the residual functions $$F(x)$$ are small, and the shortcut connections provide a "highway" for information to pass through the deep stack.</p>
 <h2 id="section-2">Architecture: VGG-style and Bottleneck Designs</h2>
-<p>The paper explores several ResNet architectures, including a 34-layer plain network and its residual counterpart. For deeper networks like ResNet-50, 101, and 152, the authors introduced 'bottleneck' blocks. These blocks use 1x1 convolutions to reduce and then restore dimensions, which significantly improves computational efficiency while maintaining high depth.</p>
-<p>This design allowed the 152-layer ResNet to achieve state-of-the-art results while having lower complexity (<span class="glossary-term" data-definition="Floating Point Operations; a measure of computational complexity.">FLOPs</span>) than the 16-layer VGG-16 network. The consistency of these results across different depths demonstrated the robustness of the residual learning framework.</p>
+<p>The paper explores several ResNet architectures, including a 34-layer plain network and its residual counterpart. For deeper networks like ResNet-50, 101, and 152, the authors introduced "bottleneck" blocks. These blocks use $$1 \times 1$$ convolutions to reduce and then restore dimensions, which significantly improves computational efficiency while maintaining high depth. This design allowed the 152-layer ResNet to achieve state-of-the-art results while having lower complexity (measured in <span class="glossary-term" data-definition="Floating Point Operations; a measure of computational complexity.">FLOPs</span>) than the 16-layer VGG-16 network. The consistency of these results across different depths demonstrated the robustness of the residual learning framework.</p>
 <h2 id="section-3">Impact and Legacy</h2>
-<p>ResNets revolutionized deep learning by proving that depth was not just limited by hardware, but by architectural design. The principles of residual learning have been adopted far beyond image recognition, influencing the design of Transformers (which use residual connections), GANs, and various reinforcement learning agents.</p>
-<p>The paper remains one of the most cited works in artificial intelligence, and ResNet-50 continues to serve as a standard benchmark and backbone for countless computer vision applications.</p>
+<p>ResNets revolutionized deep learning by proving that depth was not just limited by hardware, but by architectural design. The principles of residual learning have been adopted far beyond image recognition, influencing the design of Transformers (which use residual connections), GANs, and various reinforcement learning agents. The paper remains one of the most cited works in artificial intelligence, and ResNet-50 continues to serve as a standard benchmark and backbone for countless computer vision applications.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
         <div class="concept-title">Residual Mapping</div>
-        <p>Learning the difference ($F(x)$) between the input and the target output, rather than the target output itself.</p>
+        <p>Learning the difference ($$F(x)$$) between the input and the target output, rather than the target output itself.</p>
       </div>
 
       <div class="concept-item">
@@ -91,12 +85,12 @@
 
       <div class="concept-item">
         <div class="concept-title">Degradation Problem</div>
-        <p>The observation that very deep networks often perform worse than shallower ones during training, even when not <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>.</p>
+        <p>The observation that very deep networks often perform worse than shallower ones during training, even when not <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span>.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Bottleneck Design</div>
-        <p>A residual block variant using 1x1, 3x3, and 1x1 convolutions to reduce computational cost in very deep networks.</p>
+        <p>A residual block variant using $$1 \times 1$$, $$3 \times 3$$, and $$1 \times 1$$ convolutions to reduce computational cost in very deep networks.</p>
       </div>
 
       <div class="concept-item">
@@ -106,74 +100,7 @@
 <h2 id="math">Mathematics</h2>
 <h3>Residual Block Output</h3>
 <div class="math-block">$$y = \mathcal{F}(x, \{W_i\}) + x$$</div>
-<div class="math-explanation-box">The output $y$ of a residual block is the sum of the residual function $\mathcal{F}$ and the original input $x$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x$</td><td>Input to the residual block</td></tr><tr><td>$\mathcal{F}$</td><td>The residual function to be learned (e.g., two conv layers)</td></tr><tr><td>$W_i$</td><td>Learned weights of the layers within the block</td></tr></table></div>
-<h2 id="figures">Figures and Explanations</h2>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/2c03df8b48bf3fa39054345bafabfeff15bfd11d_fig1.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 1:</b> Training error (left) and test error (right) on CIFAR-10<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Diagram of a residual building block showing the weight layers and the identity shortcut connection that performs the element-wise addition.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/2c03df8b48bf3fa39054345bafabfeff15bfd11d_fig2.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 2:</b> Residual learning: a building block.<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Comparison of training error on ImageNet for 'plain' networks vs. ResNets, demonstrating how ResNets successfully overcome the degradation problem at increased depths.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/2c03df8b48bf3fa39054345bafabfeff15bfd11d_fig3.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 3:</b> Example network architectures for ImageNet. Left: the<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/2c03df8b48bf3fa39054345bafabfeff15bfd11d_fig4.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 4:</b> Training on ImageNet. Thin curves denote training error, and bold curves denote validation error of the center crops. Left: plain<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/2c03df8b48bf3fa39054345bafabfeff15bfd11d_fig5.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 5:</b> right vs. left). When the net is “not<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/2c03df8b48bf3fa39054345bafabfeff15bfd11d_fig6.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 6:</b> Training on CIFAR-10. Dashed lines denote training error, and bold lines denote testing error. Left: plain networks. The error<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
+<div class="math-explanation-box">The output $$y$$ of a residual block is the sum of the residual function $$\mathcal{F}$$ and the original input $$x$$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x$</td><td>Input to the residual block</td></tr><tr><td>$\mathcal{F}$</td><td>The residual function to be learned (e.g., two convolutional layers)</td></tr><tr><td>$W_i$</td><td>Learned weights of the layers within the block</td></tr></table></div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
@@ -196,110 +123,6 @@
           <span style="font-size: 0.8rem; color: #54595d;">A technique used extensively in ResNets to stabilize training and accelerate convergence.</span>
         </div>
 </div>
-
-      <h2 id="references">References</h2>
-      <ol class="reference-list">
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b92aa7024b87f50737b372e5df31ef091ab54e62">Training Very Deep Networks</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - R. Srivastava, Klaus Greff et al. (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="424561d8585ff8ebce7d5d07de8dbf7aae5e7270">Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Shaoqing Ren, Kaiming He et al. (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="020928259a848b91b7c36062e4bbc6df6398c02e">Object Detection via a Multi-region and Semantic Segmentation-Aware CNN Model</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Spyros Gidaris, N. Komodakis (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="e0945081b5b87187a53d4329cf77cd8bff635795">Highway Networks</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - R. Srivastava, Klaus Greff et al. (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="7ffdbc358b63378f07311e883dddacc9faeeaf4b">Fast R-CNN</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Ross B. Girshick (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="f075f89b4f4026748cbf2fb9f989a9934c42ee8f">Object Detection Networks on Convolutional Feature Maps</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Shaoqing Ren, Kaiming He et al. (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="995c5f5e62614fcb4d2796ad2faab969da51713e">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Sergey Ioffe, Christian Szegedy (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="d6f2f611da110b5b5061731be3fc4c7f45d8ee23">Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Kaiming He, X. Zhang et al. (2015)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8604f376633af8b347e31d84c6150a93b11e34c2">FitNets: Hints for Thin Deep Nets</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Adriana Romero, Nicolas Ballas et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8ad35df17ae4064dd174690efb04d347428f1117">Convolutional neural networks at constrained time cost</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Kaiming He, Jian Sun (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="6fc6803df5f9ae505cae5b2f178ade4062c768d0">Fully convolutional networks for semantic segmentation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Evan Shelhamer, Jonathan Long et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="fb91db6aa4f710814f8aec28a7f3ecbc4e5ad4fd">Deeply-Supervised Nets</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Chen-Yu Lee, Saining Xie et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="e15cf50aa89fee8535703b9f9512fca5bfc43327">Going deeper with convolutions</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Christian Szegedy, Wei Liu et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="eb42cf88027de515750f230b23b1a057dc782108">Very Deep Convolutional Networks for Large-Scale Image Recognition</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - K. Simonyan, Andrew Zisserman (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="e74f9b7f8eec6ba4704c206b93bc8079af3da4bd">ImageNet Large Scale Visual Recognition Challenge</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Olga Russakovsky, Jia Deng et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="6bdb186ec4726e00a8051119636d4df3b94043b5">Caffe: Convolutional Architecture for Fast Feature Embedding</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yangqing Jia, Evan Shelhamer et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="cbb19236820a96038d000dc629225d36e0b6294a">Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Kaiming He, X. Zhang et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="71b7178df5d2b112d07e45038cb5637208659ff7">Microsoft COCO: Common Objects in Context</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Tsung-Yi Lin, M. Maire et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b034b5769ab94acf9fb8ae48c7edb560a300bb63">On the Number of Linear Regions of Deep Neural Networks</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Guido Montúfar, Razvan Pascanu et al. (2014)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="1109b663453e78a59e4f66446d71720ac58cec25">OverFeat: Integrated Recognition, Localization and Detection using Convolutional Networks</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - P. Sermanet, D. Eigen et al. (2013)</span>
-        </li>
-      </ol>
 </article>
 
   </main>
