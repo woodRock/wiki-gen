@@ -391,6 +391,49 @@ body {
   white-space: nowrap;
 }
 
+/* Hover card */
+.hover-card {
+  display: none;
+  position: fixed;
+  z-index: 500;
+  background: #fff;
+  border: 1px solid var(--wiki-border);
+  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  max-width: 320px;
+  min-width: 200px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.hover-card.visible {
+  display: block;
+}
+
+.hover-card h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--wiki-text);
+  font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+  border-bottom: 1px solid var(--wiki-border);
+  padding-bottom: 0.3rem;
+}
+
+.hover-card .meta {
+  color: #54595d;
+  font-size: 0.78rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.hover-card .abstract {
+  color: var(--wiki-text);
+  font-size: 0.83rem;
+}
+
 /* Search dropdown */
 .wiki-search {
   position: relative;
@@ -637,8 +680,10 @@ class HoverCard {
   
   positionCard(element) {
     const rect = element.getBoundingClientRect();
-    this.card.style.left = rect.left + 'px';
-    this.card.style.top = (rect.bottom + 10) + 'px';
+    const cardWidth = 320;
+    const left = Math.min(rect.left, window.innerWidth - cardWidth - 16);
+    this.card.style.left = Math.max(8, left) + 'px';
+    this.card.style.top = (rect.bottom + 8) + 'px';
   }
   
   hideCard() {

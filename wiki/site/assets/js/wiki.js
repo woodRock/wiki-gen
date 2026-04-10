@@ -88,8 +88,10 @@ class HoverCard {
   
   positionCard(element) {
     const rect = element.getBoundingClientRect();
-    this.card.style.left = rect.left + 'px';
-    this.card.style.top = (rect.bottom + 10) + 'px';
+    const cardWidth = 320;
+    const left = Math.min(rect.left, window.innerWidth - cardWidth - 16);
+    this.card.style.left = Math.max(8, left) + 'px';
+    this.card.style.top = (rect.bottom + 8) + 'px';
   }
   
   hideCard() {
