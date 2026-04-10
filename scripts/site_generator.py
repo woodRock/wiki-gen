@@ -65,27 +65,32 @@ def copy_assets():
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: sans-serif;
   line-height: 1.6;
   color: var(--wiki-text);
   background: var(--wiki-bg);
+  padding-bottom: 50px;
 }
 
 /* Header */
 .wiki-header {
-  background: var(--wiki-gray-bg);
+  background: var(--wiki-bg);
   border-bottom: 1px solid var(--wiki-border);
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .wiki-logo {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
   color: var(--wiki-text);
   text-decoration: none;
+  font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
 }
 
 .wiki-search {
@@ -94,84 +99,83 @@ body {
 
 .wiki-search input {
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 1rem;
   border: 1px solid var(--wiki-border);
   border-radius: 2px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 /* Main content */
 .wiki-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  display: grid;
-  grid-template-columns: 250px 1fr;
+  padding: 1.5rem 2rem;
+  display: flex;
   gap: 2rem;
 }
 
-/* Sidebar */
+/* Sidebar / TOC */
 .wiki-sidebar {
-  position: sticky;
-  top: 2rem;
-  height: fit-content;
-  background: var(--wiki-gray-bg);
-  padding: 1rem;
-  border-radius: 4px;
-  border: 1px solid var(--wiki-border);
+  width: 200px;
+  flex-shrink: 0;
+  font-size: 0.85rem;
 }
 
 .wiki-sidebar h3 {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   color: #54595d;
   margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.2rem;
   border-bottom: 1px solid var(--wiki-border);
 }
 
 .wiki-sidebar ul {
   list-style: none;
+  margin-bottom: 1.5rem;
 }
 
 .wiki-sidebar li {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
 }
 
 .wiki-sidebar a {
   color: var(--wiki-link);
   text-decoration: none;
-  font-size: 0.9rem;
   display: block;
-  padding: 0.3rem 0.5rem;
-  border-radius: 2px;
+  padding: 0.1rem 0;
 }
 
 .wiki-sidebar a:hover {
-  background: var(--wiki-info-bg);
   text-decoration: underline;
 }
 
 /* Article */
 .wiki-article {
-  background: var(--wiki-bg);
+  flex-grow: 1;
+  min-width: 0;
 }
 
 .wiki-article h1 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: normal;
   border-bottom: 1px solid var(--wiki-border);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.5rem;
   font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+}
+
+.wiki-article .lead {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .wiki-article h2 {
   font-size: 1.5rem;
   font-weight: normal;
   border-bottom: 1px solid var(--wiki-border);
-  padding-bottom: 0.3rem;
-  margin: 1.5rem 0 1rem;
+  padding-bottom: 0.2rem;
+  margin: 2rem 0 0.8rem;
   font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
 }
 
@@ -179,158 +183,164 @@ body {
   font-size: 1.2rem;
   font-weight: bold;
   margin: 1.5rem 0 0.5rem;
+  border-bottom: none;
 }
 
 .wiki-article p {
   margin-bottom: 1rem;
+  text-align: justify;
 }
 
-.wiki-article a {
-  color: var(--wiki-link);
-  text-decoration: none;
-}
-
-.wiki-article a:hover {
-  text-decoration: underline;
-}
-
-/* Paper metadata */
-.paper-infobox {
+/* Infobox */
+.infobox {
+  float: right;
+  width: 300px;
   background: var(--wiki-gray-bg);
   border: 1px solid var(--wiki-border);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  border-radius: 4px;
+  padding: 0.2rem;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  clear: right;
 }
 
-.paper-infobox table {
+.infobox-title {
+  background: #cedff2;
+  text-align: center;
+  font-weight: bold;
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.infobox-image {
+  text-align: center;
+  padding: 0.5rem;
+  background: #fff;
+}
+
+.infobox-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.infobox table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.paper-infobox th {
+.infobox th {
   text-align: left;
-  padding: 0.5rem;
-  font-weight: bold;
-  width: 150px;
+  padding: 0.3rem 0.5rem;
   vertical-align: top;
+  width: 40%;
 }
 
-.paper-infobox td {
-  padding: 0.5rem;
+.infobox td {
+  padding: 0.3rem 0.5rem;
 }
 
-/* Tags */
-.tag {
-  display: inline-block;
-  padding: 0.2rem 0.6rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin-right: 0.3rem;
-  margin-bottom: 0.3rem;
-  cursor: pointer;
-  transition: transform 0.2s;
+/* Thumbnails (figures) */
+.thumb {
+  clear: right;
+  float: right;
+  margin: 0.5rem 0 1.3rem 1.4rem;
+  background-color: #f8f9fa;
+  border: 1px solid #c8ccd1;
+  padding: 3px;
+  width: 300px;
 }
 
-.tag:hover {
-  transform: scale(1.05);
-}
-
-/* Figures */
-.wiki-figure {
-  margin: 1.5rem 0;
+.thumbinner {
+  padding: 3px;
   text-align: center;
+  overflow: hidden;
 }
 
-.wiki-figure img {
+.thumbimage {
+  border: 1px solid #c8ccd1;
   max-width: 100%;
   height: auto;
-  border: 1px solid var(--wiki-border);
-  border-radius: 4px;
+  display: block;
 }
 
-.wiki-figure figcaption {
-  font-size: 0.9rem;
-  color: #54595d;
-  margin-top: 0.5rem;
-  font-style: italic;
+.thumbcaption {
+  border: none;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  padding: 3px;
+  text-align: left;
+  background-color: #f8f9fa;
 }
 
-/* References */
-.reference-list {
-  list-style: none;
-  counter-reset: ref-counter;
-}
-
-.reference-item {
-  counter-increment: ref-counter;
-  margin-bottom: 0.8rem;
-  padding-left: 2rem;
+/* Math */
+.math-block {
+  margin: 1.5rem 2rem;
+  padding: 1rem;
+  background: #fdfdfd;
+  border: 1px solid #eaecf0;
+  text-align: center;
   position: relative;
 }
 
-.reference-item::before {
-  content: counter(ref-counter);
-  position: absolute;
-  left: 0;
-  color: var(--wiki-link);
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.reference-link {
-  color: var(--wiki-link);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.reference-link:hover {
-  text-decoration: underline;
-}
-
-/* Hover cards */
-.hover-card {
-  position: fixed;
-  background: white;
-  border: 1px solid var(--wiki-border);
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.math-explanation-box {
+  margin: 1rem 0 2rem;
   padding: 1rem;
-  max-width: 350px;
-  z-index: 1000;
-  display: none;
-  pointer-events: none;
+  background: var(--wiki-info-bg);
+  border-left: 5px solid var(--wiki-link);
+  font-size: 0.9rem;
 }
 
-.hover-card.visible {
-  display: block;
-  pointer-events: auto;
-}
-
-.hover-card h4 {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  color: var(--wiki-link);
-}
-
-.hover-card .meta {
-  font-size: 0.8rem;
-  color: #72777d;
-  margin-bottom: 0.5rem;
-}
-
-.hover-card .abstract {
+.symbol-table {
+  width: 100%;
   font-size: 0.85rem;
-  color: var(--wiki-text);
-  line-height: 1.4;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--wiki-border);
+}
+
+.symbol-table th { text-align: left; padding: 2px 5px; border-bottom: 1px solid #eee; }
+.symbol-table td { padding: 2px 5px; border-bottom: 1px solid #eee; }
+
+/* Concept breakdown */
+.concept-item {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid #cedff2;
+}
+
+.concept-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+  color: #000;
+}
+
+/* See Also */
+.see-also-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.see-also-item {
+  background: var(--wiki-gray-bg);
+  padding: 0.8rem;
+  border-radius: 4px;
+  border: 1px solid var(--wiki-border);
+}
+
+.see-also-item b {
+  display: block;
+  color: var(--wiki-link);
+  margin-bottom: 0.2rem;
 }
 
 /* Glossary terms */
 .glossary-term {
-  border-bottom: 1px dashed var(--wiki-link);
+  border-bottom: 1px dotted #3366cc;
   cursor: help;
-  color: var(--wiki-link);
+  color: inherit;
 }
 
 /* Index page */
@@ -344,94 +354,56 @@ body {
 .paper-card {
   background: var(--wiki-bg);
   border: 1px solid var(--wiki-border);
-  border-radius: 4px;
-  padding: 1.5rem;
-  transition: box-shadow 0.2s, transform 0.2s;
+  padding: 1rem;
+  transition: background 0.1s;
   cursor: pointer;
 }
 
 .paper-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  background: #f8f9fa;
 }
 
 .paper-card h3 {
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   color: var(--wiki-link);
-}
-
-.paper-card .authors {
-  font-size: 0.85rem;
-  color: #54595d;
-  margin-bottom: 0.5rem;
-}
-
-.paper-card .meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  color: #72777d;
-  margin-bottom: 0.5rem;
-}
-
-.paper-card .citations {
-  color: var(--primary-color);
-  font-weight: bold;
+  font-family: 'Linux Libertine', serif;
 }
 
 /* Footer */
 .wiki-footer {
-  background: var(--wiki-gray-bg);
   border-top: 1px solid var(--wiki-border);
   padding: 2rem;
-  text-align: center;
-  margin-top: 3rem;
-  font-size: 0.9rem;
+  margin-top: 4rem;
+  font-size: 0.75rem;
   color: #54595d;
+  background: var(--wiki-gray-bg);
+}
+
+/* Tags */
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  margin: 0.15rem 0.2rem 0.15rem 0;
+  border-radius: 3px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .wiki-content {
-    grid-template-columns: 1fr;
+    flex-direction: column-reverse;
   }
-  
   .wiki-sidebar {
-    position: static;
+    width: 100%;
   }
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.hover-card.visible {
-  animation: fadeIn 0.2s ease-out;
-}
-
-/* Math styling */
-.math-display {
-  text-align: center;
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background: var(--wiki-gray-bg);
-  border-radius: 4px;
-  overflow-x: auto;
-}
-
-.math-inline {
-  display: inline-block;
-  margin: 0.5rem 0;
-}
-
-.math-explanation {
-  font-size: 0.9rem;
-  color: #54595d;
-  margin-top: 0.5rem;
-  font-style: italic;
+  .infobox, .thumb {
+    float: none;
+    width: 100%;
+    margin-left: 0;
+  }
 }
 """
     
@@ -659,22 +631,207 @@ def generate_index(papers, glossary):
     print(f"  ✓ Generated index.html ({len(papers)} papers)")
 
 def generate_paper_page(paper, glossary):
-    """Generate individual paper page with rich features."""
+    """Generate individual paper page with rich Wikipedia features."""
     paper_id = paper['paper_id']
     
     # Create glossary HTML
     glossary_dict = {g['term'].lower(): g['definition'] for g in glossary}
     
-    # Build HTML
+    # Authors
     authors_html = ', '.join(paper['authors'])
     
+    # Tags
     tags_html = ''
     for tag_info in paper.get('tag_details', []):
         tags_html += f'<span class="tag" style="background: {tag_info["color"]}20; color: {tag_info["color"]};">{tag_info["tag"]}</span>'
     
-    # Abstract with glossary linking
-    abstract_html = link_glossary_terms(paper.get('abstract', ''), glossary_dict)
+    # Helper to get figure by index
+    def get_fig(idx):
+        if not idx: return None
+        for f in paper.get('figures', []):
+            if f.get('figure_index') == idx: return f
+        return None
+
+    # Helper to get figure explanation
+    def get_fig_expl(idx):
+        for fe in paper.get('figure_explanations', []):
+            if fe.get('figure_index') == idx: return fe.get('explanation', '')
+        return ''
+
+    # Infobox Data
+    infobox_html = f"""
+      <div class="infobox">
+        <div class="infobox-title">{paper.get('main_concept', 'Paper Details')}</div>
+"""
+    # Use animation as the main infobox image if available, otherwise first figure
+    main_img = None
+    if paper.get('animation_path'):
+        main_img = f"../assets/{paper['animation_path']}"
+    elif paper.get('figures'):
+        main_img = f"../assets/figures/{paper['figures'][0]['filename']}"
     
+    if main_img:
+        infobox_html += f'        <div class="infobox-image"><img src="{main_img}" alt="Concept"></div>\n'
+
+    infobox_html += "        <table>\n"
+    # Technical fields
+    ib_data = paper.get('infobox_data', {})
+    if isinstance(ib_data, dict):
+        for label, value in ib_data.items():
+            nice_label = label.replace('_', ' ').title()
+            infobox_html += f"          <tr><th>{nice_label}</th><td>{value}</td></tr>\n"
+    
+    # Standard fields
+    infobox_html += f"""
+          <tr><th>Venue</th><td>{paper['venue'] or 'N/A'}</td></tr>
+          <tr><th>Year</th><td>{paper['year'] or 'N/A'}</td></tr>
+          <tr><th>Citations</th><td>{paper['citation_count'] or 0}</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/{paper.get('doi', '')}" target="_blank">Link</a></td></tr>
+        </table>
+      </div>
+"""
+
+    # Sidebar / Contents
+    sidebar_html = """
+    <aside class="wiki-sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#title">Top</a></li>
+"""
+    for i, section in enumerate(paper.get('sections', [])):
+        sidebar_html += f'        <li><a href="#section-{i}">{section["title"]}</a></li>\n'
+    
+    if paper.get('concept_breakdown'): sidebar_html += '        <li><a href="#concepts">Concepts</a></li>\n'
+    if paper.get('math_equations'): sidebar_html += '        <li><a href="#math">Mathematics</a></li>\n'
+    if paper.get('figures'): sidebar_html += '        <li><a href="#figures">Figures</a></li>\n'
+    if paper.get('see_also'): sidebar_html += '        <li><a href="#see-also">See Also</a></li>\n'
+    if paper.get('references'): sidebar_html += '        <li><a href="#references">References</a></li>\n'
+    
+    sidebar_html += f"""
+      </ul>
+      <h3 style="margin-top: 1.5rem;">Tags</h3>
+      <div>{tags_html}</div>
+    </aside>
+"""
+
+    # Article Content
+    article_html = f"""
+    <article class="wiki-article">
+      <h1 id="title">{paper['title']}</h1>
+      
+      {infobox_html}
+      
+      <p class="lead">{link_glossary_terms(paper.get('lead_paragraph', paper.get('tldr', '')), glossary_dict)}</p>
+"""
+
+    # Sections with floating figures
+    for i, section in enumerate(paper.get('sections', [])):
+        article_html += f'<h2 id="section-{i}">{section["title"]}</h2>\n'
+        
+        # Check for figure
+        fig = get_fig(section.get('figure_index'))
+        if fig:
+            article_html += f"""
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/{fig['filename']}" target="_blank">
+            <img src="../assets/figures/{fig['filename']}" class="thumbimage" alt="Figure {fig['figure_index']}">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure {fig['figure_index']}:</b> {fig.get('caption', '')}
+          </div>
+        </div>
+      </div>
+"""
+        
+        # Section text
+        paragraphs = section['content'].split('\n\n')
+        for p in paragraphs:
+            # Replace [[Figure X]] tags
+            p_processed = re.sub(r'\[\[Figure (\d+)\]\]', r'<b>Figure \1</b>', p)
+            article_html += f'<p>{link_glossary_terms(p_processed, glossary_dict)}</p>\n'
+
+    # Concept Breakdown
+    if paper.get('concept_breakdown'):
+        article_html += '<h2 id="concepts">Concept Breakdown</h2>\n'
+        for item in paper['concept_breakdown']:
+            article_html += f"""
+      <div class="concept-item">
+        <div class="concept-title">{item['concept']}</div>
+        <p>{link_glossary_terms(item['description'], glossary_dict)}</p>
+      </div>
+"""
+
+    # Math Equations
+    if paper.get('math_equations'):
+        article_html += '<h2 id="math">Mathematics</h2>\n'
+        for eq in paper['math_equations']:
+            article_html += f'<h3>{eq.get("name", "Equation")}</h3>\n'
+            article_html += f'<div class="math-block">$${eq.get("latex", "")}$$</div>\n'
+            article_html += f'<div class="math-explanation-box">{link_glossary_terms(eq.get("explanation", ""), glossary_dict)}'
+            
+            if eq.get('symbols'):
+                article_html += '<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr>'
+                for s in eq['symbols']:
+                    article_html += f'<tr><td>${s["symbol"]}$</td><td>{s["meaning"]}</td></tr>'
+                article_html += '</table>'
+            
+            article_html += '</div>\n'
+
+    # All Figures Gallery (if not already shown)
+    if paper.get('figures'):
+        article_html += '<h2 id="figures">Figures and Explanations</h2>\n'
+        for fig in paper['figures']:
+            expl = get_fig_expl(fig['figure_index'])
+            article_html += f"""
+      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
+        <div class="thumbinner" style="width:100%;">
+          <img src="../assets/figures/{fig['filename']}" style="max-height: 400px;">
+          <div class="thumbcaption">
+            <b>Figure {fig['figure_index']}:</b> {fig.get('caption', '')}<br>
+            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+            {expl}
+          </div>
+        </div>
+      </div>
+"""
+
+    # See Also
+    if paper.get('see_also'):
+        article_html += '<h2 id="see-also">See Also</h2>\n<div class="see-also-grid">'
+        for item in paper['see_also']:
+            article_html += f"""
+        <div class="see-also-item">
+          <b>{item['topic']}</b>
+          <span style="font-size: 0.8rem; color: #54595d;">{item['description']}</span>
+        </div>
+"""
+        article_html += '</div>\n'
+
+    # References
+    if paper.get('references'):
+        article_html += """
+      <h2 id="references">References</h2>
+      <ol class="reference-list">
+"""
+        for ref in paper.get('references', []):
+            ref_authors = json.loads(ref['authors']) if isinstance(ref['authors'], str) else ref.get('authors', [])
+            authors_str = ', '.join(ref_authors[:2]) if ref_authors else 'Unknown'
+            if len(ref_authors) > 2: authors_str += ' et al.'
+            
+            paper_id_attr = f'data-paper-id="{ref["cited_paper_id"]}"' if ref.get('cited_paper_id') else ''
+            
+            article_html += f"""
+        <li class="reference-item">
+          <a class="reference-link" {paper_id_attr}>{ref.get('title', 'Untitled')}</a>
+          <span style="font-size: 0.8rem; color: #54595d;"> - {authors_str} ({ref.get('year', 'N/A')})</span>
+        </li>
+"""
+        article_html += "      </ol>\n"
+
+    article_html += "</article>\n"
+
+    # Full Page Assembly
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -682,6 +839,7 @@ def generate_paper_page(paper, glossary):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{paper['title']} - Research Wiki</title>
   <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
   <header class="wiki-header">
@@ -692,186 +850,36 @@ def generate_paper_page(paper, glossary):
   </header>
   
   <main class="wiki-content">
-    <aside class="wiki-sidebar">
-      <h3>Contents</h3>
-      <ul>
-        <li><a href="#overview">Overview</a></li>
-        <li><a href="#abstract">Abstract</a></li>
-"""
-    
-    if paper.get('figures'):
-        html += '        <li><a href="#figures">Figures</a></li>\n'
-    
-    if paper.get('summary_html') or paper.get('key_points'):
-        html += '        <li><a href="#summary">Summary</a></li>\n'
-    
-    if paper.get('math_equations'):
-        html += '        <li><a href="#math">Key Equations</a></li>\n'
-    
-    if paper.get('animation_path'):
-        html += '        <li><a href="#animation">Animation</a></li>\n'
-    
-    if paper.get('references'):
-        html += '        <li><a href="#references">References</a></li>\n'
-    
-    if paper.get('cited_by'):
-        html += '        <li><a href="#cited-by">Cited By</a></li>\n'
-    
-    if paper.get('related'):
-        html += '        <li><a href="#related">Related Papers</a></li>\n'
-    
-    html += f"""
-      </ul>
-      
-      <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div>{tags_html}</div>
-    </aside>
-    
-    <article class="wiki-article">
-      <h1 id="title">{paper['title']}</h1>
-      
-      <div class="paper-infobox">
-        <table>
-          <tr><th>Authors</th><td>{authors_html}</td></tr>
-          <tr><th>Year</th><td>{paper['year'] or 'N/A'}</td></tr>
-          <tr><th>Venue</th><td>{paper['venue'] or 'N/A'}</td></tr>
-          <tr><th>Citations</th><td><strong>{paper['citation_count'] or 0}</strong> ({paper['influential_citation_count'] or 0} influential)</td></tr>
-          <tr><th>DOI</th><td><a href="https://doi.org/{paper.get('doi', '')}" target="_blank">{paper.get('doi', 'N/A')}</a></td></tr>
-        </table>
-      </div>
-      
-      <h2 id="overview">Overview</h2>
-      <p>{paper.get('tldr', 'N/A')}</p>
-      
-      <h2 id="abstract">Abstract</h2>
-      <p>{abstract_html}</p>
-"""
-    
-    # Figures
-    if paper.get('figures'):
-        html += """
-      <h2 id="figures">Figures and Diagrams</h2>
-"""
-        for fig in paper['figures']:
-            caption = fig.get('caption', f'Figure {fig["figure_index"]}')
-            html += f"""
-      <figure class="wiki-figure">
-        <img src="../assets/figures/{fig['filename']}" alt="{caption}">
-        <figcaption>{caption}</figcaption>
-      </figure>
-"""
-
-    # LLM-Generated Summary and Key Points
-    if paper.get('summary') or paper.get('key_points'):
-        html += """
-      <h2 id="summary">Summary</h2>
-"""
-        if paper.get('key_points'):
-            html += """
-      <h3>Key Points</h3>
-      <ul>
-"""
-            for point in paper['key_points']:
-                html += f'        <li>{point}</li>\n'
-            html += "      </ul>\n"
-        
-        if paper.get('summary'):
-            html += """
-      <h3>Detailed Summary</h3>
-"""
-            if isinstance(paper['summary'], list):
-                for para in paper['summary']:
-                    html += f'      <p>{para}</p>\n'
-            else:
-                html += f'      <p>{paper["summary"]}</p>\n'
-
-    # Math Equations
-    if paper.get('math_equations'):
-        html += """
-      <h2 id="math">Key Equations</h2>
-"""
-        for eq in paper['math_equations']:
-            html += f"""
-      <h3>{eq.get('name', 'Equation')}</h3>
-"""
-            # Check if it's display math (has $$ or is multi-line)
-            latex = eq.get('latex', '')
-            if len(latex) > 50 or '\\\\' in latex:
-                # Display math
-                html += f'      <div class="math-display">$${latex}$$</div>\n'
-            else:
-                # Inline math
-                html += f'      <div class="math-inline">${latex}$</div>\n'
-            
-            html += f'      <p class="math-explanation">{eq.get("explanation", "")}</p>\n'
-
-    # Animation
-    if paper.get('animation_path'):
-        html += f"""
-      <h2 id="animation">Visual Explanation</h2>
-      <figure class="wiki-figure">
-        <img src="{paper['animation_path']}" alt="{paper.get('main_concept', 'Animation')}">
-        <figcaption>{paper.get('main_concept', 'Animated concept explanation')}</figcaption>
-      </figure>
-"""
-
-    # References
-    if paper.get('references'):
-        html += """
-      <h2 id="references">References</h2>
-      <ol class="reference-list">
-"""
-        for ref in paper['paper_references'] if 'paper_references' in paper else paper.get('references', []):
-            ref_authors = json.loads(ref['authors']) if isinstance(ref['authors'], str) else ref.get('authors', [])
-            authors_str = ', '.join(ref_authors[:3]) if ref_authors else 'Unknown'
-            if len(ref_authors) > 3:
-                authors_str += ' et al.'
-            
-            paper_id_attr = f'data-paper-id="{ref["cited_paper_id"]}"' if ref.get('cited_paper_id') else ''
-            
-            html += f"""
-        <li class="reference-item">
-          <a class="reference-link" {paper_id_attr}>{ref.get('title', 'Untitled')}</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            {authors_str} ({ref.get('year', 'N/A')})
-          </div>
-        </li>
-"""
-        html += "      </ol>\n"
-    
-    # Cited by
-    if paper.get('cited_by'):
-        html += """
-      <h2 id="cited-by">Cited By</h2>
-      <ul>
-"""
-        for citing in paper['cited_by']:
-            html += f'        <li><a href="{citing["paper_id"]}.html">{citing["title"]}</a></li>\n'
-        html += "      </ul>\n"
-    
-    # Related papers
-    if paper.get('related'):
-        html += """
-      <h2 id="related">Related Papers</h2>
-      <ul>
-"""
-        for related in paper['related']:
-            html += f'        <li><a href="{related["paper_id"]}.html">{related["title"]}</a></li>\n'
-        html += "      </ul>\n"
-    
-    html += """
-    </article>
+    {sidebar_html}
+    {article_html}
   </main>
   
   <footer class="wiki-footer">
-    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
   
-  <div class="hover-card"></div>
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>
 </html>"""
+    
+    with open(SITE_DIR / "paper" / f"{paper_id}.html", 'w') as f:
+        f.write(html)
+    
+    # Generate JSON for hover cards
+    paper_json = {
+        'title': paper['title'],
+        'authors': paper['authors'],
+        'year': paper['year'],
+        'venue': paper['venue'],
+        'abstract': paper.get('abstract', ''),
+        'citation_count': paper.get('citation_count', 0)
+    }
+    
+    with open(SITE_DIR / "paper" / f"{paper_id}.json", 'w') as f:
+        json.dump(paper_json, f)
+    
+    print(f"  ✓ Generated {paper_id}.html")
     
     with open(SITE_DIR / "paper" / f"{paper_id}.html", 'w') as f:
         f.write(html)

@@ -1,7 +1,7 @@
 [
   {
     "paper_id": "204e3073870fae3d05bcbc2f6a8e263d9b72e776",
-    "title": "Attention is All you Need",
+    "title": "Attention Is All You Need",
     "authors": [
       "Ashish Vaswani",
       "Noam Shazeer",
@@ -16,8 +16,8 @@
     "venue": "Neural Information Processing Systems",
     "abstract": "",
     "tags": [
-      "transformer",
-      "attention-mechanism"
+      "attention-mechanism",
+      "transformer"
     ]
   },
   {
@@ -37,11 +37,11 @@
     "venue": "Computer Vision and Pattern Recognition",
     "abstract": "",
     "tags": [
-      "self-supervised-learning",
       "jepa",
-      "computer-vision",
+      "self-supervised-learning",
       "embeddings",
-      "transformer"
+      "transformer",
+      "computer-vision"
     ]
   },
   {
@@ -56,8 +56,8 @@
     "venue": "AAAI Conference on Artificial Intelligence",
     "abstract": "",
     "tags": [
-      "quantization",
       "embeddings",
+      "quantization",
       "large-language-models"
     ]
   },
@@ -91,8 +91,8 @@
     "venue": "arXiv.org",
     "abstract": "",
     "tags": [
-      "quantization",
       "embeddings",
+      "quantization",
       "large-language-models"
     ]
   },
@@ -110,11 +110,11 @@
     "venue": "N/A",
     "abstract": "",
     "tags": [
-      "jepa",
-      "latent-space",
-      "computer-vision",
       "world-models",
-      "embeddings"
+      "embeddings",
+      "latent-space",
+      "jepa",
+      "computer-vision"
     ]
   }
 ]

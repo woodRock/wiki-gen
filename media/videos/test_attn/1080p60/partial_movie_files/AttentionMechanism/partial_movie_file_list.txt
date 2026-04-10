@@ -1,7 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/test_attn/1080p60/partial_movie_files/AttentionMechanism/3544663784_2485799004_223132457.mp4'
-file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/test_attn/1080p60/partial_movie_files/AttentionMechanism/260329756_2574473371_3412147525.mp4'
-file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/test_attn/1080p60/partial_movie_files/AttentionMechanism/260329756_1507086414_3387613212.mp4'
-file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/test_attn/1080p60/partial_movie_files/AttentionMechanism/260329756_1142695086_1666280314.mp4'
-file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/test_attn/1080p60/partial_movie_files/AttentionMechanism/260329756_1432596116_1466142404.mp4'
-file 'file:/Users/woodj/Desktop/wiki-gen/media/videos/test_attn/1080p60/partial_movie_files/AttentionMechanism/260329756_627016277_3979355167.mp4'

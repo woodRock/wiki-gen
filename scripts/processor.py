@@ -115,41 +115,58 @@ def process_pdf(pdf_path):
     try:
         # Get data from Semantic Scholar - try multiple strategies
         paper = None
-        
-        # Strategy 1: Try DOI from pdf2doi
+        identifier = None
+
+        # Strategy 1: DOI/identifier from pdf2doi
         try:
             results = pdf2doi.pdf2doi(str(pdf_path))
             identifier = results.get('identifier')
-            if identifier and '/' in identifier:
-                print(f"  🔍 Trying DOI: {identifier}")
-                paper = sch.get_paper(identifier)
         except Exception as e:
-            print(f"  ⚠ DOI failed: {str(e)[:50]}")
-            pass
-        
+            print(f"  ⚠ pdf2doi failed: {str(e)[:50]}")
+
+        if identifier:
+            # Strategy 1a: arXiv ID (most reliable for preprints)
+            arxiv_match = re.search(r'arxiv[./](\d{4}\.\d{4,5})', identifier, re.IGNORECASE)
+            if arxiv_match:
+                arxiv_id = arxiv_match.group(1)
+                print(f"  🔍 Trying arXiv ID: {arxiv_id}")
+                try:
+                    paper = sch.get_paper(f"arXiv:{arxiv_id}")
+                except Exception as e:
+                    print(f"  ⚠ arXiv lookup failed: {str(e)[:50]}")
+
+            # Strategy 1b: Raw DOI
+            if not paper and '/' in identifier:
+                print(f"  🔍 Trying DOI: {identifier}")
+                try:
+                    paper = sch.get_paper(identifier)
+                except Exception as e:
+                    print(f"  ⚠ DOI failed: {str(e)[:50]}")
+
         # Strategy 2: Extract title from PDF and search
         if not paper:
             pdf_title = extract_title_from_pdf(pdf_path)
-            if pdf_title:
+            if pdf_title and len(pdf_title.split()) >= 5:
                 print(f"  🔍 Searching by PDF title: {pdf_title[:60]}...")
                 try:
                     search_results = sch.search_paper(pdf_title, limit=3)
                     if search_results:
-                        # Take the first result with highest match
                         paper = search_results[0]
                         print(f"  ✓ Found: {paper.title[:60]}...")
                 except Exception as e:
                     print(f"  ⚠ Title search failed: {str(e)[:50]}")
-        
-        # Strategy 3: Try filename-based search
+
+        # Strategy 3: Filename-derived search (last resort)
         if not paper:
-            title_from_filename = pdf_path.stem
-            print(f"  🔍 Searching by filename: {title_from_filename}")
+            stem = pdf_path.stem
+            query = re.sub(r'^[a-z]+\d{4}', '', stem).replace('_', ' ').strip() or stem
+            print(f"  🔍 Searching by filename query: {query}")
             try:
-                search_results = sch.search_paper(title_from_filename, limit=3)
+                search_results = sch.search_paper(query, limit=3)
                 if search_results:
                     paper = search_results[0]
-            except:
+                    print(f"  ✓ Found: {paper.title[:60]}...")
+            except Exception:
                 pass
         
         if not paper:
@@ -168,7 +185,11 @@ def process_pdf(pdf_path):
         print(f"  🤖 Generating LLM content...")
         try:
             from llm_content_gen import generate_llm_content
-            llm_content = generate_llm_content(pdf_path, paper_id)
+            llm_content = generate_llm_content(
+                pdf_path, paper_id,
+                paper_title=paper.title,
+                figures=figures,
+            )
         except Exception as e:
             print(f"  ⚠ LLM content generation failed: {e}")
             llm_content = {
@@ -201,6 +222,12 @@ def process_pdf(pdf_path):
             'key_points': llm_content.get('key_points', []),
             'math_equations': llm_content.get('math_equations', []),
             'glossary_terms': llm_content.get('glossary_terms', []),
+            'concept_breakdown': llm_content.get('concept_breakdown', []),
+            'infobox_data': llm_content.get('infobox_data', {}),
+            'lead_paragraph': llm_content.get('lead_paragraph', ''),
+            'sections': llm_content.get('sections', []),
+            'figure_explanations': llm_content.get('figure_explanations', []),
+            'see_also': llm_content.get('see_also', []),
             'animation_path': llm_content.get('animation_path'),
             'main_concept': llm_content.get('main_concept')
         }
@@ -242,7 +269,14 @@ def process_pdf(pdf_path):
                 except Exception as e:
                     print(f"    ⚠ Error processing reference: {e}")
         
-        # Extract key terms for glossary
+        # Insert LLM-generated glossary terms
+        for gt in llm_content.get('glossary_terms', []):
+            try:
+                insert_glossary_term(conn, gt['term'], gt['definition'], paper_id)
+            except Exception:
+                pass
+
+        # Extract key terms from abstract (fallback heuristics)
         extract_glossary_terms(conn, paper_id, paper.abstract or '')
         
         conn.commit()
@@ -313,24 +347,58 @@ def extract_glossary_terms(conn, paper_id, abstract):
         if term.lower() in abstract.lower():
             insert_glossary_term(conn, term, definition, paper_id)
 
+def reingest_all():
+    """Move all processed PDFs back to ingest/ and wipe the database for a clean rerun."""
+    import sqlite3
+    from db_setup import DB_PATH
+
+    processed_pdfs = list(PROCESSED_DIR.glob("*.pdf"))
+    if not processed_pdfs:
+        print("ℹ️  No PDFs found in processed/")
+        return
+
+    print(f"♻️  Moving {len(processed_pdfs)} PDF(s) back to ingest/...")
+    for pdf in processed_pdfs:
+        shutil.copy(str(pdf), str(INGEST_DIR / pdf.name))
+
+    if DB_PATH.exists():
+        DB_PATH.unlink()
+        print(f"🗑️  Cleared database {DB_PATH}")
+
+    print()
+
+
 def main():
     """Main processing pipeline."""
-    ensure_dirs()
+    import sys
+    if "--reingest" in sys.argv:
+        reingest_all()
+
+    # Provider support
+    provider = "gemini"
+    for arg in sys.argv:
+        if arg.startswith("--provider="):
+            provider = arg.split("=")[1]
     
+    os.environ["LLM_PROVIDER"] = provider
+    print(f"🚀 Using LLM Provider: {provider}")
+
+    ensure_dirs()
+
     # Initialize database
     init_db()
-    
+
     # Process PDFs
     pdfs = list(INGEST_DIR.glob("*.pdf"))
     if not pdfs:
         print("ℹ️  No new PDFs found in ingest/")
     else:
         print(f"📚 Found {len(pdfs)} PDF(s) to process\n")
-        
+
         for pdf in pdfs:
             process_pdf(pdf)
             print()
-    
+
     # Always regenerate static site
     print("\n🌐 Generating Wikipedia-style static site...")
     generate_site()

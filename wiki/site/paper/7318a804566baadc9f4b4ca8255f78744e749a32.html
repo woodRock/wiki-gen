@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead - Research Wiki</title>
   <link rel="stylesheet" href="../assets/css/wiki.css">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
 </head>
 <body>
   <header class="wiki-header">
@@ -15,238 +16,257 @@
   </header>
   
   <main class="wiki-content">
+    
     <aside class="wiki-sidebar">
       <h3>Contents</h3>
       <ul>
-        <li><a href="#overview">Overview</a></li>
-        <li><a href="#abstract">Abstract</a></li>
-        <li><a href="#summary">Summary</a></li>
-        <li><a href="#math">Key Equations</a></li>
-        <li><a href="#animation">Animation</a></li>
+        <li><a href="#title">Top</a></li>
+        <li><a href="#section-0">The Memory Overhead Problem in KV Cache Quantization</a></li>
+        <li><a href="#section-1">Johnson-Lindenstrauss Transform and Sign Quantization</a></li>
+        <li><a href="#section-2">Asymmetric Estimator Design for Attention Scores</a></li>
+        <li><a href="#section-3">CUDA Implementation and Runtime Efficiency</a></li>
+        <li><a href="#section-4">Empirical Evaluation Across LLMs and NLP Tasks</a></li>
+        <li><a href="#concepts">Concepts</a></li>
+        <li><a href="#math">Mathematics</a></li>
+        <li><a href="#see-also">See Also</a></li>
         <li><a href="#references">References</a></li>
-        <li><a href="#cited-by">Cited By</a></li>
-        <li><a href="#related">Related Papers</a></li>
 
       </ul>
-      
       <h3 style="margin-top: 1.5rem;">Tags</h3>
       <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">embeddings</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">large-language-models</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">quantization</span></div>
     </aside>
+
     
     <article class="wiki-article">
       <h1 id="title">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</h1>
       
-      <div class="paper-infobox">
+      
+      <div class="infobox">
+        <div class="infobox-title">1-Bit Quantized Johnson-Lindenstrauss KV Cache Sketch</div>
+        <div class="infobox-image"><img src="../assets/animations/7318a804566baadc9f4b4ca8255f78744e749a32.gif" alt="Concept"></div>
         <table>
-          <tr><th>Authors</th><td>A. Zandieh, Majid Daliri, Insu Han</td></tr>
-          <tr><th>Year</th><td>2024</td></tr>
+          <tr><th>Architecture Type</th><td>Randomized Sketching for Transformer KV Cache Compression</td></tr>
+          <tr><th>Key Innovation</th><td>1-bit sign quantization after JL transform enables zero-overhead key cache compression with unbiased inner product estimation</td></tr>
+          <tr><th>Performance Metric</th><td>Over 5x KV cache memory reduction at 3-bit equivalent with no accuracy degradation across multiple LLMs and NLP tasks</td></tr>
+          <tr><th>Computational Efficiency</th><td>Data-oblivious, no tuning required, parallelizable CUDA implementation; scales logarithmically with context length</td></tr>
+
           <tr><th>Venue</th><td>AAAI Conference on Artificial Intelligence</td></tr>
-          <tr><th>Citations</th><td><strong>24</strong> (0 influential)</td></tr>
-          <tr><th>DOI</th><td><a href="https://doi.org/10.48550/arXiv.2406.03482" target="_blank">10.48550/arXiv.2406.03482</a></td></tr>
+          <tr><th>Year</th><td>2024</td></tr>
+          <tr><th>Citations</th><td>26</td></tr>
+          <tr><th>DOI</th><td><a href="https://doi.org/10.48550/arXiv.2406.03482" target="_blank">Link</a></td></tr>
         </table>
       </div>
+
       
-      <h2 id="overview">Overview</h2>
-      <p>This work introduces QJL, a new quantization approach that consists of a Johnson-Lindenstrauss (JL) transform followed by sign-bit quantization, and develops an efficient implementation of the QJL sketch and its corresponding inner product estimator, incorporating a lightweight CUDA kernel for optimized computation.</p>
-      
-      <h2 id="abstract">Abstract</h2>
-      <p>Serving LLMs requires substantial memory due to the storage requirements of Key-Value (KV) <span class="glossary-term" data-definition="A dense vector representation of discrete items like words or images">embedding</span>s in the <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span>, which grows with sequence length. An effective approach to compress <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> is <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>. However, traditional <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> methods face significant memory overhead due to the need to store <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> constants (at least a zero point and a scale) in full precision per data block. Depending on the block size, this overhead can add 1 or 2 bits per quantized number. We introduce QJL, a new <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> approach that consists of a Johnson-Lindenstrauss (JL) transform followed by sign-bit <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span>. In contrast to existing methods, QJL eliminates memory overheads by removing the need for storing <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> constants. We propose an asymmetric estimator for the inner product of two vectors and demonstrate that applying QJL to one vector and a standard JL transform without <span class="glossary-term" data-definition="Reducing precision of numerical values to save memory and computation">quantization</span> to the other provides an unbiased estimator with minimal distortion. We have developed an efficient implementation of the QJL sketch and its corresponding inner product estimator, incorporating a lightweight CUDA kernel for optimized computation. When applied across various LLMs and NLP tasks to quantize the <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> to only 3 bits, QJL demonstrates a more than fivefold reduction in <span class="glossary-term" data-definition="Storage of Key-Value embeddings in language models for efficient inference">kv cache</span> memory usage without compromising accuracy, all while achieving faster runtime.</p>
+      <p class="lead">QJL (Quantized Johnson-Lindenstrauss) is a <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">kv cache</span> quantization method for large language models, introduced by Zandieh, Daliri, and Han (2024), that achieves zero memory overhead by eliminating the need to store per-block quantization constants. The method applies a Johnson-Lindenstrauss random Gaussian projection to key embeddings and retains only the sign bit of each projected coordinate, producing a 1-bit sketch that enables unbiased estimation of attention score inner products. When quantizing LLM <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">kv cache</span>s to just 3 bits total, QJL achieves more than a fivefold reduction in <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">kv cache</span> memory without loss in model accuracy, supported by a lightweight CUDA kernel for efficient GPU execution.</p>
+<h2 id="section-0">The Memory Overhead Problem in KV Cache Quantization</h2>
+<p>Deploying large language models at scale requires serving millions of concurrent sessions, each maintaining its own <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">kv cache</span> storing all previously generated key and value embeddings. As context lengths grow to 32k, 128k, or even million-token scales, this cache becomes the dominant memory consumer during inference.</p>
+<p>Traditional quantization methods address this by storing KV embeddings at reduced bit-width. However, all existing methods used block quantization: values are grouped into blocks and a zero point and scale are computed and stored per block. These normalization constants, stored in full float16 precision, add approximately 1–2 bits per quantized number depending on block size.</p>
+<p>At 4-bit quantization with 128-element blocks, the zero point and scale add 0.25 bits per element, bringing the effective cost to 4.25 bits. For aggressive 2-bit quantization, the overhead becomes proportionally much larger. QJL's central design goal is to quantize KV keys to as few bits as possible while storing zero additional bookkeeping data.</p>
+<p>The enabling insight is that if the quantization scheme is data-oblivious—using a fixed predetermined transform rather than one calibrated to each block—there are no statistics to store. The challenge is designing a data-oblivious scheme that still provides accurate inner product estimates for attention score computation.</p>
+<h2 id="section-1">Johnson-Lindenstrauss Transform and Sign Quantization</h2>
+<p>The <span class="glossary-term" data-definition="A random linear map S: ℝᵈ → ℝᵐ that approximately preserves pairwise inner products and Euclidean distances with high probability. Implemented as multiplication by a random Gaussian matrix, it is data-oblivious and requires no training or calibration.">johnson-lindenstrauss (jl) transform</span> is a classical result in dimensionality reduction: multiplying a vector by a random Gaussian matrix S ∈ ℝᵐˣᵈ approximately preserves inner products. For any two vectors q and k, the inner product ⟨Sq, Sk⟩/m approximates ⟨q, k⟩ with variance scaling as 1/m.</p>
+<p>QJL's key insight is that applying the JL transform to a key vector k and then quantizing Sk to just the sign bits (±1 per coordinate), while applying the same JL transform to the query vector without quantization, still yields an <span class="glossary-term" data-definition="A statistical estimator whose expected value equals the true quantity being estimated. QJL is unbiased for inner products, meaning errors are random and cancel in expectation.">unbiased estimator</span> of ⟨q, k⟩. The estimator uses the cross-product ⟨Sq, sign(Sk)⟩ scaled by an analytically known constant.</p>
+<p>Lemma 3.2 proves that E[⟨Sq, sign(Sk)⟩] is proportional to ⟨q, k⟩. The key mathematical mechanism is the arc-sine law: for jointly Gaussian (z₁, z₂) with correlation ρ, E[z₁ · sign(z₂)] is proportional to ρ via the <span class="glossary-term" data-definition="A deep result in functional analysis connecting the inner product of sign-quantized random Gaussian vectors to the cosine of the original angle via the arcsin function. This relationship underpins QJL's unbiasedness proof.">grothendieck inequality</span>. This arcsin relationship is the theoretical heart of QJL.</p>
+<p>Lemma 3.5 further shows that the variance of the QJL estimator is only π²/4 ≈ 2.47 times larger than the variance of the standard JL inner product estimator. The accuracy penalty of 1-bit quantization is a small constant factor rather than catastrophic.</p>
+<h2 id="section-2">Asymmetric Estimator Design for Attention Scores</h2>
+<p>A critical design choice in QJL is its asymmetric treatment of queries and keys. Key embeddings are processed through the full QJL pipeline: JL transform followed by <span class="glossary-term" data-definition="The extreme form of scalar quantization mapping each real number to its sign: +1 if positive, -1 if negative. Produces exactly 1 bit per value with no stored quantization constants.">sign quantization</span>. Query embeddings are only JL-transformed but not quantized. This asymmetry is essential for maintaining unbiasedness.</p>
+<p>If both query and key were sign-quantized, the resulting estimator would be proportional to cosine similarity, which preserves angular information but loses magnitude information. Attention computation requires knowing approximate magnitudes to produce meaningful <span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span> weights; the asymmetric design preserves this via the unquantized query projection.</p>
+<p>Theorem 3.6 demonstrates that QJL-estimated attention scores satisfy a relative distortion bound: the <span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span> output computed from QJL-estimated scores differs from the true <span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span> by at most ε in ℓ₁ norm with high probability when JL dimension m = O(ε⁻² log n). The logarithmic scaling in context length n means per-token bit count remains essentially constant even for very long sequences.</p>
+<p>The value cache uses standard per-token quantization since value vectors have more uniform distributions across channels compared to keys, making standard block quantization efficient for values.</p>
+<h2 id="section-3">CUDA Implementation and Runtime Efficiency</h2>
+<p>QJL's practical utility depends on efficient GPU implementation. The authors developed a custom CUDA kernel for the QJL sketch and its inner product estimator. Rather than storing the full m×d projection matrix S, the kernel uses a seeded pseudo-random number generator to regenerate S on-the-fly, avoiding explicit storage of S.</p>
+<p>The inner product estimation ⟨Sq, sign(Sk)⟩ requires multiplying S by the query vector q, then a dot product with binary sign(Sk). The binary nature of sign(Sk) enables efficient bit-manipulation operations and integer dot products, significantly faster than floating-point operations.</p>
+<p>During autoregressive generation, each new token must compute attention against all cached keys. The sequential access pattern makes the operation memory-bandwidth-bound. QJL reduces cache size by over 5×, proportionally reducing the memory bandwidth required per generated token.</p>
+<p>Despite the additional JL transform computation, overall generation speed with QJL exceeds uncompressed attention because bandwidth savings outweigh compute overhead—consistent with the known memory-bandwidth-bound nature of autoregressive LLM inference.</p>
+<h2 id="section-4">Empirical Evaluation Across LLMs and NLP Tasks</h2>
+<p>QJL was evaluated on LLaMA-2 (7B, 13B, 70B), Mistral 7B, and Falcon 7B across language modeling perplexity, question answering (TriviaQA, NaturalQuestions), and summarization. At an effective 3 bits per key element, QJL achieves no statistically significant accuracy degradation on any evaluated task.</p>
+<p>Compared to KIVI and KVQuant, QJL achieves better or equal accuracy at lower effective bit counts because it avoids overhead of stored quantization constants. All bits are used for actual key content, none for bookkeeping.</p>
+<p>The method generalizes across different tasks and context lengths without per-model or per-task tuning. This data-oblivious property is valuable in production where models serve diverse workloads—a single fixed configuration applies across all usage patterns.</p>
+<p>Ablation studies confirm that unbiasedness of the inner product estimator is the critical property. Biased alternatives such as symmetric <span class="glossary-term" data-definition="The extreme form of scalar quantization mapping each real number to its sign: +1 if positive, -1 if negative. Produces exactly 1 bit per value with no stored quantization constants.">sign quantization</span> of both query and key show meaningful accuracy degradation, particularly on tasks sensitive to <span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span> saturation.</p>
+<h2 id="concepts">Concept Breakdown</h2>
 
-      <h2 id="summary">Summary</h2>
+      <div class="concept-item">
+        <div class="concept-title">Johnson-Lindenstrauss Transform</div>
+        <p>A random Gaussian projection S ∈ ℝᵐˣᵈ mapping high-dimensional vectors to lower-dimensional space while approximately preserving inner products. The JL guarantee states that inner products of projections are <span class="glossary-term" data-definition="A statistical estimator whose expected value equals the true quantity being estimated. QJL is unbiased for inner products, meaning errors are random and cancel in expectation.">unbiased estimator</span>s of originals with variance 1/m.</p>
+      </div>
 
-      <h3>Key Points</h3>
-      <ul>
-        <li>JL transform preserves distances with random projections</li>
-        <li>Sign quantization achieves 1-bit per value</li>
-        <li>Zero quantization parameter overhead</li>
-        <li>5× memory reduction with custom CUDA kernel</li>
-      </ul>
+      <div class="concept-item">
+        <div class="concept-title">1-Bit Sign Quantization</div>
+        <p>After applying the JL transform to key k to get Sk ∈ ℝᵐ, QJL retains only the sign of each coordinate: sign(Sk) ∈ {±1}ᵐ. This extreme compression reduces cache from 16-bit floats to 1 bit per projected coordinate with no stored scale or zero point.</p>
+      </div>
 
-      <h3>Detailed Summary</h3>
-      <p>QJL applies Johnson-Lindenstrauss transform followed by sign-bit quantization for KV cache compression.</p>
-      <p>The JL transform approximately preserves pairwise distances in lower dimensions using random projections.</p>
-      <p>Sign quantization reduces each value to just 1 bit (+1 or -1) with no need for scale/zero-point storage.</p>
-      <p>Achieves 3-bit KV cache with 5× memory reduction and faster inference via custom CUDA kernels.</p>
+      <div class="concept-item">
+        <div class="concept-title">Unbiased Asymmetric Inner Product Estimator</div>
+        <p>QJL uses an asymmetric design where keys are sign-quantized but queries are only JL-transformed. The estimator ⟨Sq, sign(Sk)⟩ scaled by π‖k‖₂/(2m) is provably unbiased for ⟨q, k⟩. Asymmetry is essential: sign-quantizing both would lose magnitude information.</p>
+      </div>
 
-      <h2 id="math">Key Equations</h2>
+      <div class="concept-item">
+        <div class="concept-title">Data-Oblivious Quantization</div>
+        <p>QJL uses a fixed, predetermined random matrix S independent of input data. Unlike block quantization methods that compute and store data-dependent statistics per block, QJL's transform parameters are generated from a fixed random seed and never stored, eliminating all per-block overhead.</p>
+      </div>
 
-      <h3>JL Projection</h3>
-      <div class="math-inline">$\mathbf{y} = \mathbf{S}\mathbf{x}$</div>
-      <p class="math-explanation">Projects input vector using random sketching matrix S, approximately preserving pairwise distances.</p>
+      <div class="concept-item">
+        <div class="concept-title">Logarithmic Context Length Scaling</div>
+        <p>Theorem 3.6 shows that maintaining ε-accurate attention scores requires JL dimension m = O(ε⁻² log n) where n is context length. Per-token bit count grows only logarithmically with context length—extremely slowly compared to constant growth in other methods.</p>
+      </div>
+<h2 id="math">Mathematics</h2>
+<h3>QJL sketch definition</h3>
+<div class="math-block">$$\text{QJL}(S, k) = \text{sign}(Sk) \in \{+1, -1\}^m, \quad S \in \mathbb{R}^{m \times d}, \; S_{ij} \sim \mathcal{N}(0,1)$$</div>
+<div class="math-explanation-box">The QJL sketch of key vector k is computed by multiplying by a random Gaussian matrix S and retaining only the sign of each resulting coordinate. Each element of Sk is a random Gaussian weighted sum of all d key coordinates, and its sign captures whether this random linear functional is positive or negative.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$S$</td><td>random Gaussian projection matrix m x d</td></tr><tr><td>$k$</td><td>d-dimensional key embedding vector</td></tr><tr><td>$m$</td><td>number of random projections (sketch dimension)</td></tr></table></div>
+<h3>Unbiasedness of QJL inner product estimator (Lemma 3.2)</h3>
+<div class="math-block">$$\mathbb{E}\left[\langle Sq, \operatorname{sign}(Sk) \rangle\right] = \frac{2m}{\pi} \cdot \frac{\langle q, k \rangle}{\|k\|_2}$$</div>
+<div class="math-explanation-box">The expectation of the inner product between unquantized query projection Sq and sign-quantized key sketch sign(Sk) equals a known constant times the true inner product. The π/2 factor arises from the arc-sine law: for jointly Gaussian (z₁,z₂) with correlation ρ, E[sign(z₁)·z₂] is proportional to ρ.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$q$</td><td>query embedding vector</td></tr><tr><td>$k$</td><td>key embedding vector</td></tr><tr><td>$S$</td><td>shared JL projection matrix</td></tr></table></div>
+<h3>Variance bound of QJL vs standard JL (Lemma 3.5)</h3>
+<div class="math-block">$$\operatorname{Var}\left[\langle Sq, \operatorname{sign}(Sk)\rangle\right] \leq \frac{\pi^2}{4} \cdot \operatorname{Var}\left[\langle Sq, Sk\rangle\right]$$</div>
+<div class="math-explanation-box">The variance of the QJL estimator is at most π²/4 ≈ 2.47 times the variance of the standard unquantized JL estimator. This small constant factor means the statistical efficiency cost of 1-bit quantization is modest, especially given complete elimination of per-block overhead memory.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\pi^2/4$</td><td>the overhead factor approximately 2.47 from 1-bit quantization</td></tr></table></div>
+<h3>Attention score accuracy guarantee (Theorem 3.6)</h3>
+<div class="math-block">$$\left\|\operatorname{softmax}(\hat{a}) - \operatorname{softmax}(a)\right\|_1 \leq \varepsilon \quad \text{if } m = O\!\left(\varepsilon^{-2} \log n\right)$$</div>
+<div class="math-explanation-box">If JL dimension m is chosen as O(ε⁻² log n), <span class="glossary-term" data-definition="The core transformer operation computing weighted sums of value vectors using query-key inner products normalized by <span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span>. QJL preserves <span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span> outputs within ε accuracy as proven in Theorem 3.6."><span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span> attention</span> weights from QJL-estimated scores differ from true <span class="glossary-term" data-definition="Function converting a vector of real numbers to a probability distribution: softmax(xᵢ) = exp(xᵢ)/Σⱼexp(xⱼ). Used in attention to normalize compatibility scores into attention weights summing to 1.">softmax</span> by at most ε in total variation. The logarithmic dependence on context length n is key: doubling the context only increases required bits per token by log(2).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\hat{a}$</td><td>vector of QJL-estimated attention scores</td></tr><tr><td>$a$</td><td>true attention scores</td></tr><tr><td>$n$</td><td>context length</td></tr><tr><td>$\varepsilon$</td><td>accuracy tolerance parameter</td></tr></table></div>
+<h2 id="see-also">See Also</h2>
+<div class="see-also-grid">
+        <div class="see-also-item">
+          <b>PolarQuant</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Follow-up work from overlapping authors extending KV cache quantization by combining random preconditioning with polar coordinate transformation, achieving better reconstruction quality at the same effective bit budget.</span>
+        </div>
 
-      <h3>Sign Quantization</h3>
-      <div class="math-display">$$Q(\mathbf{y}) = \text{sign}(\mathbf{y}) \in \{-1,+1\}^m$$</div>
-      <p class="math-explanation">Reduces each dimension to just its sign, achieving 1-bit representation.</p>
+        <div class="see-also-item">
+          <b>TurboQuant</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Related work applying QJL as a second stage after an MSE-optimal quantizer, achieving near-optimal vector quantization distortion rates for both MSE and inner product objectives.</span>
+        </div>
 
-      <h2 id="animation">Visual Explanation</h2>
-      <figure class="wiki-figure">
-        <img src="../assets/animations/7318a804566baadc9f4b4ca8255f78744e749a32.gif" alt="JL Transform with Sign Quantization">
-        <figcaption>JL Transform with Sign Quantization</figcaption>
-      </figure>
+        <div class="see-also-item">
+          <b>Johnson-Lindenstrauss Lemma</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Mathematical foundation of QJL; guarantees random Gaussian projections approximately preserve pairwise inner products, enabling the zero-overhead sketching approach.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>KIVI</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Concurrent KV cache quantization baseline using per-channel quantization with stored scale/zero-point constants; QJL outperforms or matches KIVI while eliminating all bookkeeping overhead.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Attention is All You Need</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The original Transformer paper introducing the KV caching architecture that QJL compresses; QJL's attention score distortion bounds are derived in terms of the softmax attention formulation.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Flash Attention</b>
+          <span style="font-size: 0.8rem; color: #54595d;">Memory-efficient attention implementation compatible with QJL; both address the memory bottleneck in transformer inference, with Flash Attention reducing activation memory and QJL reducing KV cache size.</span>
+        </div>
+</div>
 
       <h2 id="references">References</h2>
       <ol class="reference-list">
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="8a3df7b9cb6c323da340a4871ae705d0063f28bf">KV Cache is 1 Bit Per Channel: Efficient Large Language Model Inference with Coupled Quantization</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Tianyi Zhang, Jonah Yi, Zhaozhuo Xu et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Tianyi Zhang, Jonah Yi et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="7a54aad06171f59149aca5380863c62729c70b41">GEAR: An Efficient KV Cache Compression Recipe for Near-Lossless Generative Inference of LLM</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Hao Kang, Qingru Zhang, Souvik Kundu et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Hao Kang, Qingru Zhang et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="a48a3cfde9e9a6f02821ea28698012e4d3e1cd73">QAQ: Quality Adaptive Quantization for LLM KV Cache</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Shichen Dong, Wenfang Cheng, Jiayu Qin et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Shichen Dong, Wenfang Cheng et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="89e0fde2dc60f8520c176a57396c6cad3af5dc40">No Token Left Behind: Reliable KV Cache Compression via Importance-Aware Mixed Precision Quantization</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            J. Yang, Byeongwook Kim, Jeongin Bae et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - J. Yang, Byeongwook Kim et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="f608011b0f50a14bb2949c186a7c632a099aa75b">WKVQuant: Quantizing Weight and Key/Value Cache for Large Language Models Gains More</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Yuxuan Yue, Zhihang Yuan, Haojie Duanmu et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yuxuan Yue, Zhihang Yuan et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="f9f311472ed8c4b15cfd74e1539f0c4815e574e9">SubGen: Token Generation in Sublinear Time and Memory</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            A. Zandieh, Insu Han, V. Mirrokni et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - A. Zandieh, Insu Han et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="a3e000e0d7f64c1d094c2a8bf6f43992cbabe91b">KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Zirui Liu, Jiayi Yuan, Hongye Jin et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Zirui Liu, Jiayi Yuan et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="b085968c4362fb286ad6c5ef71a5db9630da0498">KVQuant: Towards 10 Million Context Length LLM Inference with KV Cache Quantization</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Coleman Hooper, Sehoon Kim, Hiva Mohammadzadeh et al. (2024)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Coleman Hooper, Sehoon Kim et al. (2024)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="fdc53c2c10742464087c0525f77e32604827a21d">Efficient Streaming Language Models with Attention Sinks</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Guangxuan Xiao, Yuandong Tian, Beidi Chen et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Guangxuan Xiao, Yuandong Tian et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="83b90f4a0ae4cc214eb3cc140ccfef9cd99fac05">Efficient Memory Management for Large Language Model Serving with PagedAttention</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Woosuk Kwon, Zhuohan Li, Siyuan Zhuang et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Woosuk Kwon, Zhuohan Li et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="b31a5884a8ebe96b6300839b28608b97f8f8ef76">LongBench: A Bilingual, Multitask Benchmark for Long Context Understanding</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Yushi Bai, Xin Lv, Jiajie Zhang et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Yushi Bai, Xin Lv et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="104b0bb1da562d53cbda87aec79ef6a2827d191a">Llama 2: Open Foundation and Fine-Tuned Chat Models</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Hugo Touvron, Louis Martin, Kevin R. Stone et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Hugo Touvron, Louis Martin et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="e586a4591ba0303b769f2c07cbddaf1899cb72e4">H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Zhenyu (Allen) Zhang, Ying Sheng, Tianyi Zhou et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Zhenyu (Allen) Zhang, Ying Sheng et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="d6eeb2898bd9bd34744194ef543062dda6c4531a">Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression at Test Time</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Zichang Liu, Aditya Desai, Fangshuo Liao et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Zichang Liu, Aditya Desai et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="5ae6fb6b5a3c7df515ff4a82ac9673bae6a8e200">GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            J. Ainslie, J. Lee-Thorp, Michiel de Jong et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - J. Ainslie, J. Lee-Thorp et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="163b4d6a79a5b19af88b8585456363340d9efd04">GPT-4 Technical Report</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            OpenAI Josh Achiam, Steven Adler, S. Agarwal et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - OpenAI Josh Achiam, Steven Adler et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="42a14d824caa3348046eb34c37e2ab7985faa7a3">High-throughput Generative Inference of Large Language Models with a Single GPU</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Ying Sheng, Lianmin Zheng, Binhang Yuan et al. (2023)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Ying Sheng, Lianmin Zheng et al. (2023)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="379e42895f6d40ab9e9559609f505aba89145a5d">Efficiently Scaling Transformer Inference</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            Reiner Pope, Sholto Douglas, A. Chowdhery et al. (2022)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - Reiner Pope, Sholto Douglas et al. (2022)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="c57293882b2561e1ba03017902df9fc2f289dea2">Hierarchical Text-Conditional Image Generation with CLIP Latents</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            A. Ramesh, Prafulla Dhariwal, Alex Nichol et al. (2022)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - A. Ramesh, Prafulla Dhariwal et al. (2022)</span>
         </li>
 
         <li class="reference-item">
           <a class="reference-link" data-paper-id="e6c561d02500b2596a230b341a8eb8b921ca5bf2">Scaling Laws for Neural Language Models</a>
-          <div style="font-size: 0.85rem; color: #54595d; margin-top: 0.2rem;">
-            J. Kaplan, Sam McCandlish, T. Henighan et al. (2020)
-          </div>
+          <span style="font-size: 0.8rem; color: #54595d;"> - J. Kaplan, Sam McCandlish et al. (2020)</span>
         </li>
       </ol>
+</article>
 
-      <h2 id="cited-by">Cited By</h2>
-      <ul>
-        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
-      </ul>
-
-      <h2 id="related">Related Papers</h2>
-      <ul>
-        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
-        <li><a href="65780e86fa36e354da618499f8b4616ac87838bf.html">TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate</a></li>
-      </ul>
-
-    </article>
   </main>
   
   <footer class="wiki-footer">
-    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+    <p>This page was generated by Research Wiki. Text is available under the Creative Commons Attribution-ShareAlike License.</p>
   </footer>
   
-  <div class="hover-card"></div>
   <script src="../assets/js/wiki.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </body>

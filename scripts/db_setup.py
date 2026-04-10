@@ -37,10 +37,16 @@ def init_db():
             citation_count INTEGER DEFAULT 0,
             influential_citation_count INTEGER DEFAULT 0,
             pdf_filename TEXT,
-            summary TEXT,  -- Rich HTML summary (JSON array of paragraphs)
-            key_points TEXT,  -- JSON array
-            math_equations TEXT,  -- JSON array of {name, latex, explanation}
-            glossary_terms TEXT,  -- JSON array of {term, definition}
+            lead_paragraph TEXT,
+            sections TEXT,           -- JSON array of {title, content, figure_index}
+            figure_explanations TEXT,-- JSON array of {figure_index, explanation}
+            see_also TEXT,           -- JSON array of {topic, description}
+            concept_breakdown TEXT,  -- JSON array of {concept, description}
+            infobox_data TEXT,       -- JSON object
+            summary TEXT,            -- legacy: JSON array of paragraphs
+            key_points TEXT,         -- JSON array
+            math_equations TEXT,     -- JSON array of {name, latex, explanation, symbols}
+            glossary_terms TEXT,     -- JSON array of {term, definition}
             animation_path TEXT,
             main_concept TEXT,
             tags TEXT,  -- JSON array
@@ -48,6 +54,21 @@ def init_db():
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+
+    # Add new columns to existing databases (idempotent)
+    new_columns = [
+        ("lead_paragraph",       "TEXT"),
+        ("sections",             "TEXT"),
+        ("figure_explanations",  "TEXT"),
+        ("see_also",             "TEXT"),
+        ("concept_breakdown",    "TEXT"),
+        ("infobox_data",         "TEXT"),
+    ]
+    for col, typ in new_columns:
+        try:
+            cursor.execute(f"ALTER TABLE papers ADD COLUMN {col} {typ}")
+        except Exception:
+            pass  # Column already exists
     
     # Figures table
     cursor.execute("""
@@ -143,24 +164,22 @@ def insert_paper(conn, paper_data):
     """Insert or update a paper in the database."""
     cursor = conn.cursor()
 
-    authors_json = json.dumps(paper_data.get('authors', []))
-    tags_json = json.dumps(paper_data.get('tags', []))
-    summary_json = json.dumps(paper_data.get('summary', [])) if isinstance(paper_data.get('summary'), list) else paper_data.get('summary')
-    key_points_json = json.dumps(paper_data.get('key_points', []))
-    math_equations_json = json.dumps(paper_data.get('math_equations', []))
-    glossary_terms_json = json.dumps(paper_data.get('glossary_terms', []))
+    def _j(val):
+        return json.dumps(val) if isinstance(val, (list, dict)) else val
 
     cursor.execute("""
         INSERT OR REPLACE INTO papers
         (paper_id, title, authors, year, venue, doi, abstract, tldr,
-         citation_count, influential_citation_count, pdf_filename, 
+         citation_count, influential_citation_count, pdf_filename,
+         lead_paragraph, sections, figure_explanations, see_also,
+         concept_breakdown, infobox_data,
          summary, key_points, math_equations, glossary_terms,
          animation_path, main_concept, tags, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     """, (
         paper_data['paper_id'],
         paper_data['title'],
-        authors_json,
+        _j(paper_data.get('authors', [])),
         paper_data.get('year'),
         paper_data.get('venue'),
         paper_data.get('doi'),
@@ -169,13 +188,19 @@ def insert_paper(conn, paper_data):
         paper_data.get('citation_count', 0),
         paper_data.get('influential_citation_count', 0),
         paper_data.get('pdf_filename'),
-        summary_json,
-        key_points_json,
-        math_equations_json,
-        glossary_terms_json,
+        paper_data.get('lead_paragraph'),
+        _j(paper_data.get('sections', [])),
+        _j(paper_data.get('figure_explanations', [])),
+        _j(paper_data.get('see_also', [])),
+        _j(paper_data.get('concept_breakdown', [])),
+        _j(paper_data.get('infobox_data', {})),
+        _j(paper_data.get('summary', [])),
+        _j(paper_data.get('key_points', [])),
+        _j(paper_data.get('math_equations', [])),
+        _j(paper_data.get('glossary_terms', [])),
         paper_data.get('animation_path'),
         paper_data.get('main_concept'),
-        tags_json
+        _j(paper_data.get('tags', [])),
     ))
     
     # Insert tags
@@ -267,13 +292,23 @@ def get_paper(conn, paper_id):
     cursor.execute("SELECT * FROM papers WHERE paper_id = ?", (paper_id,))
     paper = dict(cursor.fetchone())
     
-    # Parse JSON fields
-    paper['authors'] = json.loads(paper['authors']) if paper['authors'] else []
-    paper['tags'] = json.loads(paper['tags']) if paper['tags'] else []
-    paper['summary'] = json.loads(paper['summary']) if paper['summary'] else []
-    paper['key_points'] = json.loads(paper['key_points']) if paper['key_points'] else []
-    paper['math_equations'] = json.loads(paper['math_equations']) if paper['math_equations'] else []
-    paper['glossary_terms'] = json.loads(paper['glossary_terms']) if paper['glossary_terms'] else []
+    def _pj(val, default):
+        try:
+            return json.loads(val) if val else default
+        except Exception:
+            return default
+
+    paper['authors']             = _pj(paper.get('authors'), [])
+    paper['tags']                = _pj(paper.get('tags'), [])
+    paper['sections']            = _pj(paper.get('sections'), [])
+    paper['figure_explanations'] = _pj(paper.get('figure_explanations'), [])
+    paper['see_also']            = _pj(paper.get('see_also'), [])
+    paper['concept_breakdown']   = _pj(paper.get('concept_breakdown'), [])
+    paper['infobox_data']        = _pj(paper.get('infobox_data'), {})
+    paper['summary']             = _pj(paper.get('summary'), [])
+    paper['key_points']          = _pj(paper.get('key_points'), [])
+    paper['math_equations']      = _pj(paper.get('math_equations'), [])
+    paper['glossary_terms']      = _pj(paper.get('glossary_terms'), [])
     
     # Get figures
     cursor.execute("SELECT * FROM figures WHERE paper_id = ? ORDER BY figure_index", (paper_id,))
