@@ -34,7 +34,7 @@ def generate_site():
         generate_paper_page(paper, glossary)
     
     # Generate search index
-    generate_search_index(papers, glossary)
+    generate_search_index(papers, conn)
     
     conn.close()
     print(f"✅ Generated site in {SITE_DIR}")
@@ -391,6 +391,78 @@ body {
   white-space: nowrap;
 }
 
+/* Search dropdown */
+.wiki-search {
+  position: relative;
+}
+
+.search-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--wiki-border);
+  border-top: none;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.search-dropdown.visible {
+  display: block;
+}
+
+.search-result {
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.search-result:hover {
+  background: var(--wiki-gray-bg);
+}
+
+.search-result:last-child {
+  border-bottom: none;
+}
+
+.search-result-title {
+  font-weight: 500;
+  color: var(--wiki-link);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.search-result-meta {
+  font-size: 0.75rem;
+  color: #54595d;
+  margin-top: 0.15rem;
+}
+
+.search-result-tags {
+  margin-top: 0.2rem;
+}
+
+.search-result-tag {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  margin: 0 0.1rem 0 0;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 2px;
+  font-size: 0.7rem;
+}
+
+.search-no-results {
+  padding: 0.8rem 1rem;
+  color: #54595d;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .wiki-content {
@@ -516,27 +588,85 @@ class HoverCard {
 class Search {
   constructor() {
     this.searchIndex = null;
+    this.dropdown = null;
+    this.input = document.getElementById('search');
+    if (!this.input) return;
     this.init();
   }
-  
+
   async init() {
+    // Resolve path relative to current page depth
+    const isInPaperDir = window.location.pathname.includes('/paper/');
+    const basePath = isInPaperDir ? '../' : '';
     try {
-      const response = await fetch('/search_index.json');
+      const response = await fetch(`${basePath}search_index.json`);
       this.searchIndex = await response.json();
     } catch (err) {
       console.error('Failed to load search index:', err);
     }
+    this.createDropdown();
+    this.bindEvents();
   }
-  
+
+  createDropdown() {
+    this.dropdown = document.createElement('div');
+    this.dropdown.className = 'search-dropdown';
+    this.input.parentElement.appendChild(this.dropdown);
+  }
+
+  bindEvents() {
+    this.input.addEventListener('input', () => {
+      const q = this.input.value.trim();
+      if (q.length < 2) { this.hide(); return; }
+      this.render(this.search(q));
+    });
+
+    this.input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { this.hide(); this.input.blur(); }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!this.input.parentElement.contains(e.target)) this.hide();
+    });
+  }
+
   search(query) {
     if (!this.searchIndex) return [];
-    
-    query = query.toLowerCase();
-    return this.searchIndex.filter(paper => 
-      paper.title.toLowerCase().includes(query) ||
-      (paper.abstract && paper.abstract.toLowerCase().includes(query)) ||
-      (paper.authors && paper.authors.join(' ').toLowerCase().includes(query))
-    );
+    const q = query.toLowerCase();
+    return this.searchIndex.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      (p.authors && p.authors.join(' ').toLowerCase().includes(q)) ||
+      (p.venue && p.venue.toLowerCase().includes(q)) ||
+      (p.tags && p.tags.join(' ').toLowerCase().includes(q)) ||
+      (p.content && p.content.toLowerCase().includes(q))
+    ).slice(0, 8);
+  }
+
+  render(results) {
+    const isInPaperDir = window.location.pathname.includes('/paper/');
+    const base = isInPaperDir ? '../' : '';
+
+    if (!results.length) {
+      this.dropdown.innerHTML = '<div class="search-no-results">No papers found</div>';
+      this.dropdown.classList.add('visible');
+      return;
+    }
+
+    this.dropdown.innerHTML = results.map(p => {
+      const authors = p.authors ? p.authors.slice(0, 2).join(', ') + (p.authors.length > 2 ? ' et al.' : '') : '';
+      const tags = (p.tags || []).slice(0, 3).map(t => `<span class="search-result-tag">${t}</span>`).join('');
+      return `<div class="search-result" onclick="window.location.href='${base}paper/${p.paper_id}.html'">
+        <div class="search-result-title">${p.title}</div>
+        <div class="search-result-meta">${[authors, p.year, p.venue].filter(Boolean).join(' \u2022 ')}</div>
+        ${tags ? `<div class="search-result-tags">${tags}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    this.dropdown.classList.add('visible');
+  }
+
+  hide() {
+    if (this.dropdown) this.dropdown.classList.remove('visible');
   }
 }
 
@@ -910,23 +1040,43 @@ def link_glossary_terms(text, glossary_dict):
             result = pattern.sub(replacement, result)
     return result
 
-def generate_search_index(papers, glossary):
-    """Generate search index JSON."""
+def generate_search_index(papers, conn):
+    """Generate search index JSON with full-text content for search."""
     search_index = []
-    for paper in papers:
+    for paper_basic in papers:
+        paper = get_paper(conn, paper_basic['paper_id'])
+
+        # Build searchable text from rich content
+        content_parts = []
+        if paper.get('lead_paragraph'):
+            content_parts.append(paper['lead_paragraph'])
+        for section in paper.get('sections', []):
+            if section.get('title'):
+                content_parts.append(section['title'])
+            if section.get('content'):
+                content_parts.append(section['content'][:500])
+        for concept in paper.get('concept_breakdown', []):
+            if concept.get('concept'):
+                content_parts.append(concept['concept'])
+            if concept.get('description'):
+                content_parts.append(concept['description'][:200])
+        for gt in paper.get('glossary_terms', []):
+            if gt.get('term'):
+                content_parts.append(gt['term'])
+
         search_index.append({
             'paper_id': paper['paper_id'],
             'title': paper['title'],
             'authors': paper['authors'],
             'year': paper.get('year'),
             'venue': paper.get('venue'),
-            'abstract': paper.get('abstract', '')[:500],
-            'tags': paper.get('tags', [])
+            'tags': paper.get('tags', []),
+            'content': ' '.join(content_parts)[:3000],
         })
-    
+
     with open(SITE_DIR / "search_index.json", 'w') as f:
         json.dump(search_index, f, indent=2)
-    
+
     print(f"  ✓ Generated search_index.json ({len(search_index)} entries)")
 
 import re
