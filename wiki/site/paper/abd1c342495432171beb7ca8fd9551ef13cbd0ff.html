@@ -27,20 +27,20 @@
       <h3>Contents</h3>
       <ul>
         <li><a href="#title">Top</a></li>
-        <li><a href="#section-0">The ILSVRC 2012 Breakthrough</a></li>
-        <li><a href="#section-1">Architecture: Convolutional and Fully Connected Layers</a></li>
-        <li><a href="#section-2">Key Innovations: ReLU and Dropout</a></li>
-        <li><a href="#section-3">Data Augmentation and Overfitting</a></li>
+        <li><a href="#section-0">Non-Saturating ReLU Activation</a></li>
+        <li><a href="#section-1">Multi-GPU Distributed Architecture</a></li>
+        <li><a href="#section-2">Local Response Normalization and Lateral Inhibition</a></li>
+        <li><a href="#section-3">Overlapping Max-Pooling</a></li>
+        <li><a href="#section-4">Overfitting Mitigation via Dropout and Augmentation</a></li>
+        <li><a href="#section-5">Qualitative Visual Analysis and Feature Similarity</a></li>
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
         <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
-        <li><a href="#cited-by">Cited By</a></li>
-        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">regularization</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">embeddings</span></div>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">computer-vision</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">optimization</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">regularization</span></div>
     </aside>
 
     
@@ -49,13 +49,13 @@
 
       
       <div class="infobox">
-        <div class="infobox-title">AlexNet Convolutional Neural Network</div>
+        <div class="infobox-title">AlexNet</div>
         <div class="infobox-image"><img src="../assets/animations/abd1c342495432171beb7ca8fd9551ef13cbd0ff.gif" alt="Concept"></div>
         <table>
           <tr><th>Architecture Type</th><td>Deep Convolutional Neural Network (CNN)</td></tr>
-          <tr><th>Key Innovation</th><td>Large-scale training on GPUs, ReLU activation, and Dropout regularization.</td></tr>
-          <tr><th>Performance Metric</th><td>15.3% top-5 error on ImageNet (winner of ILSVRC 2012).</td></tr>
-          <tr><th>Computational Efficiency</th><td>First major success of multi-GPU training for deep vision models.</td></tr>
+          <tr><th>Key Innovation</th><td>ReLU Activation and GPU Parallelization</td></tr>
+          <tr><th>Performance Metric</th><td>15.3% top-5 error rate (ILSVRC-2012)</td></tr>
+          <tr><th>Computational Efficiency</th><td>Trained for 6 days on two NVIDIA GTX 580 GPUs</td></tr>
 
           <tr><th>Venue</th><td>Communications of the ACM</td></tr>
           <tr><th>Year</th><td>2012</td></tr>
@@ -65,61 +65,92 @@
       </div>
 
 
-      <p class="lead">ImageNet Classification with Deep Convolutional Neural Networks, often referred to as AlexNet, is the seminal paper that triggered the modern deep learning revolution. By training a large, deep convolutional neural network on the 1.2 million images of the ImageNet LSVRC-2010 dataset, the authors achieved a <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rate of 15.3%, shattering the previous state-of-the-art of 26.2%. This work demonstrated the power of GPUs for training deep networks and introduced key techniques like ReLU activations and Dropout that are now standard in the field.</p>
-<h2 id="section-0">The ILSVRC 2012 Breakthrough</h2>
-<p>In 2012, the ImageNet Large Scale Visual Recognition Challenge (<span class="glossary-term" data-definition="ImageNet Large Scale Visual Recognition Challenge; a premier computer vision competition.">ILSVRC</span>) provided a benchmark of over 1.2 million images across 1,000 categories. Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton entered a deep convolutional neural network that significantly outperformed all other entries, which mostly relied on traditional hand-crafted features and support vector machines.</p>
-<p>This victory marked a paradigm shift in computer vision, proving that end-to-end representation learning from raw pixels was superior to engineered features. The magnitude of the improvement convinced the broader research community of the potential of deep learning.</p>
-<h2 id="section-1">Architecture: Convolutional and Fully Connected Layers</h2>
-<p>AlexNet consists of eight learned layers: five convolutional layers followed by three fully connected layers. The first convolutional layer filters the 224x224x3 input image with 96 kernels of size 11x11x3. Subsequent layers use smaller kernels (5x5 and 3x3) to capture increasingly complex features.</p>
-<p>To fit the large model into the limited memory of GPUs at the time (3GB NVIDIA GTX 580s), the network was split across two GPUs. Specific layers communicated between GPUs, while others operated independently, a precursor to modern distributed training strategies. <b>Figure 2</b> details this multi-GPU architecture.</p>
-<h2 id="section-2">Key Innovations: ReLU and Dropout</h2>
-<p>One of the most important technical contributions of the paper was the use of the Rectified Linear Unit (ReLU) activation function, $f(x) = \max(0, x)$. <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">Prior</span> to AlexNet, saturating activations like Tanh or <span class="glossary-term" data-definition="A mathematical function having a characteristic &#x27;S&#x27;-shaped curve.">Sigmoid</span> were standard, but ReLUs allowed the network to train several times faster by mitigating the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem.</p>
-<p>To combat <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> in the large fully-connected layers, the authors employed 'Dropout.' This technique involves randomly setting the output of each hidden neuron to zero with a probability of 0.5 during training. This forces the network to learn more robust, redundant features and is now a fundamental tool for regularizing deep models.</p>
-<h2 id="section-3">Data Augmentation and Overfitting</h2>
-<p>Despite its depth, AlexNet was prone to <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span> due to its 60 million parameters. The authors used two primary forms of data augmentation to artificially enlarge the dataset: generating image translations and horizontal reflections, and altering the intensities of the RGB channels using PCA-based color augmentation.</p>
-<p>These techniques, combined with Dropout, allowed the model to generalize effectively to unseen images, establishing a template for training large-scale vision models that persists today.</p>
+      <p class="lead">AlexNet is a seminal deep convolutional neural network (<span class="glossary-term" data-definition="Convolutional Neural Network; a type of deep neural network most commonly applied to analyzing visual imagery.">CNN</span>) architecture that revolutionized computer vision by winning the 2012 ImageNet Large Scale Visual Recognition Challenge (<span class="glossary-term" data-definition="The ImageNet Large Scale Visual Recognition Challenge, an annual competition in computer vision.">ILSVRC</span>). Developed by Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton, the model achieved a record-breaking <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rate of 15.3%, outperforming the second-best entry by more than 10 percentage points and establishing deep learning as the dominant paradigm for visual recognition.</p>
+<h2 id="section-0">Non-Saturating ReLU Activation</h2>
+<p>A primary contribution of the AlexNet architecture is the replacement of traditional saturating activation functions, such as the logistic <span class="glossary-term" data-definition="A mathematical function having a characteristic &#x27;S&#x27;-shaped curve.">sigmoid</span> or <span class="glossary-term" data-definition="A sigmoid-shaped mathematical function used as an activation non-linearity.">hyperbolic tangent</span>, with Rectified Linear Units (ReLUs). Saturating nonlinearities are computationally expensive during training via <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative gradient.">gradient descent</span> because their gradients vanish as the input magnitude increases, leading to slow <span class="glossary-term" data-definition="The point at which an optimization algorithm has found a stable solution (usually a local minimum).">convergence</span>. </p>
+<p>In contrast, ReLUs (defined as f(x) = max(0, x)) are non-saturating and allow for much faster training. The authors demonstrated that a four-layer <span class="glossary-term" data-definition="Convolutional Neural Network; a type of deep neural network most commonly applied to analyzing visual imagery.">CNN</span> with ReLUs reached a 25% training error rate on the CIFAR-10 dataset six times faster than an equivalent network using tanh neurons. This acceleration was critical for enabling the experimentation and training of a model as large as AlexNet on the massive ImageNet dataset.</p>
+<h2 id="section-1">Multi-GPU Distributed Architecture</h2>
+<p>To accommodate the 60 million parameters and the memory constraints of 2012-era hardware, AlexNet was split across two NVIDIA GTX 580 GPUs, each with 3GB of memory. This parallelization scheme involves putting half of the kernels (or neurons) on each GPU, with a specific cross-GPU connectivity pattern. </p>
+<p>Crucially, the GPUs communicate only in certain layers. For instance, the kernels in the third convolutional layer take input from all <span class="glossary-term" data-definition="A small matrix of weights that slides over the input data to extract local features.">kernel</span> maps in the second layer, whereas kernels in the fourth layer only take input from maps residing on the same GPU. This precisely tuned communication-to-computation ratio allowed the authors to train a significantly larger network than would be possible on a single device, reducing top-1 and <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rates by 1.7% and 1.2% respectively compared to a single-GPU model of half the size.</p>
+<h2 id="section-2">Local Response Normalization and Lateral Inhibition</h2>
+<p>While ReLU neurons do not require input normalization to prevent <span class="glossary-term" data-definition="A state in an activation function (like sigmoid) where large input values result in gradients close to zero, slowing down learning.">saturation</span>, the authors introduced a local normalization scheme to aid <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span>. This Local Response Normalization (LRN) implements a form of lateral inhibition, inspired by the behavior of real biological neurons. </p>
+<p>LRN creates competition for high activities among neuron outputs computed using different kernels at the same spatial position. This process helps the model specialize its kernels and improves the robustness of the features learned. The authors reported that applying this normalization after the ReLU nonlinearity in specific layers reduced top-1 and <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rates by 1.4% and 1.2%, aiding the model's ability to distinguish between fine-grained categories in the ImageNet dataset.</p>
+<h2 id="section-3">Overlapping Max-Pooling</h2>
+<p>AlexNet utilizes overlapping <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> layers to summarize the outputs of neighboring groups of neurons within a <span class="glossary-term" data-definition="A small matrix of weights that slides over the input data to extract local features.">kernel</span> map. Traditionally, <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> units are spaced such that they do not overlap (e.g., a <span class="glossary-term" data-definition="The number of pixels by which a kernel or pooling window moves across the input image.">stride</span> equal to the <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> window size). AlexNet, however, uses a <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> window of 3x3 pixels with a <span class="glossary-term" data-definition="The number of pixels by which a kernel or pooling window moves across the input image.">stride</span> of 2 pixels. </p>
+<p>This overlapping scheme produces output of the same dimensions as traditional <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> but makes it slightly more difficult for the model to overfit during training. The authors observed that this configuration reduced top-1 and <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rates by 0.4% and 0.3% respectively. These <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> layers follow both response-normalization layers as well as the fifth convolutional layer, providing spatial hierarchy and translation <span class="glossary-term" data-definition="The property of remaining unchanged regardless of certain transformations, like translation or scaling.">invariance</span>.</p>
+<h2 id="section-4">Overfitting Mitigation via Dropout and Augmentation</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig1.jpeg" target="_blank">
+            <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig1.jpeg" class="thumbimage" alt="Figure 1">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 1:</b> Without dropout, our network ex-
+          </div>
+        </div>
+      </div>
+<p>Given the model's 60 million parameters, <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span> was a significant challenge despite the scale of the ImageNet dataset. To combat this, the authors employed two primary <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> techniques: data augmentation and dropout. Data augmentation included horizontal reflections and random crops of 224x224 patches from the 256x256 source images, as well as PCA-based color intensity alterations. </p>
+<p>Dropout, a recently developed technique at the time, was applied to the first two fully-connected layers. It consists of setting the output of each hidden neuron to zero with a probability of 0.5 during training. This prevents neurons from co-adapting too closely, forcing them to learn more robust and independent features. <b>Figure 1</b> demonstrates that without such <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span>, the network's capacity would lead to substantial <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span>, rendering it unable to generalize to the test set.</p>
+<h2 id="section-5">Qualitative Visual Analysis and Feature Similarity</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig2.png" target="_blank">
+            <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig2.png" class="thumbimage" alt="Figure 2">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 2:</b> (Left) Eight ILSVRC-2010 test images and the ﬁve labels considered most probable by our model.
+          </div>
+        </div>
+      </div>
+<p>The visual knowledge of the network can be assessed by examining the labels assigned to test images and the internal representations learned. <b>Figure 2</b> illustrates the top-5 predictions for various test images, showing that even when the top prediction is incorrect, the remaining labels are often semantically related (e.g., different breeds of cats for a leopard image). </p>
+<p>Furthermore, by examining the 4096-dimensional activations in the last hidden layer, the authors found that images with small Euclidean distances in this feature space are semantically similar, even if they differ significantly at the pixel level (e.g., dogs in different poses). This suggests that the network learns a high-level representation of objects that transcends simple edge matching, effectively capturing the underlying categories present in the data.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
-        <div class="concept-title">ReLU (Rectified Linear Unit)</div>
-        <p>A non-saturating activation function that speeds up training by providing constant gradients for positive inputs.</p>
+        <div class="concept-title">Rectified Linear Unit (ReLU)</div>
+        <p>An activation function that outputs the input directly if it is positive, and zero otherwise, significantly accelerating training speed.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Dropout</div>
-        <p>A <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> technique where neurons are randomly ignored during training to prevent co-adaptation and <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>.</p>
-      </div>
-
-      <div class="concept-item">
-        <div class="concept-title">Convolutional Layer</div>
-        <p>A layer that applies a set of learnable filters to the input to extract spatial features like edges, shapes, and textures.</p>
+        <p>A <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> technique that randomly ignores a subset of neurons during training to prevent complex co-adaptations and reduce <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span>.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Data Augmentation</div>
-        <p>The process of creating new training examples by applying transformations (crops, flips, color shifts) to existing data.</p>
+        <p>The process of artificially increasing the size of a training set by applying label-preserving transformations like cropping and flipping.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Overlapping Pooling</div>
-        <p>A technique used in AlexNet where the <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> regions overlap, which the authors found slightly reduced error rates.</p>
+        <p>A spatial reduction technique where the <span class="glossary-term" data-definition="A form of non-linear down-sampling used to reduce the spatial size of the representation.">pooling</span> window size is larger than the <span class="glossary-term" data-definition="The number of pixels by which a kernel or pooling window moves across the input image.">stride</span>, which helps in preventing <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span> and capturing spatial hierarchies.</p>
+      </div>
+
+      <div class="concept-item">
+        <div class="concept-title">Top-5 Error Rate</div>
+        <p>A performance metric measuring the percentage of test images for which the correct label is not among the five most probable labels predicted by the model.</p>
       </div>
 <h2 id="math">Mathematics</h2>
-<h3>ReLU Activation</h3>
+<h3>Rectified Linear Unit (ReLU)</h3>
 <div class="math-block">$$f(x) = \max(0, x)$$</div>
-<div class="math-explanation-box">The simple thresholding function that replaced <span class="glossary-term" data-definition="A mathematical function having a characteristic &#x27;S&#x27;-shaped curve.">Sigmoid</span>/Tanh and enabled much faster training of deep networks.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x$</td><td>The input to the neuron</td></tr><tr><td>$f(x)$</td><td>The activated output</td></tr></table></div>
+<div class="math-explanation-box">The ReLU function provides a non-saturating nonlinearity. Unlike the <span class="glossary-term" data-definition="A mathematical function having a characteristic &#x27;S&#x27;-shaped curve.">sigmoid</span> function, its <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> is 1 for all positive inputs, which prevents the vanishing <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> problem and accelerates <span class="glossary-term" data-definition="The point at which an optimization algorithm has found a stable solution (usually a local minimum).">convergence</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x$</td><td>Input to the neuron</td></tr><tr><td>$f(x)$</td><td>Output activity of the neuron</td></tr></table></div>
 <h3>Local Response Normalization (LRN)</h3>
 <div class="math-block">$$b^i_{x,y} = a^i_{x,y} / \left(k + \alpha \sum_{j=\max(0, i-n/2)}^{\min(N-1, i+n/2)} (a^j_{x,y})^2\right)^\beta$$</div>
-<div class="math-explanation-box">A normalization scheme used in AlexNet to encourage 'lateral inhibition' between feature maps (though it has mostly been replaced by Batch Normalization today).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$a^i_{x,y}$</td><td>Activity of a neuron computed by applying kernel i at (x,y)</td></tr><tr><td>$b^i_{x,y}$</td><td>The response-normalized activity</td></tr></table></div>
+<div class="math-explanation-box">This formula computes the normalized activity of a neuron by dividing its original activity by a factor determined by the activities of adjacent <span class="glossary-term" data-definition="A small matrix of weights that slides over the input data to extract local features.">kernel</span> maps. This implements lateral inhibition among kernels.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$a^i_{x,y}$</td><td>Activity of a neuron computed by applying kernel i at position (x, y)</td></tr><tr><td>$b^i_{x,y}$</td><td>Response-normalized activity</td></tr><tr><td>$n$</td><td>Number of adjacent kernel maps to consider in the sum</td></tr><tr><td>$N$</td><td>Total number of kernels in the layer</td></tr><tr><td>$k, α, β$</td><td>Hyper-parameters (constants) determined using a validation set</td></tr></table></div>
+<h3>Momentum SGD Update Rule</h3>
+<div class="math-block">$$v_{i+1} := 0.9 \cdot v_i - 0.0005 \cdot \epsilon \cdot w_i - \epsilon \cdot \left\langle \frac{\partial L}{\partial w} \right\rangle_{D_i}$$</div>
+<div class="math-explanation-box">The update rule for the weights uses <span class="glossary-term" data-definition="Involving a random variable; having a random probability distribution.">stochastic</span> <span class="glossary-term" data-definition="An optimization algorithm used to minimize the loss function by following the negative gradient.">gradient descent</span> with <span class="glossary-term" data-definition="An optimization technique that helps accelerate SGD in the relevant direction and dampens oscillations.">momentum</span> and <span class="glossary-term" data-definition="A regularization technique that adds a small penalty (usually L2 norm) to the loss function to keep weights small and prevent overfitting.">weight decay</span>. The <span class="glossary-term" data-definition="An optimization technique that helps accelerate SGD in the relevant direction and dampens oscillations.">momentum</span> term (0.9) helps smooth out updates, while <span class="glossary-term" data-definition="A regularization technique that adds a small penalty (usually L2 norm) to the loss function to keep weights small and prevent overfitting.">weight decay</span> (0.0005) acts as a regularizer.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$w$</td><td>Weight variable being updated</td></tr><tr><td>$v$</td><td>Momentum variable</td></tr><tr><td>$ε$</td><td>Learning rate</td></tr><tr><td>$∂L/∂w$</td><td>Derivative of the objective function with respect to the weight</td></tr><tr><td>$D_i$</td><td>The ith batch of training examples</td></tr></table></div>
 <h2 id="figures">Figures and Explanations</h2>
 
       <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
         <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig1.png" style="max-height: 400px;">
+          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig1.jpeg" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 1:</b> It contains eight learned layers —<br>
+            <b>Figure 1:</b> Without dropout, our network ex-<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
+            This figure (referenced in text as Figure 1) shows the training progress of a four-layer CNN using ReLUs compared to one using tanh neurons. It demonstrates that ReLUs allow the network to reach a 25% training error rate six times faster, highlighting the efficiency gains of non-saturating units. The caption snippet 'Without dropout, our network ex-' indicates the importance of regularization in these deep architectures.
           </div>
         </div>
       </div>
@@ -128,91 +159,38 @@
         <div class="thumbinner" style="width:100%;">
           <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig2.png" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 2:</b> A four-layer convolutional neural<br>
+            <b>Figure 2:</b> (Left) Eight ILSVRC-2010 test images and the ﬁve labels considered most probable by our model.<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Detailed diagram of the AlexNet architecture, showing the split between two GPUs and the progression from convolutional to fully connected layers.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig3.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 3:</b> An illustration of the architecture of our CNN, explicitly showing the delineation of responsibilities<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Visualization of the 96 convolutional kernels learned by the first layer, showing that the model successfully learned to detect edges and color blobs.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig4.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 4:</b> Without dropout, our network ex-<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig5.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 5:</b> shows the convolutional kernels learned by the network’s two data-connected layers. The<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/abd1c342495432171beb7ca8fd9551ef13cbd0ff_fig6.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 6:</b> (Left) Eight ILSVRC-2010 test images and the ﬁve labels considered most probable by our model.<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
+            This figure (referenced in text as Figure 4) provides a qualitative assessment of the model. The left panel shows test images along with their top-5 predicted labels and associated probabilities. The right panel shows query images from the test set alongside the six most similar training images based on Euclidean distance in the final hidden layer's feature space, demonstrating semantic understanding.
           </div>
         </div>
       </div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
-          <b>ImageNet</b>
-          <span style="font-size: 0.8rem; color: #54595d;">The massive visual database that made the training of AlexNet possible.</span>
-        </div>
-
-        <div class="see-also-item">
           <b>LeNet-5</b>
-          <span style="font-size: 0.8rem; color: #54595d;">An earlier CNN architecture for digit recognition that served as a foundation for AlexNet.</span>
+          <span style="font-size: 0.8rem; color: #54595d;">An earlier, smaller CNN architecture developed by Yann LeCun for digit recognition.</span>
         </div>
 
         <div class="see-also-item">
-          <b>VGGNet</b>
-          <span style="font-size: 0.8rem; color: #54595d;">A successor to AlexNet that increased depth and used smaller 3x3 kernels throughout.</span>
+          <b>VGG Network</b>
+          <span style="font-size: 0.8rem; color: #54595d;">A successor to AlexNet that explored the effect of increasing network depth using smaller 3x3 kernels.</span>
         </div>
 
         <div class="see-also-item">
-          <b>GPU Computing</b>
-          <span style="font-size: 0.8rem; color: #54595d;">The technology that enables parallel processing of neural network operations, critical for AlexNet's success.</span>
+          <b>ImageNet</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The massive visual database used for the ILSVRC competition that enabled the training of AlexNet.</span>
         </div>
-</div>
-<h2 id="cited-by">Cited By</h2>
-<div class="related-grid">
-  <div class="related-card" onclick="window.location.href='..//paper/86ee1835a56722b76564119437070782fc90eb19.html'">
-    <div class="related-card-title">Generative Adversarial Nets</div>
-    <div class="related-card-meta">2014 &bull; 2328 citations</div>
-  </div>
-</div>
-<h2 id="related">Related Papers</h2>
-<div class="related-grid">
-  <div class="related-card" onclick="window.location.href='../paper/86ee1835a56722b76564119437070782fc90eb19.html'">
-    <div class="related-card-title">Generative Adversarial Nets</div>
-    <div class="related-card-meta">2014 &bull; 2328 citations</div>
-  </div>
+
+        <div class="see-also-item">
+          <b>Backpropagation</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The fundamental algorithm used to calculate gradients and train deep neural networks.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Softmax Function</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The final layer activation used to turn neural network outputs into a probability distribution over classes.</span>
+        </div>
 </div>
 </article>
 

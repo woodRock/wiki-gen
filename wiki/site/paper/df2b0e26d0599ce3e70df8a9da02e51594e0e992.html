@@ -33,10 +33,7 @@
         <li><a href="#section-3">Fine-Tuning BERT</a></li>
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
-        <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
-        <li><a href="#references">References</a></li>
-        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -65,19 +62,15 @@
       </div>
 
 
-      <p class="lead">BERT (Bidirectional Encoder Representations from Transformers) is a groundbreaking language representation model that introduced deep bidirectional <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> for language understanding. Unlike previous models that processed text left-to-right or right-to-left, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference.</p>
+      <p class="lead">BERT (Bidirectional Encoder Representations from Transformers) is a language representation model that introduced deep bidirectional <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> for language understanding. Unlike previous models that processed text in a unidirectional (left-to-right or right-to-left) fashion, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context across all layers. Consequently, the pre-trained BERT model can be fine-tuned with a single additional output layer to achieve state-of-the-art results for a wide range of natural language processing tasks, including question answering and language inference.</p>
 <h2 id="section-0">Bidirectional Pre-training</h2>
-<p>The fundamental technical innovation of BERT is applying the bidirectional training of Transformer, a popular attention model, to language modeling. Previous attempts at bidirectional models were limited because they were either a combination of two unidirectional models (left-to-right and right-to-left) or they allowed tokens to 'see themselves' in multi-layer architectures.</p>
-<p>BERT addresses this by using a 'Masked Language Model' (MLM) objective. During <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span>, some percentage of the input tokens are masked at random, and the model's goal is to predict the original vocabulary id of the masked word based only on its context. This allows the representation to fuse the left and the right context, which allows us to pre-train a deep bidirectional Transformer.</p>
+<p>The primary technical innovation of BERT is the application of bidirectional training within the Transformer—a widely used attention-based architecture—to language modeling. Previous attempts at bidirectional modeling were limited, as they typically relied on the concatenation of two unidirectional models or constrained the architecture to prevent tokens from 'seeing themselves' in multi-layer configurations. BERT overcomes these limitations through the use of a 'Masked Language Model' (MLM) objective. During <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span>, a random subset of input tokens is masked, and the model is tasked with predicting the original vocabulary ID of the masked word based solely on its surrounding context. This approach enables the representation to integrate both left and right contexts, facilitating the <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> of a deep bidirectional Transformer.</p>
 <h2 id="section-1">The Masked Language Model (MLM)</h2>
-<p>In order to train a deep bidirectional representation, the authors simply mask 15% of the input tokens at random. Unlike standard directional models, the MLM objective allows the model to see the entire sequence, making it more effective at capturing nuanced linguistic relationships.</p>
-<p>To ensure the model doesn't become over-reliant on the '[MASK]' <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> during <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span> (where masks don't exist), the authors used a specific strategy: 80% of the time the <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> is replaced with [MASK], 10% of the time with a random <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>, and 10% of the time it is kept unchanged. This forces the model to maintain a valid contextual representation for every input <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>.</p>
+<p>To train a deep bidirectional representation, 15% of the input tokens are masked at random. In contrast to standard directional models, the MLM objective enables the model to attend to the entire sequence, improving its ability to capture complex linguistic relationships. To prevent the model from becoming over-reliant on the '[MASK]' <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> during <span class="glossary-term" data-definition="The process of taking a model that has already been trained for a given task and then tuning it further for a second similar task.">fine-tuning</span>—where such masks are absent—the authors employed a specific training strategy: 80% of the target tokens are replaced with the [MASK] <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>, 10% with a random <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>, and 10% remain unchanged. This strategy compels the model to maintain a robust contextual representation for every input <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>.</p>
 <h2 id="section-2">Next Sentence Prediction (NSP)</h2>
-<p>Many important downstream tasks such as Question Answering (QA) and Natural Language Inference (NLI) are based on understanding the relationship between two sentences, which is not directly captured by language modeling.</p>
-<p>To train a model that understands sentence relationships, BERT is pre-trained for a binarized 'next sentence prediction' task that can be generated from any monolingual corpus. When choosing sentences A and B for each <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> example, 50% of the time B is the actual next sentence that follows A, and 50% of the time it is a random sentence from the corpus. The model then learns to predict whether B is the next sentence or not.</p>
+<p>Many downstream tasks, such as Question Answering (QA) and Natural Language Inference (NLI), depend on understanding the relationships between sentences, which is not directly captured by standard language modeling. To address this, BERT is pre-trained on a binarized 'next sentence prediction' (NSP) task derived from a monolingual corpus. For each <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span> example, sentence pairs $$A$$ and $$B$$ are selected: 50% of the time, $$B$$ is the actual subsequent sentence for $$A$$, and 50% of the time, it is a random sentence from the corpus. The model is then trained to predict whether the sentences are consecutive.</p>
 <h2 id="section-3">Fine-Tuning BERT</h2>
-<p><span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">Fine-tuning</span> BERT is relatively inexpensive. All parameters are fine-tuned jointly by simply adding one additional output layer for the specific task at hand. For sequence-level tasks, BERT uses the representation of the first <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in the sequence (the special [CLS] <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>).</p>
-<p>This unified architecture allows BERT to achieve state-of-the-art results on a wide variety of tasks with minimal task-specific architectural changes. The authors demonstrated this by breaking records on the <span class="glossary-term" data-definition="General Language Understanding Evaluation; a collection of diverse natural language understanding tasks.">GLUE</span> benchmark, SQuAD question answering, and several other competitive NLP leaderboards.</p>
+<p><span class="glossary-term" data-definition="The process of taking a model that has already been trained for a given task and then tuning it further for a second similar task.">Fine-tuning</span> BERT is computationally efficient, as all parameters are adjusted jointly by adding a single task-specific output layer. For sequence-level classification, BERT utilizes the representation of the first <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in the sequence, known as the special [CLS] <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span>. This unified architecture allows BERT to achieve state-of-the-art results across various benchmarks with minimal task-specific modifications. The model's efficacy was demonstrated by its performance on the <span class="glossary-term" data-definition="General Language Understanding Evaluation; a collection of diverse natural language understanding tasks.">GLUE</span> benchmark, the SQuAD question answering dataset, and several other competitive NLP leaderboards.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
@@ -106,42 +99,8 @@
       </div>
 <h2 id="math">Mathematics</h2>
 <h3>Attention Weighting</h3>
-<div class="math-block">$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</div>
-<div class="math-explanation-box">The core attention mechanism used in each of BERT's layers to compute contextual relationships between tokens.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$Q, K, V$</td><td>Query, Key, and Value matrices derived from the input</td></tr><tr><td>$d_k$</td><td>The dimension of the keys, used for scaling</td></tr></table></div>
-<h2 id="figures">Figures and Explanations</h2>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/df2b0e26d0599ce3e70df8a9da02e51594e0e992_fig1.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 1:</b> BERT input representation. The input embeddings are the sum of the token embeddings, the segmenta-<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Comparison of BERT's bidirectional architecture with OpenAI GPT (unidirectional) and ELMo (shallow concatenation of two unidirectional models).
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/df2b0e26d0599ce3e70df8a9da02e51594e0e992_fig2.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 2:</b> Differences in pre-training model architectures. BERT uses a bidirectional Transformer. OpenAI GPT<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            BERT input representation, showing how token, segment, and position embeddings are summed to form the final input vector.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/df2b0e26d0599ce3e70df8a9da02e51594e0e992_fig3.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 3:</b> presents MNLI Dev accuracy after ﬁne-<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
+<div class="math-block">$$$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$$$</div>
+<div class="math-explanation-box">The core attention mechanism used in each of BERT's layers to compute contextual relationships between tokens.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$$$Q, K, V$$$</td><td>Query, Key, and Value matrices derived from the input</td></tr><tr><td>$$$d_k$$$</td><td>The dimension of the keys, used for scaling</td></tr></table></div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
@@ -163,117 +122,6 @@
           <b>Word2Vec</b>
           <span style="font-size: 0.8rem; color: #54595d;">An earlier, non-contextual word embedding method that BERT significantly improved upon.</span>
         </div>
-</div>
-
-      <h2 id="references">References</h2>
-      <ol class="reference-list">
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="26b47e35fe6e4260fdf7b7cc98f279a73c277494">Multi-Granularity Hierarchical Attention Fusion Networks for Reading Comprehension and Question Answering</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Wei Wang, Chen Wu et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="27e98e09cf09bc13c913d01676e5f32624011050">U-Net: Machine Reading Comprehension with Unanswerable Questions</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Fu Sun, Linyang Li et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="0c47cad9729c38d9db1f75491b1ee4bd883a5d4e">Semi-Supervised Sequence Modeling with Cross-View Training</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Kevin Clark, Minh-Thang Luong et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="ac11062f1f368d97f4c826c317bf50dcc13fdb59">Dissecting Contextual Word Embeddings: Architecture and Representation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Matthew E. Peters, Mark Neumann et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="af5c4b80fbf847f69a202ba5a780a3dd18c1a027">SWAG: A Large-Scale Adversarial Dataset for Grounded Commonsense Inference</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Rowan Zellers, Yonatan Bisk et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b9de9599d7241459db9213b5cdd7059696f5ef8d">Character-Level Language Modeling with Deeper Self-Attention</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Rami Al-Rfou, Dokook Choe et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="421fc2556836a6b441de806d7b393a35b6eaea58">Contextual String Embeddings for Sequence Labeling</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - A. Akbik, Duncan A. J. Blythe et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="cb0f3ee1e98faf92429d601cdcd76c69c1e484eb">Neural Network Acceptability Judgments</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Alex Warstadt, Amanpreet Singh et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="451d4a16e425ecbf38c4b1cca0dcf5d9bec8255c">GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language Understanding</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Alex Wang, Amanpreet Singh et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="3febb2bed8865945e7fddc99efd791887bb7e14f">Deep Contextualized Word Representations</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Matthew E. Peters, Mark Neumann et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="ad31866da7f14ae21bd38df0a3b1ffd1a1438122">An efficient framework for learning sentence representations</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Lajanugen Logeswaran, Honglak Lee (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8c1b00128e74f1cd92aede3959690615695d5101">QANet: Combining Local Convolution with Global Self-Attention for Reading Comprehension</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Adams Wei Yu, David Dohan et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="7f4afc1bf3272ae6ec00b46e27efc4a4f6b0826d">MaskGAN: Better Text Generation via Filling in the ______</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - W. Fedus, I. Goodfellow et al. (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="1e077413b25c4d34945cc2707e17e46ed4fe784a">Universal Language Model Fine-tuning for Text Classification</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Jeremy Howard, Sebastian Ruder (2018)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="3c78c6df5eb1695b6a399e346dde880af27d1016">Simple and Effective Multi-Paragraph Reading Comprehension</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Christopher Clark, Matt Gardner (2017)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="bc8fa64625d9189f5801837e7b133e7fe3c581f7">Learned in Translation: Contextualized Word Vectors</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Bryan McCann, James Bradbury et al. (2017)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="a23fa96e7217ba0e9405d9e1fe3cdedd57b6e096">SemEval-2017 Task 1: Semantic Textual Similarity Multilingual and Crosslingual Focused Evaluation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Daniel Matthew Cer, Mona T. Diab et al. (2017)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="204e3073870fae3d05bcbc2f6a8e263d9b72e776">Attention is All you Need</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Ashish Vaswani, Noam Shazeer et al. (2017)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="e0222a1ae6874f7fff128c3da8769ab95963da04">Reinforced Mnemonic Reader for Machine Reading Comprehension</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Minghao Hu, Yuxing Peng et al. (2017)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="ee7b883e35d754ae4f71c21bb71f9f03e4ffbb2c">Supervised Learning of Universal Sentence Representations from Natural Language Inference Data</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Alexis Conneau, Douwe Kiela et al. (2017)</span>
-        </li>
-      </ol>
-<h2 id="related">Related Papers</h2>
-<div class="related-grid">
-  <div class="related-card" onclick="window.location.href='../paper/204e3073870fae3d05bcbc2f6a8e263d9b72e776.html'">
-    <div class="related-card-title">Attention Is All You Need</div>
-    <div class="related-card-meta">2017 &bull; 172280 citations</div>
-  </div>
 </div>
 </article>
 

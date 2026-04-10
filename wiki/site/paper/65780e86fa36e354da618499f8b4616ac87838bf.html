@@ -35,8 +35,6 @@
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
         <li><a href="#see-also">See Also</a></li>
-        <li><a href="#references">References</a></li>
-        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -65,47 +63,47 @@
       </div>
 
 
-      <p class="lead">TurboQuant is a vector quantization algorithm introduced by Zandieh et al. (2025) from Google Research, NYU, and Google DeepMind, designed to achieve near-optimal distortion rates for both mean-squared error (MSE) and inner product preservation. The method randomly rotates input vectors to induce a concentrated <span class="glossary-term" data-definition="A probability distribution on [0,1] parameterized by (α,β). TurboQuant exploits that squared coordinates of randomly rotated unit vectors follow Beta(1/2, (d-1)/2), enabling analytical codebook construction.">Beta distribution</span> on coordinates, then applies analytically optimal scalar quantizers per coordinate, achieving within a small constant factor (≈2.7×) of the information-theoretic lower bound on distortion at any bit-width. For <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">KV cache</span> quantization, TurboQuant achieves quality neutrality at 3.5 bits per channel and marginal degradation at 2.5 bits, while reducing nearest-neighbor search indexing time to virtually zero.</p>
+      <p class="lead">TurboQuant is a vector quantization algorithm introduced by Zandieh et al. (2025) from Google Research, NYU, and Google DeepMind, designed to achieve near-optimal distortion rates for both mean-squared error (MSE) and inner product preservation. The method randomly rotates input vectors to induce a concentrated <span class="glossary-term" data-definition="A probability distribution on [0,1] parameterized by (α,β). TurboQuant exploits that squared coordinates of randomly rotated unit vectors follow Beta(1/2, (d-1)/2), enabling analytical codebook construction.">Beta distribution</span> on coordinates and then applies analytically optimal scalar quantizers per coordinate. This approach achieves distortion within a small constant factor ($$\approx 2.7\times$$) of the information-theoretic lower bound at any bit-width. For <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">KV cache</span> quantization, TurboQuant achieves quality neutrality at 3.5 bits per channel and marginal degradation at 2.5 bits, while reducing nearest-neighbor search indexing time to virtually zero.</p>
 <h2 id="section-0">Vector Quantization and the Distortion-Rate Problem</h2>
-<p>Vector quantization (VQ) is the problem of compressing high-dimensional floating-point vectors to low-bitwidth integers while minimizing distortion in their geometric structure. Rooted in Shannon's source coding theory, VQ is fundamental to modern AI inference, large language model KV caching, and nearest-neighbor search in vector databases.</p>
-<p>The information-theoretic limit on achievable distortion is defined by the Shannon <span class="glossary-term" data-definition="The information-theoretic minimum achievable distortion as a function of bit rate, from Shannon&#x27;s source coding theory. TurboQuant achieves within a constant factor of this fundamental limit.">distortion-rate function</span>, which specifies the minimum MSE achievable by any quantizer at a given bit rate. For an <span class="glossary-term" data-definition="A multivariate Gaussian with zero mean and identity covariance, treating all directions as equally important with equal variance. SIGReg targets this distribution for latent embeddings to ensure full-rank support across all dimensions.">isotropic Gaussian</span> source in d dimensions, this lower bound scales as 2^{-2b} where b is bits per coordinate. Achieving or approaching this bound in practice requires both theoretical insight and algorithmically efficient implementation.</p>
-<p>Existing vector quantization methods fall into two broad categories. Data-dependent methods like product quantization (PQ) learn a <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span> from training data and achieve excellent distortion but require expensive offline training (k-means over the dataset) and are unsuitable for online applications like <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">KV cache</span> quantization where vectors arrive sequentially at inference time.</p>
+<p>Vector quantization (VQ) is the problem of compressing high-dimensional floating-point vectors to low-bitwidth integer representations while minimizing distortion in their geometric structure. Rooted in Shannon's source coding theory, VQ is fundamental to modern AI inference, large language model KV caching, and nearest-neighbor search in vector databases.</p>
+<p>The information-theoretic limit on achievable distortion is defined by the Shannon <span class="glossary-term" data-definition="The information-theoretic minimum achievable distortion as a function of bit rate, from Shannon&#x27;s source coding theory. TurboQuant achieves within a constant factor of this fundamental limit.">distortion-rate function</span>, which specifies the minimum MSE achievable by any quantizer at a given bit rate. For an <span class="glossary-term" data-definition="A multivariate Gaussian with zero mean and identity covariance, treating all directions as equally important with equal variance. SIGReg targets this distribution for latent embeddings to ensure full-rank support across all dimensions.">isotropic Gaussian</span> source in $$d$$ dimensions, this lower bound scales as $$2^{-2b}$$, where $$b$$ represents the bits per coordinate. Achieving or approaching this bound in practice requires both theoretical insight and algorithmically efficient implementation.</p>
+<p>Existing vector quantization methods fall into two broad categories. Data-dependent methods, such as product quantization (PQ), learn a <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span> from training data and achieve excellent distortion; however, they require expensive offline training (such as $$k$$-means over the dataset) and are unsuitable for online applications like <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">KV cache</span> quantization where vectors arrive sequentially at inference time.</p>
 <p>Data-oblivious methods are suitable for online use but typically achieve suboptimal distortion, sometimes by exponential factors in their dependence on bit-width. TurboQuant bridges this gap by providing a <span class="glossary-term" data-definition="An algorithm whose behavior is independent of specific input values, depending only on data size or dimension. QJL&#x27;s random projection matrix is fixed regardless of which key vectors are quantized.">data-oblivious algorithm</span> with near-optimal distortion rates provably within a small constant factor of the information-theoretic bound.</p>
 <h2 id="section-1">Random Rotation and Beta-Distributed Coordinates</h2>
-<p>TurboQuant's core mechanism begins by applying a random orthogonal rotation to the input vector x ∈ ℝᵈ, producing a rotated vector x̃ = Rx where R is a random orthogonal matrix (implemented efficiently as a random Hadamard transform). This rotation uniformly distributes the energy of x across all d dimensions.</p>
-<p>The critical insight is that each coordinate x̃ᵢ of the rotated vector follows a specific <span class="glossary-term" data-definition="A probability distribution on [0,1] parameterized by (α,β). TurboQuant exploits that squared coordinates of randomly rotated unit vectors follow Beta(1/2, (d-1)/2), enabling analytical codebook construction.">Beta distribution</span> (up to scaling) when the input vector has unit norm. Specifically, x̃ᵢ² / ‖x‖² ~ Beta(1/2, (d-1)/2) for a uniformly random direction, which means each squared coordinate is Beta-distributed with known parameters depending only on dimension d.</p>
-<p>This <span class="glossary-term" data-definition="A probability distribution on [0,1] parameterized by (α,β). TurboQuant exploits that squared coordinates of randomly rotated unit vectors follow Beta(1/2, (d-1)/2), enabling analytical codebook construction.">Beta distribution</span> has two important properties for quantization. First, it has bounded support: coordinates lie in [-‖x‖, ‖x‖] with known bounds, eliminating the need to estimate scale from data. Second, neighboring coordinates are nearly independent in high dimensions due to the <span class="glossary-term" data-definition="Property of high-dimensional random projections where distinct coordinates are nearly statistically independent. Enables TurboQuant to apply scalar quantizers independently to each coordinate without significant loss.">near-independence</span> property of random projections, allowing coordinate-wise (scalar) quantizers to approach the performance of full vector quantizers.</p>
-<p>The <span class="glossary-term" data-definition="Property of high-dimensional random projections where distinct coordinates are nearly statistically independent. Enables TurboQuant to apply scalar quantizers independently to each coordinate without significant loss.">near-independence</span> of coordinates is the key property enabling TurboQuant to apply optimal scalar quantization independently to each coordinate while achieving performance close to a full d-dimensional vector quantizer. This is a non-trivial claim: for correlated coordinates, scalar quantization is significantly suboptimal, but TurboQuant's rotation induces <span class="glossary-term" data-definition="Property of high-dimensional random projections where distinct coordinates are nearly statistically independent. Enables TurboQuant to apply scalar quantizers independently to each coordinate without significant loss.">near-independence</span>.</p>
+<p>TurboQuant's core mechanism begins by applying a random orthogonal rotation to the input vector $$x \in \mathbb{R}^d$$, producing a rotated vector $$\tilde{x} = Rx$$, where $$R$$ is a random orthogonal matrix (often implemented efficiently via a random Hadamard transform). This rotation uniformly distributes the energy of $$x$$ across all $$d$$ dimensions.</p>
+<p>The critical insight is that each coordinate $$\tilde{x}_i$$ of the rotated vector follows a specific $$\operatorname{Beta}$$ distribution (up to scaling) when the input vector has unit norm. Specifically, the relationship $$\tilde{x}_i^2 / \|x\|^2 \sim \operatorname{Beta}(1/2, (d-1)/2)$$ holds for a uniformly random direction, meaning each squared coordinate is $$\operatorname{Beta}$$-distributed with known parameters depending only on the dimension $$d$$.</p>
+<p>This $$\operatorname{Beta}$$ distribution has two important properties for quantization. First, it has bounded support, as coordinates lie in the interval $$[-\|x\|, \|x\|]$$ with known bounds, which eliminates the need to estimate scale from data. Second, neighboring coordinates are nearly independent in high dimensions due to the <span class="glossary-term" data-definition="Property of high-dimensional random projections where distinct coordinates are nearly statistically independent. Enables TurboQuant to apply scalar quantizers independently to each coordinate without significant loss.">near-independence</span> property of random projections, allowing coordinate-wise scalar quantizers to approach the performance of full vector quantizers.</p>
+<p>The <span class="glossary-term" data-definition="Property of high-dimensional random projections where distinct coordinates are nearly statistically independent. Enables TurboQuant to apply scalar quantizers independently to each coordinate without significant loss.">near-independence</span> of coordinates is the key property enabling TurboQuant to apply optimal scalar quantization independently to each coordinate while achieving performance close to a full $$d$$-dimensional vector quantizer. This is a non-trivial result: while scalar quantization is significantly suboptimal for correlated coordinates, TurboQuant's rotation induces sufficient <span class="glossary-term" data-definition="Property of high-dimensional random projections where distinct coordinates are nearly statistically independent. Enables TurboQuant to apply scalar quantizers independently to each coordinate without significant loss.">near-independence</span> to bridge the gap.</p>
 <h2 id="section-2">Optimal Lloyd-Max Scalar Quantization per Coordinate</h2>
-<p>Given the known <span class="glossary-term" data-definition="A probability distribution on [0,1] parameterized by (α,β). TurboQuant exploits that squared coordinates of randomly rotated unit vectors follow Beta(1/2, (d-1)/2), enabling analytical codebook construction.">Beta distribution</span> of each coordinate after rotation, TurboQuant applies the Lloyd-Max optimal scalar quantizer for this specific distribution. The <span class="glossary-term" data-definition="The optimal scalar quantizer for a known 1D distribution, minimizing MSE by solving a continuous k-means problem to find optimal boundaries and reconstruction values. Applied per-coordinate in TurboQuant.">Lloyd-Max quantizer</span> minimizes MSE for a scalar source with known distribution by solving a continuous 1D k-means problem: it partitions the scalar range into 2^b intervals and assigns each interval a representative value such that the expected squared reconstruction error is minimized.</p>
-<p>For the Beta(1/2, (d-1)/2) distribution, the Lloyd-Max optimal quantizer boundaries and reconstruction values can be precomputed numerically and stored as a lookup table. This table is the same for all vectors regardless of their specific values (depending only on d and b), making the quantization both data-oblivious and optimal for the known source distribution.</p>
-<p>The MSE achieved by TurboQuant with b bits per coordinate satisfies MSE(TurboQuant) ≤ C · 2^{-2b} · ‖x‖² for a universal constant C ≈ 2.7. The information-theoretic lower bound for any vector quantizer is MSE ≥ (1/12) · 2^{-2b} · ‖x‖² in the worst case. TurboQuant differs from this bound by only the constant C, demonstrating near-optimality.</p>
-<p>This exponential improvement over <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">prior</span> data-oblivious methods is significant: naive uniform quantization achieves MSE scaling as O(d · 2^{-2b}) (linear in d), and many randomized approaches achieve O(2^{-b}) (only linear in compression factor). TurboQuant achieves O(2^{-2b}) matching the fundamental limit's exponential dependence on bit-width.</p>
+<p>Given the known $$\operatorname{Beta}$$ distribution of each coordinate after rotation, TurboQuant applies the Lloyd-Max optimal scalar quantizer for this specific distribution. The <span class="glossary-term" data-definition="The optimal scalar quantizer for a known 1D distribution, minimizing MSE by solving a continuous k-means problem to find optimal boundaries and reconstruction values. Applied per-coordinate in TurboQuant.">Lloyd-Max quantizer</span> minimizes MSE for a scalar source with a known distribution by solving a continuous 1D $$k$$-means problem: it partitions the scalar range into $$2^b$$ intervals and assigns each interval a representative value such that the expected squared reconstruction error is minimized.</p>
+<p>For the $$\operatorname{Beta}(1/2, (d-1)/2)$$ distribution, the Lloyd-Max optimal quantizer boundaries and reconstruction values can be precomputed numerically and stored as a lookup table. This table remains constant for all vectors regardless of their specific values, depending only on $$d$$ and $$b$$, which makes the quantization both data-oblivious and optimal for the known source distribution.</p>
+<p>The MSE achieved by TurboQuant with $$b$$ bits per coordinate satisfies $$\operatorname{MSE}(\text{TurboQuant}) \leq C \cdot 2^{-2b} \cdot \|x\|^2$$ for a universal constant $$C \approx 2.7$$. The information-theoretic lower bound for any vector quantizer is $$\operatorname{MSE} \geq \frac{1}{12} \cdot 2^{-2b} \cdot \|x\|^2$$ in the worst case. TurboQuant differs from this bound by only the constant $$C$$, demonstrating near-optimality.</p>
+<p>This exponential improvement over <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">prior</span> data-oblivious methods is significant: naive uniform quantization achieves MSE scaling as $$O(d \cdot 2^{-2b})$$, and many randomized approaches achieve only $$O(2^{-b})$$. TurboQuant achieves $$O(2^{-2b})$$, matching the fundamental limit's exponential dependence on bit-width.</p>
 <h2 id="section-3">Two-Stage Inner Product Quantization via QJL Residual</h2>
-<p>MSE-optimal quantization does not automatically imply unbiased inner product estimation. A key theoretical contribution of TurboQuant is proving that MSE-optimal quantizers introduce systematic <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span> in inner product estimation: the estimator ⟨Q(x), Q(y)⟩ is a biased estimator of ⟨x, y⟩ for MSE-optimal Q, even when the MSE distortion is small.</p>
-<p>To obtain unbiased inner product quantization, TurboQuant uses a two-stage approach. Stage 1 applies the MSE-optimal quantizer described above, producing quantized representation Q₁(x) and residual r₁ = x - Q₁(x). Stage 2 applies the QJL transform (1-bit quantized Johnson-Lindenstrauss) to the residual r₁, producing a 1-bit sketch QJL(r₁) that can be combined with a query to yield an unbiased inner product estimator.</p>
-<p>The combined estimator ⟨Q₁(x) + QJL(r₁), y⟩ is provably unbiased for ⟨x, y⟩ with low variance. Stage 1 captures the dominant MSE component, minimizing the residual that Stage 2 must handle. Stage 2 handles the remaining distortion with minimal bit overhead. The combination achieves both MSE optimality and inner product unbiasedness simultaneously.</p>
-<p>This two-stage design elegantly decomposes the quantization problem: MSE and inner product distortion have different optimality conditions, and TurboQuant addresses each in sequence. The total bit cost is b bits per coordinate from Stage 1 plus 1 additional bit per projected dimension from Stage 2, a small overhead for the unbiasedness guarantee.</p>
+<p>MSE-optimal quantization does not automatically imply unbiased inner product estimation. A key theoretical contribution of TurboQuant is proving that MSE-optimal quantizers introduce systematic <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span> in inner product estimation: the estimator $$\langle Q(x), Q(y) \rangle$$ is a biased estimator of $$\langle x, y \rangle$$ for MSE-optimal $$Q$$, even when the MSE distortion is small.</p>
+<p>To obtain unbiased inner product quantization, TurboQuant uses a two-stage approach. Stage 1 applies the MSE-optimal quantizer described above, producing a quantized representation $$Q_1(x)$$ and a residual $$r_1 = x - Q_1(x)$$. Stage 2 applies the QJL transform (1-bit quantized Johnson-Lindenstrauss) to the residual $$r_1$$, producing a 1-bit sketch $$\text{QJL}(r_1)$$ that can be combined with a query to yield an unbiased inner product estimator.</p>
+<p>The combined estimator $$\langle Q_1(x) + \text{QJL}(r_1), y \rangle$$ is provably unbiased for $$\langle x, y \rangle$$ with low variance. Stage 1 captures the dominant MSE component, minimizing the residual that Stage 2 must handle, while Stage 2 addresses the remaining distortion with minimal bit overhead. The combination achieves both MSE optimality and inner product unbiasedness simultaneously.</p>
+<p>This two-stage design elegantly decomposes the quantization problem. Because MSE and inner product distortion have different optimality conditions, TurboQuant addresses each in sequence. The total bit cost is $$b$$ bits per coordinate from Stage 1 plus one additional bit per projected dimension from Stage 2, representing a small overhead for the unbiasedness guarantee.</p>
 <h2 id="section-4">Applications to KV Cache and Nearest-Neighbor Search</h2>
 <p>For <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">KV cache</span> quantization in LLMs, TurboQuant's online nature is critical: key and value embeddings arrive sequentially during <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> generation and must be quantized immediately without access to future tokens. TurboQuant's data-oblivious design requires no calibration and applies directly to each <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> as it is generated.</p>
-<p>Experimental results show quality-neutral <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">KV cache</span> quantization (no statistically significant perplexity increase) at 3.5 bits per channel across multiple LLM families. At 2.5 bits per channel, only marginal quality degradation is observed. This performance approaches state-of-the-art data-dependent methods while requiring no offline training.</p>
-<p>For nearest-neighbor (NN) search in vector databases, TurboQuant outperforms existing product quantization (PQ) techniques in recall performance while reducing indexing time to virtually zero. Standard PQ requires running k-means over the database vectors to learn codebooks, taking hours or days for large datasets. TurboQuant's analytical <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span> eliminates this entirely, enabling real-time database construction.</p>
+<p>Experimental results show quality-neutral <span class="glossary-term" data-definition="Memory structure storing key and value embeddings from all previous tokens in autoregressive generation, enabling O(1) per-token attention at the cost of O(n) memory.">KV cache</span> quantization, with no statistically significant perplexity increase, at 3.5 bits per channel across multiple LLM families. At 2.5 bits per channel, only marginal quality degradation is observed. This performance approaches state-of-the-art data-dependent methods while requiring no offline training.</p>
+<p>For nearest-neighbor (NN) search in vector databases, TurboQuant outperforms existing product quantization (PQ) techniques in recall performance while reducing indexing time to virtually zero. Standard PQ requires running $$k$$-means over the database vectors to learn codebooks, which can take hours or days for large datasets. TurboQuant's analytical <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span> eliminates this requirement entirely, enabling real-time database construction.</p>
 <p>The <span class="glossary-term" data-definition="Property of high-dimensional random projections where distinct coordinates are nearly statistically independent. Enables TurboQuant to apply scalar quantizers independently to each coordinate without significant loss.">near-independence</span> property after random rotation also enables embarrassingly parallel quantization: each coordinate can be quantized independently on separate hardware threads with no communication, making TurboQuant particularly well-suited to GPU acceleration. The regular memory access patterns and fixed-width arithmetic operations further improve GPU utilization compared to <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span>-based methods.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
         <div class="concept-title">Random Orthogonal Rotation</div>
-        <p>Multiplication of input vectors by a random orthogonal matrix (implemented as a random Hadamard transform in O(d log d)) before quantization. This rotation uniformly spreads energy across all coordinates and induces a <span class="glossary-term" data-definition="A probability distribution on [0,1] parameterized by (α,β). TurboQuant exploits that squared coordinates of randomly rotated unit vectors follow Beta(1/2, (d-1)/2), enabling analytical codebook construction.">Beta distribution</span> on each coordinate, enabling optimal scalar quantization without data-dependent calibration.</p>
+        <p>Multiplication of input vectors by a random orthogonal matrix, often implemented as a random Hadamard transform in $$O(d \log d)$$, before quantization. This rotation uniformly spreads energy across all coordinates and induces a $$\operatorname{Beta}$$ distribution on each coordinate, enabling optimal scalar quantization without data-dependent calibration.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Beta-Distributed Coordinate Representation</div>
-        <p>After random rotation, each squared coordinate of a unit-norm vector follows a Beta(1/2, (d-1)/2) distribution—a known, analytically characterized distribution depending only on vector dimension d. This known distribution is the foundation for constructing the optimal quantization <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span> analytically.</p>
+        <p>After random rotation, each squared coordinate of a unit-norm vector follows a $$\operatorname{Beta}(1/2, (d-1)/2)$$ distribution—a known, analytically characterized distribution depending only on the vector dimension $$d$$. This known distribution is the foundation for constructing the optimal quantization <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span> analytically.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Lloyd-Max Scalar Quantizer</div>
-        <p>The optimal scalar quantizer for a known 1D source distribution, minimizing MSE by solving a continuous k-means problem. TurboQuant applies the <span class="glossary-term" data-definition="The optimal scalar quantizer for a known 1D distribution, minimizing MSE by solving a continuous k-means problem to find optimal boundaries and reconstruction values. Applied per-coordinate in TurboQuant.">Lloyd-Max quantizer</span> analytically derived for the Beta(1/2, (d-1)/2) distribution, precomputed as a lookup table shared across all vectors and layers.</p>
+        <p>The optimal scalar quantizer for a known 1D source distribution, minimizing MSE by solving a continuous $$k$$-means problem. TurboQuant applies the <span class="glossary-term" data-definition="The optimal scalar quantizer for a known 1D distribution, minimizing MSE by solving a continuous k-means problem to find optimal boundaries and reconstruction values. Applied per-coordinate in TurboQuant.">Lloyd-Max quantizer</span> analytically derived for the $$\operatorname{Beta}(1/2, (d-1)/2)$$ distribution, precomputed as a lookup table shared across all vectors and layers.</p>
       </div>
 
       <div class="concept-item">
@@ -120,21 +118,21 @@
 
       <div class="concept-item">
         <div class="concept-title">Information-Theoretic Lower Bound</div>
-        <p>TurboQuant provides formal proofs of lower bounds on the best achievable distortion rate for any vector quantizer, showing the fundamental limit scales as 2^{-2b} per coordinate at b bits. TurboQuant achieves within 2.7× of this bound, demonstrating near-optimality that no data-oblivious method had previously approached.</p>
+        <p>TurboQuant provides formal proofs of lower bounds on the best achievable distortion rate for any vector quantizer, showing the fundamental limit scales as $$2^{-2b}$$ per coordinate at $$b$$ bits. TurboQuant achieves within $$2.7\times$$ of this bound, demonstrating near-optimality that no previous data-oblivious method had approached.</p>
       </div>
 <h2 id="math">Mathematics</h2>
 <h3>Beta distribution of rotated coordinates</h3>
 <div class="math-block">$$\tilde{x}_i = (Rx)_i, \quad \tilde{x}_i^2 / \|x\|^2 \sim \operatorname{Beta}(1/2, (d-1)/2)$$</div>
-<div class="math-explanation-box">After multiplying by random orthogonal R, each squared coordinate of the normalized rotated vector follows a <span class="glossary-term" data-definition="A probability distribution on [0,1] parameterized by (α,β). TurboQuant exploits that squared coordinates of randomly rotated unit vectors follow Beta(1/2, (d-1)/2), enabling analytical codebook construction.">Beta distribution</span> with known parameters. This distribution has bounded support [0, ‖x‖²] and is the same for all input vectors x of the same norm, enabling a universal analytically-derived quantization <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$R$</td><td>random orthogonal (Hadamard) matrix</td></tr><tr><td>$\tilde{x}_i$</td><td>i-th coordinate of rotated vector</td></tr><tr><td>$\operatorname{Beta}(1/2, (d-1)/2)$</td><td>Beta distribution with parameters depending only on dimension d</td></tr></table></div>
+<div class="math-explanation-box">After multiplying by random orthogonal $$R$$, each squared coordinate of the normalized rotated vector follows a $$\operatorname{Beta}$$ distribution with known parameters. This distribution has bounded support $$[0, \|x\|^2]$$ and is the same for all input vectors $$x$$ of the same norm, enabling a universal analytically-derived quantization <span class="glossary-term" data-definition="In vector quantization, a finite set of codewords to which continuous inputs are mapped. PolarQuant uses analytically derived non-uniform codebooks optimized for the known angular distribution.">codebook</span>.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$R$</td><td>random orthogonal (Hadamard) matrix</td></tr><tr><td>$\tilde{x}_i$</td><td>i-th coordinate of rotated vector</td></tr><tr><td>$\operatorname{Beta}(1/2, (d-1)/2)$</td><td>Beta distribution with parameters depending only on dimension $$d$$</td></tr></table></div>
 <h3>Near-optimal MSE bound for TurboQuant</h3>
 <div class="math-block">$$\operatorname{MSE}(\text{TurboQuant}) \leq C \cdot 2^{-2b} \cdot \|x\|^2, \quad C \approx 2.7$$</div>
-<div class="math-explanation-box">TurboQuant's mean-squared reconstruction error is at most C ≈ 2.7 times 2^{-2b} times the squared vector norm. Since the information-theoretic lower bound is also proportional to 2^{-2b}, TurboQuant is within a constant factor of optimal at all bit widths. <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">Prior</span> data-oblivious methods achieved only 2^{-b} or worse.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$C$</td><td>universal constant approximately 2.7</td></tr><tr><td>$b$</td><td>bits per coordinate</td></tr><tr><td>$\|x\|^2$</td><td>squared norm of input vector</td></tr></table></div>
+<div class="math-explanation-box">TurboQuant's mean-squared reconstruction error is at most $$C \approx 2.7$$ times $$2^{-2b}$$ times the squared vector norm. Since the information-theoretic lower bound is also proportional to $$2^{-2b}$$, TurboQuant is within a constant factor of optimal at all bit widths. <span class="glossary-term" data-definition="The probability distribution representing initial beliefs before seeing the data.">Prior</span> data-oblivious methods achieved only $$2^{-b}$$ or worse.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$C$</td><td>universal constant approximately 2.7</td></tr><tr><td>$b$</td><td>bits per coordinate</td></tr><tr><td>$\|x\|^2$</td><td>squared norm of input vector</td></tr></table></div>
 <h3>Two-stage TurboQuant quantizer</h3>
 <div class="math-block">$$Q_{\text{TurboQuant}}(x) = Q_1(Rx) + \text{QJL}(Rx - Q_1(Rx))$$</div>
-<div class="math-explanation-box">Stage 1 applies the MSE-optimal Lloyd-Max scalar quantizer Q₁ to each coordinate of the rotated vector Rx, minimizing reconstruction error. Stage 2 applies QJL to the residual (Rx - Q₁(Rx)) to correct the inner product <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span>. The combination achieves both MSE optimality (from Stage 1) and inner product unbiasedness (from Stage 2).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$Q_1$</td><td>Lloyd-Max MSE-optimal scalar quantizer</td></tr><tr><td>$\text{QJL}$</td><td>1-bit Quantized Johnson-Lindenstrauss transform applied to residual</td></tr></table></div>
+<div class="math-explanation-box">Stage 1 applies the MSE-optimal Lloyd-Max scalar quantizer $$Q_1$$ to each coordinate of the rotated vector $$Rx$$, minimizing reconstruction error. Stage 2 applies QJL to the residual $$(Rx - Q_1(Rx))$$ to correct the inner product <span class="glossary-term" data-definition="A systematic error introduced into an estimate, in this case due to zero-initialization.">bias</span>. The combination achieves both MSE optimality (from Stage 1) and inner product unbiasedness (from Stage 2).<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$Q_1$</td><td>Lloyd-Max MSE-optimal scalar quantizer</td></tr><tr><td>$\text{QJL}$</td><td>1-bit Quantized Johnson-Lindenstrauss transform applied to residual</td></tr></table></div>
 <h3>Information-theoretic lower bound on vector quantization distortion</h3>
 <div class="math-block">$$\operatorname{MSE}_{\text{lower}} \geq \frac{1}{12} \cdot 2^{-2b} \cdot \|x\|^2$$</div>
-<div class="math-explanation-box">This lower bound, proven in TurboQuant, shows no vector quantizer can achieve MSE smaller than (1/12) · 2^{-2b} · ‖x‖² for a worst-case input at b bits per coordinate. TurboQuant's constant C ≈ 2.7 is only 2.7 × 12 = 32.4 times this lower bound, demonstrating proximity to the fundamental limit.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$1/12$</td><td>constant from uniform quantization theory</td></tr><tr><td>$b$</td><td>bits per coordinate</td></tr><tr><td>$\|x\|^2$</td><td>squared input norm</td></tr></table></div>
+<div class="math-explanation-box">This lower bound, proven in TurboQuant, shows no vector quantizer can achieve MSE smaller than $$\frac{1}{12} \cdot 2^{-2b} \cdot \|x\|^2$$ for a worst-case input at $$b$$ bits per coordinate. TurboQuant's constant $$C \approx 2.7$$ is only $$2.7 \times 12 = 32.4$$ times this lower bound, demonstrating proximity to the fundamental limit.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$1/12$</td><td>constant from uniform quantization theory</td></tr><tr><td>$b$</td><td>bits per coordinate</td></tr><tr><td>$\|x\|^2$</td><td>squared input norm</td></tr></table></div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
@@ -166,125 +164,6 @@
           <b>Johnson-Lindenstrauss Lemma</b>
           <span style="font-size: 0.8rem; color: #54595d;">Guarantees inner-product preserving properties of random projections; the QJL component of TurboQuant builds on JL theory to achieve unbiased inner product estimation from 1-bit residual sketches.</span>
         </div>
-</div>
-
-      <h2 id="references">References</h2>
-      <ol class="reference-list">
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b2d3806a2f4bb99af0decb32533ac0d6f1598234">Streaming Attention Approximation via Discrepancy Theory</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - E. Kochetkova, K. Sheth et al. (2025)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="ef9485a2522f64bca0f5cf67edc28a11984790e8">PolarQuant: Quantizing KV Caches with Polar Transformation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Insu Han, Praneeth Kacham et al. (2025)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b5774726e1943659b2047a25e4c89b526816d928">RotateKV: Accurate and Robust 2-Bit KV Cache Quantization for LLMs via Outlier-Aware Adaptive Rotations</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Zunhai Su, Zhe Chen et al. (2025)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="f121117c8cf3dd9feb16e278915b7ddf658b1961">Lexico: Extreme KV Cache Compression via Sparse Coding over Universal Dictionaries</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Junhyuck Kim, Jongho Park et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="ee6b8cd0d0db8772eb4c366b160a8f4e5a89357c">Practical and Asymptotically Optimal Quantization of High-Dimensional Vectors in Euclidean Space for Approximate Nearest Neighbor Search</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Jianyang Gao, Yutong Gou et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="40e8af970329135ec95057d73e239dab805ad128">The Llama 3 Herd of Models</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Abhimanyu Dubey, Abhinav Jauhri et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="5d1ca53a0b41f4f5c960cd9997556d7180d6b88d">FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Jay Shah, Ganesh Bikshandi et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="7318a804566baadc9f4b4ca8255f78744e749a32">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - A. Zandieh, Majid Daliri et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="812356c723c082f88fb722531beaf45e344ffa1e">PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Zefan Cai, Yichi Zhang et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8a3df7b9cb6c323da340a4871ae705d0063f28bf">KV Cache is 1 Bit Per Channel: Efficient Large Language Model Inference with Coupled Quantization</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Tianyi Zhang, Jonah Yi et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="c1799bf28d1ae93e1631be5b59196ee1e568f538">From Local to Global: A Graph RAG Approach to Query-Focused Summarization</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Darren Edge, Ha Trinh et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="1784c987e681d60c634765fe64c8d9c26f73d5ff">SnapKV: LLM Knows What You are Looking for Before Generation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yuhong Li, Yingbing Huang et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="dd85e6cab147d237a0b1ab6f674570d3efb4d4a0">QuaRot: Outlier-Free 4-Bit Inference in Rotated LLMs</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Saleh Ashkboos, Amirkeivan Mohtashami et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="7a54aad06171f59149aca5380863c62729c70b41">GEAR: An Efficient KV Cache Compression Recipe for Near-Lossless Generative Inference of LLM</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Hao Kang, Qingru Zhang et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="c811bedbe8f4c21d0cba9f9175f7c2eb203284a7">Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Machel Reid, N. Savinov et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="a48a3cfde9e9a6f02821ea28698012e4d3e1cd73">QAQ: Quality Adaptive Quantization for LLM KV Cache</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Shichen Dong, Wenfang Cheng et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="89e0fde2dc60f8520c176a57396c6cad3af5dc40">No Token Left Behind: Reliable KV Cache Compression via Importance-Aware Mixed Precision Quantization</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - J. Yang, Byeongwook Kim et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="f608011b0f50a14bb2949c186a7c632a099aa75b">WKVQuant: Quantizing Weight and Key/Value Cache for Large Language Models Gains More</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yuxuan Yue, Zhihang Yuan et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="f288e2238ac8725baa7ca9874bbc3fed1e89a632">Data Engineering for Scaling Language Models to 128K Context</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yao Fu, Rameswar Panda et al. (2024)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="f9f311472ed8c4b15cfd74e1539f0c4815e574e9">SubGen: Token Generation in Sublinear Time and Memory</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - A. Zandieh, Insu Han et al. (2024)</span>
-        </li>
-      </ol>
-<h2 id="related">Related Papers</h2>
-<div class="related-grid">
-  <div class="related-card" onclick="window.location.href='../paper/7318a804566baadc9f4b4ca8255f78744e749a32.html'">
-    <div class="related-card-title">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</div>
-    <div class="related-card-meta">2024 &bull; 26 citations</div>
-  </div>
-  <div class="related-card" onclick="window.location.href='../paper/7318a804566baadc9f4b4ca8255f78744e749a32.html'">
-    <div class="related-card-title">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</div>
-    <div class="related-card-meta">2024 &bull; 26 citations</div>
-  </div>
-  <div class="related-card" onclick="window.location.href='../paper/ef9485a2522f64bca0f5cf67edc28a11984790e8.html'">
-    <div class="related-card-title">PolarQuant: Quantizing KV Caches with Polar Transformation</div>
-    <div class="related-card-meta">2025 &bull; 10 citations</div>
-  </div>
 </div>
 </article>
 

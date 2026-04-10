@@ -8,12 +8,17 @@
 </head>
 <body>
   <header class="wiki-header">
-    <a href="index.html" class="wiki-logo">📚 Research Wiki</a>
+    <a href="index.html" class="wiki-logo">&#128218; Research Wiki</a>
     <div class="wiki-search">
       <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
     </div>
+    <nav class="wiki-nav">
+      <a href="timeline.html">Timeline</a>
+      <a href="graph.html">Citation Graph</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
   </header>
-  
+
   <main class="wiki-content">
     <aside class="wiki-sidebar">
       <h3>Quick Stats</h3>
@@ -22,28 +27,42 @@
         <li>0 Glossary Terms</li>
         <li>0 Total Citations</li>
       </ul>
-      
+
       <h3 style="margin-top: 1.5rem;">Tags</h3>
       <div id="tag-cloud">
-        <!-- Tags will be populated by JS -->
+        
       </div>
     </aside>
-    
+
     <article class="wiki-article">
       <h1>Research Wiki</h1>
       <p>Welcome to your interactive research knowledge base. Explore papers, concepts, and their connections.</p>
-      
+
       <h2>Papers</h2>
-      <div class="paper-grid">
+
+      <div class="index-toolbar">
+        <span class="toolbar-label">Sort:</span>
+        <button class="sort-btn active" data-sort="most-cited">Most Cited</button>
+        <button class="sort-btn" data-sort="newest">Newest</button>
+        <button class="sort-btn" data-sort="oldest">Oldest</button>
+        <button class="sort-btn" data-sort="az">A&#8211;Z</button>
+        <div class="toolbar-sep"></div>
+        <span class="toolbar-label">Filter:</span>
+        
+        <button class="clear-btn">Clear</button>
+        <button class="random-btn">&#127922; Random Paper</button>
+      </div>
+
+      <div class="paper-grid" id="paper-grid">
 
       </div>
     </article>
   </main>
-  
+
   <footer class="wiki-footer">
-    <p>Research Wiki Knowledge Base • Built with ♥ for scientific discovery</p>
+    <p>Research Wiki Knowledge Base &bull; Built with &#9829; for scientific discovery</p>
   </footer>
-  
+
   <script src="assets/js/wiki.js"></script>
 </body>
 </html>

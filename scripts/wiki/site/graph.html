@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citation Graph - Research Wiki</title>
+  <link rel="stylesheet" href="assets/css/wiki.css">
+</head>
+<body>
+  <header class="wiki-header">
+    <a href="index.html" class="wiki-logo">&#128218; Research Wiki</a>
+    <div class="wiki-search">
+      <input type="text" id="search" placeholder="Search papers..." autocomplete="off">
+    </div>
+    <nav class="wiki-nav">
+      <a href="index.html">Home</a>
+      <a href="timeline.html">Timeline</a>
+      <button class="dark-toggle" id="dark-toggle">&#9790; Dark</button>
+    </nav>
+  </header>
+
+  <div style="padding: 1rem 2rem 0;">
+    <h1 style="font-family: 'Linux Libertine', Georgia, serif; font-weight: normal; margin-bottom: 0.3rem;">Citation Graph</h1>
+    <p class="graph-hint">Drag nodes to rearrange &bull; Scroll to zoom &bull; Click a node to open paper &bull; 0 papers, 0 citation links</p>
+  </div>
+
+  <div style="padding: 0 2rem 1rem;">
+    <canvas id="graph-canvas"></canvas>
+    <div class="graph-tooltip" id="graph-tooltip"></div>
+  </div>
+
+  <footer class="wiki-footer">
+    <p>Research Wiki Knowledge Base &bull; Citation graph</p>
+  </footer>
+
+  <script>
+    window.PAPERS_DATA = [];
+    window.LINKS_DATA = [];
+  </script>
+  <script src="assets/js/wiki.js"></script>
+</body>
+</html>

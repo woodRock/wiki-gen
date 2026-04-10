@@ -109,7 +109,12 @@ def extract_title_from_pdf(pdf_path):
             return line
     return None
 
-def process_pdf(pdf_path):
+MANUAL_MAPPINGS = {
+    "srivastava2013dropout.pdf": "34f25a8704614163c4095b3ee2fc969b60de4698",
+    "krizhevsky2012imagenet.pdf": "abd1c342495432171beb7ca8fd9551ef13cbd0ff",
+}
+
+def process_pdf(pdf_path, force_figures=True):
     """Process a single PDF: extract metadata, figures, store in DB."""
     print(f"📄 Processing {pdf_path.name}...")
     try:
@@ -117,12 +122,14 @@ def process_pdf(pdf_path):
         paper = None
         identifier = None
 
-        # Strategy 1: DOI/identifier from pdf2doi
-        try:
-            results = pdf2doi.pdf2doi(str(pdf_path))
-            identifier = results.get('identifier')
-        except Exception as e:
-            print(f"  ⚠ pdf2doi failed: {str(e)[:50]}")
+        # Strategy 0: Manual mapping
+        if pdf_path.name in MANUAL_MAPPINGS:
+            mapped_id = MANUAL_MAPPINGS[pdf_path.name]
+            print(f"  📍 Manual mapping found: {mapped_id}")
+            try:
+                paper = sch.get_paper(mapped_id)
+            except Exception as e:
+                print(f"  ⚠ Manual mapping lookup failed: {str(e)[:50]}")
 
         if identifier:
             # Strategy 1a: arXiv ID (most reliable for preprints)
@@ -176,6 +183,20 @@ def process_pdf(pdf_path):
         # Extract paper ID
         paper_id = paper.paperId
         
+        # Check if already exists
+        conn = get_connection()
+        if force_figures:
+            print(f"  🗑️  Cleaning up old figures for {paper_id}...")
+            cursor = conn.cursor()
+            cursor.execute("SELECT filename FROM figures WHERE paper_id = ?", (paper_id,))
+            old_figs = cursor.fetchall()
+            for row in old_figs:
+                fpath = ASSETS_DIR / "figures" / row['filename']
+                if fpath.exists():
+                    fpath.unlink()
+            cursor.execute("DELETE FROM figures WHERE paper_id = ?", (paper_id,))
+            conn.commit()
+
         # Extract figures
         print(f"  📊 Extracting figures...")
         figures = extract_figures_from_pdf(pdf_path, paper_id)

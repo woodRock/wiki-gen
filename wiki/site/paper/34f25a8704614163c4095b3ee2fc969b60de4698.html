@@ -27,10 +27,11 @@
       <h3>Contents</h3>
       <ul>
         <li><a href="#title">Top</a></li>
-        <li><a href="#section-0">The Problem of Co-adaptation</a></li>
-        <li><a href="#section-1">The Dropout Procedure</a></li>
-        <li><a href="#section-2">Dropout as Model Averaging</a></li>
-        <li><a href="#section-3">Empirical Success and Generalization</a></li>
+        <li><a href="#section-0">Stochastic Thinning and Weight Sharing</a></li>
+        <li><a href="#section-1">Inference via Weight Scaling Approximation</a></li>
+        <li><a href="#section-2">Biological Motivation: The Role of Sex in Evolution</a></li>
+        <li><a href="#section-3">Regularization through Feature Robustness and Sparsity</a></li>
+        <li><a href="#section-4">Practical Considerations and Max-Norm Constraint</a></li>
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
         <li><a href="#figures">Figures</a></li>
@@ -38,7 +39,7 @@
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">transformer</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">computer-vision</span><span class="tag" style="background: #e3f2fd; color: #1976d2;">regularization</span></div>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">computer-vision</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">optimization</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">regularization</span><span class="tag" style="background: #4A90E220; color: #4A90E2;">self-supervised-learning</span></div>
     </aside>
 
     
@@ -47,13 +48,13 @@
 
       
       <div class="infobox">
-        <div class="infobox-title">Dropout Regularization</div>
+        <div class="infobox-title">Stochastic Regularization via Dropout</div>
         <div class="infobox-image"><img src="../assets/animations/34f25a8704614163c4095b3ee2fc969b60de4698.gif" alt="Concept"></div>
         <table>
-          <tr><th>Architecture Type</th><td>Regularization Technique for Neural Networks</td></tr>
-          <tr><th>Key Innovation</th><td>Randomly omitting neurons during training to prevent co-adaptation.</td></tr>
-          <tr><th>Performance Metric</th><td>Significant reduction in generalization error across MNIST, ImageNet, and other benchmarks.</td></tr>
-          <tr><th>Computational Efficiency</th><td>Very low overhead during training; simplifies to a simple weight scaling at test time.</td></tr>
+          <tr><th>Architecture Type</th><td>Universal Regularization Component</td></tr>
+          <tr><th>Key Innovation</th><td>Random unit suppression during training with weight scaling at inference</td></tr>
+          <tr><th>Performance Metric</th><td>0.79% test error on MNIST (permutation-invariant)</td></tr>
+          <tr><th>Computational Efficiency</th><td>O(1) overhead at test time; roughly 2-3x training time increase</td></tr>
 
           <tr><th>Venue</th><td>Journal of machine learning research</td></tr>
           <tr><th>Year</th><td>2014</td></tr>
@@ -63,61 +64,100 @@
       </div>
 
 
-      <p class="lead">Dropout: A Simple Way to Prevent Neural Networks from <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">Overfitting</span> introduced one of the most effective and widely used <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> techniques in deep learning. By randomly 'dropping out' units (setting their activations to zero) during training, the authors demonstrated that neural networks can be made significantly more robust and less prone to co-adaptation of neurons. This simple yet powerful idea effectively trains an ensemble of many different 'thinned' networks, leading to substantial improvements in <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span> across a wide range of domains, including vision, speech, and text.</p>
-<h2 id="section-0">The Problem of Co-adaptation</h2>
-<p>Deep neural networks with a large number of parameters are incredibly flexible and powerful, but this power comes with a high risk of <span class="glossary-term" data-definition="When a model learns the training data too well, including its noise, and fails to generalize to new data.">overfitting</span>. In a standard network, neurons may develop complex 'co-adaptations' where a neuron only performs well in the presence of specific other neurons.</p>
-<p>This leads to a fragile system that captures the noise in the training data rather than the underlying signal. Dropout breaks these co-adaptations by making the presence of any particular neuron unreliable. As a result, each neuron is forced to learn features that are useful in conjunction with many different random subsets of other neurons.</p>
-<h2 id="section-1">The Dropout Procedure</h2>
-<p>During training, Dropout involves zeroing out the output of each hidden neuron with a fixed probability $p$ (commonly 0.5). For each training case, a new 'thinned' network is sampled by randomly removing neurons and their incoming and outgoing connections.</p>
-<p>At test time, it is not practical to average the predictions of all possible thinned networks. Instead, the authors proposed a simple 'weight scaling' <span class="glossary-term" data-definition="A practical approach to problem-solving that may not be optimal but is sufficient for the immediate goal.">heuristic</span>: use the full network but scale the outgoing weights by the probability $p$. This ensures that the expected input to a neuron at test time is the same as it was during training, providing an efficient approximation to the ensemble average.</p>
-<h2 id="section-2">Dropout as Model Averaging</h2>
-<p>A key theoretical insight of the paper is that Dropout can be viewed as a form of model averaging. A network with $n$ units can be seen as a collection of $2^n$ possible thinned networks. Training with Dropout is equivalent to training this massive ensemble where all models share weights.</p>
-<p>This 'ensemble' perspective explains why Dropout is so effective: it combines the strengths of many different architectures while only requiring the training time of a single model. The authors showed that this is significantly more powerful than other <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> methods like <span class="glossary-term" data-definition="A regularization method that adds a penalty based on the magnitude of the weights to the loss function.">weight decay</span> or early stopping.</p>
-<h2 id="section-3">Empirical Success and Generalization</h2>
-<p>The paper provides extensive experimental evidence for Dropout's effectiveness. On the MNIST dataset, Dropout achieved a new record error rate of 1.05%. On the ImageNet LSVRC-2012 competition, adding Dropout to AlexNet significantly reduced the <span class="glossary-term" data-definition="The percentage of test images where the correct label is not among the model&#x27;s top five predictions.">top-5 error</span> rate.</p>
-<p>Beyond computer vision, Dropout was shown to improve performance on speech recognition tasks and various NLP benchmarks. Its simplicity and consistent results have made it a standard component of almost every modern deep learning architecture, from simple MLPs to complex Transformers.</p>
+      <p class="lead">Dropout: A Simple Way to Prevent Neural Networks from <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">Overfitting</span> introduces a foundational <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> technique designed to mitigate the problem of <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span> in deep neural networks by randomly removing units and their connections during training. This process effectively samples from an exponential number of "thinned" architectures that share weights, providing a computationally efficient approximation of model averaging. The method achieved significant performance gains across multiple domains, most notably reducing the error rate on the MNIST dataset to a then-state-of-the-art 0.79% when combined with Deep Boltzmann Machine pretraining.</p>
+<h2 id="section-0">Stochastic Thinning and Weight Sharing</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig1.png" target="_blank">
+            <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig1.png" class="thumbimage" alt="Figure 1">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 1:</b> Samples from image data sets. Each row corresponds to a diﬀerent category.
+          </div>
+        </div>
+      </div>
+<p>The core mechanism of dropout involves the temporary removal of a unit from the network, including all its incoming and outgoing connections, based on a fixed probability $p$. In a neural network with $n$ units, this process can be viewed as sampling a "thinned" network from a collection of $2^n$ possible sub-architectures. During training, a new thinned network is sampled for each presentation of a training case. Because all these sub-networks share the same underlying weight parameters, the total number of parameters remains $O(n^2)$ or less, preventing the <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> explosion typically associated with ensemble methods <b>Figure 1</b>.</p>
+<p>This approach simulates training an ensemble of an exponential number of models that are highly constrained by weight sharing. While most of these thinned networks are trained very rarely—or perhaps not at all—the shared weights ensure that the collective knowledge of all sampled architectures is distilled into a single set of parameters. This prevents units from relying on the presence of specific other units, thereby reducing complex co-adaptations.</p>
+<h2 id="section-1">Inference via Weight Scaling Approximation</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig2.png" target="_blank">
+            <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig2.png" class="thumbimage" alt="Figure 2">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 2:</b> Some ImageNet test cases with the 4 most probable labels as predicted by our model.
+          </div>
+        </div>
+      </div>
+<p>At test time, it is computationally infeasible to explicitly average the predictions of $2^n$ models. The authors propose a simple deterministic approximation: using a single neural network without dropout but with scaled-down weights. If a unit is retained with probability $p$ during training, its outgoing weights are multiplied by $p$ at test time <b>Figure 2</b>.</p>
+<p>This scaling ensures that the expected output of any <span class="glossary-term" data-definition="A neuron in a neural network layer that is neither an input nor an output unit.">hidden unit</span> at test time is the same as its expected output during the training phase (under the dropout distribution). This "weight scaling" procedure allows the model to approximate the geometric mean of the predictions of the exponential number of thinned models. Empirical results show that this approximation is highly effective, leading to lower <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span> errors than other <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span> methods like L2 <span class="glossary-term" data-definition="A regularization technique that adds a small penalty (usually L2 norm) to the loss function to keep weights small and prevent overfitting.">weight decay</span> or early stopping.</p>
+<h2 id="section-2">Biological Motivation: The Role of Sex in Evolution</h2>
+<p>The authors draw a parallel between dropout and the theory of the role of sex in evolution. While asexual reproduction can be seen as a way to pass on a successful, highly optimized set of genes directly, sexual reproduction breaks up these co-adapted sets of genes. One theory suggests that sexual reproduction favors "mix-ability"—the ability of a gene to work well with a random set of other genes. This makes the individual genes more robust and less reliant on specific partners.</p>
+<p>Similarly, dropout forces each <span class="glossary-term" data-definition="A neuron in a neural network layer that is neither an input nor an output unit.">hidden unit</span> in a neural network to be useful in the context of a randomly chosen sample of other units. This drives the units to learn robust features that do not rely on other units to correct their mistakes. This prevents "conspiracies" where units co-adapt to fix specific errors in the training set that do not generalize to the test data.</p>
+<h2 id="section-3">Regularization through Feature Robustness and Sparsity</h2>
+
+      <div class="thumb tright">
+        <div class="thumbinner">
+          <a href="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig4.png" target="_blank">
+            <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig4.png" class="thumbimage" alt="Figure 4">
+          </a>
+          <div class="thumbcaption">
+            <b>Figure 4:</b> Eﬀect of dropout on sparsity. ReLUs were used for both models. Left: The histogram
+          </div>
+        </div>
+      </div>
+<p>Dropout has a profound effect on the internal representations learned by the network. In standard networks, units often develop highly correlated activations to minimize training loss, a phenomenon known as co-adaptation. Dropout breaks these correlations, forcing units to learn more independent and salient features. Visualization of features learned on MNIST shows that units trained with dropout develop clearer, more distinct edge-like detectors compared to the noisier features learned by standard autoencoders [[Figure 3, Figure 5]].</p>
+<p>Furthermore, dropout encourages sparsity in the hidden layer activations. Analysis of the activation histograms reveals that in a network trained with dropout, a large number of units have zero or near-zero activations for any given input, while the remaining units have highly varied and informative responses [[Figure 4, Figure 6]]. This sparse representation is a byproduct of the requirement that each unit be individually capable of contributing to the final prediction.</p>
+<h2 id="section-4">Practical Considerations and Max-Norm Constraint</h2>
+<p>The authors suggest that dropout is most effective when combined with specific <span class="glossary-term" data-definition="A configuration setting for a model that is not learned from the data, such as the dropout rate $p$.">hyperparameter</span> choices. A key recommendation is the use of "max-norm <span class="glossary-term" data-definition="A technique used to prevent overfitting by adding constraints or noise to the learning process.">regularization</span>," which constrains the L2-norm of the incoming weight vector for each unit to be upper-bounded by a constant $c$. This constraint prevents weights from blowing up when using large learning rates, which are often necessary to allow the model to explore the weight space effectively despite the noise introduced by dropout.</p>
+<p>Typical values for the retention probability $p$ are $0.5$ for hidden units and $0.8$ for input units. The authors also note that while dropout increases training time (often by a factor of 2 to 3), the resulting models are significantly more robust. For very large datasets like ImageNet, dropout was found to be essential in preventing the massive fully connected layers from <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span>.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
         <div class="concept-title">Thinned Network</div>
-        <p>A version of the original neural network with a random subset of its neurons removed.</p>
+        <p>A sub-architecture sampled from the parent network by removing units and their connections based on a Bernoulli mask.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Co-adaptation</div>
-        <p>A state where neurons become highly dependent on each other to produce correct outputs, leading to poor <span class="glossary-term" data-definition="The ability of a model to perform well on new, unseen data.">generalization</span>.</p>
+        <p>A state where hidden units in a neural network become highly dependent on each other, often leading to <span class="glossary-term" data-definition="A modeling error that occurs when a function is too closely fit to a limited set of data points, failing to generalize to new data.">overfitting</span> on training noise.</p>
       </div>
 
       <div class="concept-item">
-        <div class="concept-title">Weight Scaling</div>
-        <p>The technique of adjusting weights at test time to account for the fact that all neurons are present, whereas only a subset were present during training.</p>
+        <div class="concept-title">Weight Scaling Rule</div>
+        <p>The technique of multiplying weights by the retention probability $p$ at test time to match the expected output during training.</p>
       </div>
 
       <div class="concept-item">
-        <div class="concept-title">Ensemble Learning</div>
-        <p>The process of combining the predictions of multiple models to achieve better performance than any single model.</p>
+        <div class="concept-title">Max-norm Regularization</div>
+        <p>A constraint that limits the norm of the weight vector incident to each neuron, used to stabilize training with high learning rates.</p>
       </div>
 
       <div class="concept-item">
-        <div class="concept-title">Bernoulli Distribution</div>
-        <p>The probability distribution used to decide whether each individual neuron is kept or dropped during a training step.</p>
+        <div class="concept-title">Mix-ability</div>
+        <p>The ability of a component (gene or neuron) to function effectively when paired with a random subset of other components.</p>
       </div>
 <h2 id="math">Mathematics</h2>
-<h3>Training Activation</h3>
-<div class="math-block">$$\tilde{y}^{(l)} = r^{(l)} * y^{(l)}, \quad r_j^{(l)} \sim \text{Bernoulli}(p)$$</div>
-<div class="math-explanation-box">During training, the output of a layer $y^{(l)}$ is element-wise multiplied by a vector of random binary variables $r^{(l)}$, where each entry is 1 with probability $p$.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$p$</td><td>Probability of keeping a neuron (retention rate)</td></tr><tr><td>$r$</td><td>A random binary mask</td></tr></table></div>
-<h3>Test Time Scaling</h3>
-<div class="math-block">$$W_{test}^{(l)} = p W^{(l)}$$</div>
-<div class="math-explanation-box">At test time, the learned weights are scaled by the retention probability $p$ to maintain consistent activation magnitudes.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$W$</td><td>The weight matrix learned during training</td></tr></table></div>
+<h3>Standard Feed-Forward Layer</h3>
+<div class="math-block">$$z_i^{(l+1)} = \mathbf{w}_i^{(l+1)} \mathbf{y}^{(l)} + b_i^{(l+1)}, \quad y_i^{(l+1)} = f(z_i^{(l+1)})$$</div>
+<div class="math-explanation-box">The standard operation where the output of layer $l$ is multiplied by weights and passed through an activation function $f$ to produce layer $l+1$ output.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$z_i^{(l+1)}$</td><td>Input to unit $i$ in layer $l+1$ before activation</td></tr><tr><td>$\mathbf{y}^{(l)}$</td><td>Vector of outputs from layer $l$</td></tr><tr><td>$f$</td><td>Activation function (e.g., Sigmoid or ReLU)</td></tr></table></div>
+<h3>Dropout Training Operation</h3>
+<div class="math-block">$$r_j^{(l)} \sim \text{Bernoulli}(p), \quad \tilde{\mathbf{y}}^{(l)} = \mathbf{r}^{(l)} * \mathbf{y}^{(l)}$$</div>
+<div class="math-explanation-box">During training, a mask vector $\mathbf{r}$ is sampled from a <span class="glossary-term" data-definition="A discrete probability distribution of a random variable which takes the value 1 with probability p and the value 0 with probability q=1-p.">Bernoulli distribution</span> and multiplied element-wise with the layer outputs to 'thin' the network.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$r_j^{(l)}$</td><td>Binary mask bit for unit $j$ in layer $l$</td></tr><tr><td>$p$</td><td>Retention probability (probability that a unit stays active)</td></tr><tr><td>$*$</td><td>Element-wise (Hadamard) product</td></tr></table></div>
+<h3>Test Time Weight Scaling</h3>
+<div class="math-block">$$W_{\text{test}}^{(l)} = p W^{(l)}$$</div>
+<div class="math-explanation-box">To approximate model averaging at test time, the learned weights are scaled by the retention probability $p$, ensuring the output magnitude matches the training expectations.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$W_{\text{test}}$</td><td>The weight matrix used during inference</td></tr><tr><td>$p$</td><td>The probability of retention used during training</td></tr></table></div>
 <h2 id="figures">Figures and Explanations</h2>
 
       <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
         <div class="thumbinner" style="width:100%;">
           <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig1.png" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 1:</b> Dropout Neural Net Model. Left: A standard neural net with 2 hidden layers. Right:<br>
+            <b>Figure 1:</b> Samples from image data sets. Each row corresponds to a diﬀerent category.<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Comparison between a standard neural network and a network after applying Dropout, showing the random omission of units and connections.
+            Contrast between a standard dense neural network and a 'thinned' network. The thinned network is produced by randomly removing nodes (and their associated edges), representing one of the $2^n$ possible sub-models trained during dropout.
           </div>
         </div>
       </div>
@@ -126,9 +166,9 @@
         <div class="thumbinner" style="width:100%;">
           <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig2.png" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 2:</b> Left: A unit at training time that is present with probability p and is connected to units<br>
+            <b>Figure 2:</b> Some ImageNet test cases with the 4 most probable labels as predicted by our model.<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
+            Operational difference between training and test time. At training, units are present with probability $p$. At test time, all units are present, but their weights are scaled by $p$ to ensure the expected output remains constant.
           </div>
         </div>
       </div>
@@ -137,9 +177,9 @@
         <div class="thumbinner" style="width:100%;">
           <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig3.png" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 3:</b> Comparison of the basic operations of a standard and dropout network.<br>
+            <b>Figure 3:</b> Features learned on MNIST with one hidden layer autoencoders having 256 rectiﬁed<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
+            Visualization of features learned on MNIST by one-hidden-layer autoencoders. Features learned with dropout are sharper and more identifiable as strokes or edges compared to the more distributed and noisy features of a standard autoencoder.
           </div>
         </div>
       </div>
@@ -148,9 +188,9 @@
         <div class="thumbinner" style="width:100%;">
           <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig4.png" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 4:</b> Test error for diﬀerent architectures<br>
+            <b>Figure 4:</b> Eﬀect of dropout on sparsity. ReLUs were used for both models. Left: The histogram<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
+            Sparsity histograms for ReLU units. The left plot shows that dropout leads to a much larger number of zero activations (sparsity) compared to a standard network, indicating that dropout encourages a more efficient coding of information.
           </div>
         </div>
       </div>
@@ -159,9 +199,9 @@
         <div class="thumbinner" style="width:100%;">
           <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig5.png" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 5:</b> Samples from image data sets. Each row corresponds to a diﬀerent category.<br>
+            <b>Figure 5:</b> Features learned on MNIST by 256 hidden unit RBMs. The features are ordered by L2<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
+            Features learned by Restricted Boltzmann Machines (RBMs) on MNIST. Similar to the autoencoder case, dropout RBMs learn cleaner, more localized features that represent meaningful parts of the digits.
           </div>
         </div>
       </div>
@@ -170,120 +210,32 @@
         <div class="thumbinner" style="width:100%;">
           <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig6.png" style="max-height: 400px;">
           <div class="thumbcaption">
-            <b>Figure 6:</b> Some ImageNet test cases with the 4 most probable labels as predicted by our model.<br>
+            <b>Figure 6:</b> Eﬀect of dropout on sparsity. Left: The activation histogram shows that a large num-<br>
             <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig7.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 7:</b> Features learned on MNIST with one hidden layer autoencoders having 256 rectiﬁed<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig8.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 8:</b> Eﬀect of dropout on sparsity. ReLUs were used for both models. Left: The histogram<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig9.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 9:</b> Eﬀect of changing dropout rates on MNIST.<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig10.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 10:</b> Eﬀect of varying data set size.<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig11.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 11:</b> shows the test error rate obtained for<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig12.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 12:</b> Features learned on MNIST by 256 hidden unit RBMs. The features are ordered by L2<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig13.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 13:</b> Eﬀect of dropout on sparsity. Left: The activation histogram shows that a large num-<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/34f25a8704614163c4095b3ee2fc969b60de4698_fig14.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 14:</b> include all combinations of 2, 3, and 4 layer networks<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
+            Activation histograms for RBMs, demonstrating that the sparsity-inducing effect of dropout is consistent across different types of architectures and generative models.
           </div>
         </div>
       </div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
-          <b>Overfitting</b>
-          <span style="font-size: 0.8rem; color: #54595d;">The primary problem that Dropout is designed to solve.</span>
-        </div>
-
-        <div class="see-also-item">
-          <b>AlexNet</b>
-          <span style="font-size: 0.8rem; color: #54595d;">The architecture that first demonstrated the power of Dropout on a massive scale.</span>
-        </div>
-
-        <div class="see-also-item">
           <b>Batch Normalization</b>
-          <span style="font-size: 0.8rem; color: #54595d;">Another technique that provides some regularization effect, often used alongside Dropout.</span>
+          <span style="font-size: 0.8rem; color: #54595d;">A later technique that also provides regularization and stabilizes training, often used alongside dropout.</span>
         </div>
 
         <div class="see-also-item">
-          <b>Ensemble Methods</b>
-          <span style="font-size: 0.8rem; color: #54595d;">The class of machine learning techniques that combine multiple models for better results.</span>
+          <b>Ensemble Learning</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The general practice of combining multiple models to improve generalization, which dropout approximates efficiently.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Regularization (Mathematics)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">The broad class of techniques used to prevent overfitting by penalizing model complexity.</span>
+        </div>
+
+        <div class="see-also-item">
+          <b>Rectified Linear Unit (ReLU)</b>
+          <span style="font-size: 0.8rem; color: #54595d;">An activation function that, when combined with dropout, yields particularly high performance and sparsity.</span>
         </div>
 </div>
 </article>

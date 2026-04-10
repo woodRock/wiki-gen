@@ -27,16 +27,13 @@
       <h3>Contents</h3>
       <ul>
         <li><a href="#title">Top</a></li>
-        <li><a href="#section-0">Scaling Laws and the 175B Parameter Model</a></li>
+        <li><a href="#section-0">Scaling Laws and the 175-Billion-Parameter Model</a></li>
         <li><a href="#section-1">In-Context Learning: Zero, One, and Few-Shot</a></li>
         <li><a href="#section-2">Task Performance and Limitations</a></li>
         <li><a href="#section-3">The Shift from Fine-Tuning to Prompting</a></li>
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
-        <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
-        <li><a href="#references">References</a></li>
-        <li><a href="#related">Related Papers</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -65,280 +62,48 @@
       </div>
 
 
-      <p class="lead">GPT-3 (Generative Pre-trained Transformer 3) is a massive autoregressive language model with 175 billion parameters that demonstrates remarkable few-shot learning capabilities. By training on hundreds of billions of words, GPT-3 can perform a wide variety of NLP tasks—including translation, question-answering, and cloze tasks—without any <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>, often matching the performance of specialized state-of-the-art models. This paper marks a significant shift towards general-purpose AI systems that can adapt to new tasks through simple natural language prompts.</p>
-<h2 id="section-0">Scaling Laws and the 175B Parameter Model</h2>
-<p>GPT-3 represents a 10x increase in scale over its predecessor, GPT-2. The researchers found that as language models grow in size, they develop emergent capabilities that are not present in smaller models. The 175 billion <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> version of GPT-3 uses the same basic Transformer architecture as previous models but with increased depth (96 layers) and width (12,288-dimensional embeddings).</p>
-<p>This massive scale allows the model to capture a vast amount of world knowledge and linguistic patterns from its training data, which included Common Crawl, WebText2, Books1, Books2, and Wikipedia. The results suggest that for many tasks, performance follows a power-law relationship with model size, data, and compute.</p>
+      <p class="lead">GPT-3 (Generative Pre-trained Transformer 3) is a large-scale autoregressive language model with 175 billion parameters that demonstrates significant few-shot learning capabilities. By training on hundreds of billions of tokens, GPT-3 can perform a wide variety of natural language processing (NLP) tasks—including translation, question-answering, and cloze tasks—without task-specific <span class="glossary-term" data-definition="The process of taking a model that has already been trained for a given task and then tuning it further for a second similar task.">fine-tuning</span>, often matching the performance of specialized state-of-the-art models. The development of GPT-3 marks a shift toward general-purpose AI systems that can adapt to new tasks through simple natural language prompts.</p>
+<h2 id="section-0">Scaling Laws and the 175-Billion-Parameter Model</h2>
+<p>GPT-3 represents a tenfold increase in scale over its predecessor, GPT-2. Research indicates that as language models scale, they develop emergent capabilities not observed in smaller models. The 175-billion-<span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> version of GPT-3 utilizes the Transformer architecture with 96 layers and 12,288-dimensional embeddings.</p>
+<p>This scale allows the model to capture extensive world knowledge and linguistic patterns from its training data, which includes Common Crawl, WebText2, Books1, Books2, and Wikipedia. Performance across various tasks has been shown to follow power-law relationships with respect to model size, dataset size, and computational budget.</p>
 <h2 id="section-1">In-Context Learning: Zero, One, and Few-Shot</h2>
-<p>A key contribution of the GPT-3 paper is the formalization of 'in-context learning.' Unlike traditional models that require thousands of labeled examples and <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> updates (<span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span>) to learn a new task, GPT-3 can be 'conditioned' using a natural language prompt.</p>
-<p>In the **few-shot** setting, the model is given a short description of the task and a few examples (typically 10 to 100) within its <span class="glossary-term" data-definition="The maximum number of tokens a model can &#x27;see&#x27; at once; for GPT-3, this is 2048 tokens.">context window</span>. In the **one-shot** setting, only a single example is provided. In the **<span class="glossary-term" data-definition="Performing a task with no examples, only a description.">zero-shot</span>** setting, only the task description is given. GPT-3's ability to succeed in these settings suggests it has learned a generalized 'meta-learning' capability during <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span>.</p>
+<p>A primary contribution of the GPT-3 research is the formalization of "in-context learning." Unlike traditional models that require thousands of labeled examples and <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> updates (<span class="glossary-term" data-definition="The process of taking a model that has already been trained for a given task and then tuning it further for a second similar task.">fine-tuning</span>) to adapt to a new task, GPT-3 can be conditioned via a natural language prompt.</p>
+<p>In the few-shot setting, the model is provided with a task description and several examples (typically 10 to 100) within its <span class="glossary-term" data-definition="The maximum number of tokens a model can &#x27;see&#x27; at once; for GPT-3, this is 2048 tokens.">context window</span>. In the one-shot setting, only a single example is provided. In the <span class="glossary-term" data-definition="Performing a task with no examples, only a description.">zero-shot</span> setting, only the task description is given. The success of GPT-3 in these configurations suggests it has acquired a generalized meta-learning capability during <span class="glossary-term" data-definition="The process of training a model on a large dataset to learn general features before task-specific fine-tuning.">pre-training</span>.</p>
 <h2 id="section-2">Task Performance and Limitations</h2>
-<p>GPT-3 was evaluated on over 50 NLP datasets. It achieved state-of-the-art performance on several 'closed-book' question-answering tasks and demonstrated strong capabilities in translation and reasoning. However, it still struggles with certain tasks that require deep common sense or complex multi-step reasoning, such as the WSC (Winograd Schema Challenge).</p>
-<p>Furthermore, the model can sometimes generate biased or toxic content, reflecting the biases present in its large-scale training data. The researchers acknowledge these limitations and emphasize the need for further work in safety and <span class="glossary-term" data-definition="A steering rule that causes flockmates to face the same direction.">alignment</span>.</p>
+<p>GPT-3 was evaluated on over 50 NLP datasets, achieving state-of-the-art results on several "closed-book" question-answering tasks and demonstrating strong performance in translation and reasoning. However, the model continues to struggle with tasks requiring complex multi-step reasoning or deep common sense, such as the Winograd Schema Challenge (WSC).</p>
+<p>Additionally, the model may generate biased or toxic content, reflecting biases present in its large-scale training data. The researchers acknowledge these limitations and emphasize the importance of ongoing research in safety and <span class="glossary-term" data-definition="A steering rule that causes flockmates to face the same direction.">alignment</span>.</p>
 <h2 id="section-3">The Shift from Fine-Tuning to Prompting</h2>
-<p>The success of GPT-3 challenges the dominant paradigm of pre-train-then-fine-tune. By showing that a sufficiently large model can adapt to tasks via prompting, GPT-3 opens up new possibilities for how humans interact with AI. Prompt engineering—the art of crafting the right input to guide the model—has since emerged as a critical skill for utilizing these large-scale foundation models.</p>
+<p>The success of GPT-3 challenges the dominant "pre-train then fine-tune" paradigm. By demonstrating that a sufficiently large model can adapt to tasks via prompting, GPT-3 introduces new methods for human-AI interaction. Prompt engineering—the process of refining input text to guide model behavior—has since emerged as a critical discipline for utilizing large-scale foundation models.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
       <div class="concept-item">
         <div class="concept-title">Few-Shot Learning</div>
-        <p>The ability of a model to perform a task after seeing only a few examples in its input prompt, without any weights being updated.</p>
+        <p>The ability of a model to perform a task after observing a limited number of examples in its input prompt, without subsequent weight updates.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">In-Context Learning</div>
-        <p>The phenomenon where a language model uses the information provided in its prompt to understand and execute a specific task.</p>
+        <p>The phenomenon where a language model uses information provided within the prompt to understand and execute a specific task.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Autoregressive Model</div>
-        <p>A model that predicts the next <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in a sequence based on all previous tokens, typical of the GPT series.</p>
+        <p>A type of model that predicts the next <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> in a sequence based on all preceding tokens.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Prompt Engineering</div>
-        <p>The process of designing and refining the input text to a large language model to achieve a desired output or task performance.</p>
+        <p>The methodology of designing and refining input text to a large language model to optimize output or task performance.</p>
       </div>
 
       <div class="concept-item">
         <div class="concept-title">Emergent Capabilities</div>
-        <p>Skills or behaviors that appear in large-scale models that were not observed or expected in their smaller counterparts.</p>
+        <p>Behaviors or skills that manifest in large-scale models which are not present or predictable in smaller versions of the same architecture.</p>
       </div>
 <h2 id="math">Mathematics</h2>
 <h3>Autoregressive Likelihood</h3>
-<div class="math-block">$$P(x) = \prod_{i=1}^{n} P(x_i | x_1, \dots, x_{i-1})$$</div>
-<div class="math-explanation-box">The objective of GPT-3 is to maximize the likelihood of the training data by predicting each <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> based on its preceding context.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$x_i$</td><td>The i-th token in the sequence</td></tr><tr><td>$P(x)$</td><td>The probability of the entire sequence</td></tr></table></div>
-<h2 id="figures">Figures and Explanations</h2>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig1.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 1:</b> 1: Language model meta-learning. During unsupervised pre-training, a language model develops a broad<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Diagram showing the difference between zero-shot, one-shot, and few-shot learning, where examples are integrated directly into the model's context window.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig2.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 2:</b> 2: Larger models make increasingly efﬁcient use of in-context information. We show in-context learning<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Accuracy scaling curves for various tasks as a function of the number of examples in the context, showing significant gains for the 175B parameter model.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig3.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 3:</b> 3: Aggregate performance for all 42 accuracy-denominated benchmarks While zero-shot performance<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig4.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 4:</b> 1: Zero-shot, one-shot and few-shot, contrasted with traditional ﬁne-tuning. The panels above show<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig5.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 5:</b> 2: Total compute used during training. Based on the analysis in Scaling Laws For Neural Language Models<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig6.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 6:</b> 1: Smooth scaling of performance with compute. Performance (measured in terms of cross-entropy<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig7.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 7:</b> 2: On LAMBADA, the few-shot capability of language models results in a strong boost to accuracy. GPT-3<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig8.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 8:</b> 3: On TriviaQA GPT3’s performance grows smoothly with model size, suggesting that language models<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig9.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 9:</b> 4: Few-shot translation performance on 6 language pairs as model capacity increases. There is a consistent<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig10.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 10:</b> 5: Zero-, one-, and few-shot performance on the adversarial Winogrande dataset as model capacity scales.<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig11.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 11:</b> 6: GPT-3 results on PIQA in the zero-shot, one-shot, and few-shot settings. The largest model achieves a<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig12.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 12:</b> 7: GPT-3 results on CoQA reading comprehension task. GPT-3 175B achieves 85 F1 in the few-shot setting,<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig13.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 13:</b> 8: Performance on SuperGLUE increases with model size and number of examples in context. A value<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig14.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 14:</b> 9: Performance of GPT-3 on ANLI Round 3. Results are on the dev-set, which has only 1500 examples<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig15.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 15:</b> 10: Results on all 10 arithmetic tasks in the few-shot settings for models of different sizes. There is a<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig16.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 16:</b> 11: Few-shot performance on the ﬁve word scrambling tasks for different sizes of model. There is generally<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig17.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 17:</b> 12: Zero-, one-,and few-shot performance on SAT analogy tasks, for different sizes of model. The largest<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig18.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 18:</b> 13: People’s ability to identify whether news articles are model-generated (measured by the ratio of correct<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig19.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 19:</b> 1: GPT-3 Training Curves We measure model performance during training on a deduplicated validation<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig20.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 20:</b> 2: Benchmark contamination analysis<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/90abbc2cf38462b954ae1b772fac9532e2ccd8b0_fig21.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 21:</b> 1: Racial Sentiment Across Models<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
+<div class="math-block">$$$$P(x) = \prod_{i=1}^{n} P(x_i | x_1, \dots, x_{i-1})$$$$</div>
+<div class="math-explanation-box">The objective of GPT-3 is to maximize the likelihood of the training data by predicting each <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> based on its preceding context.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$$$x_i$$$</td><td>The $$i$$-th token in the sequence</td></tr><tr><td>$$$P(x)$$$</td><td>The probability of the entire sequence</td></tr></table></div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
@@ -360,117 +125,6 @@
           <b>Prompt Engineering</b>
           <span style="font-size: 0.8rem; color: #54595d;">The practice of optimizing prompts to improve model performance on specific tasks.</span>
         </div>
-</div>
-
-      <h2 id="references">References</h2>
-      <ol class="reference-list">
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="9ffcb3624f2637b5d0fe28c61ec8472293cfebc7">All the News That’s Fit to Fabricate: AI-Generated Text as a Tool of Media Misinformation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - S. Kreps, Miles McCain et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="d47a682723f710395454687319bb55635e653105">Language (Technology) is Power: A Critical Survey of “Bias” in NLP</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Su Lin Blodgett, Solon Barocas et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="659bf9ce7175e1ec266ff54359e2bd76e0b7ff31">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Patrick Lewis, Ethan Perez et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="d0cda85c030711aaa5383c80d5928a4d22f8d3bf">How Can We Accelerate Progress Towards Human-like Linguistic Generalization?</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Tal Linzen (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="ad5970584754cc7a1d91c95ab84a1e210258183a">UnifiedQA: Crossing Format Boundaries With a Single QA System</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Daniel Khashabi, Sewon Min et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="bb6c2a64ecb6e4c9f3f5720d53cca76a2c37505d">Experience Grounds Language</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yonatan Bisk, Ari Holtzman et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="babeda48b10a4d638252118f2238d05a06f4ec55">StereoSet: Measuring stereotypical bias in pretrained language models</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Moin Nadeem, Anna Bethke et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="2ffcf8352223c95ae8cef4daaec995525ecc926b">Adversarial Training for Large Neural Language Models</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Xiaodong Liu, Hao Cheng et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="97f08c1ae8ca5ddf5948c66bfbbc0546ac154807">Pretrained Transformers Improve Out-of-Distribution Robustness</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Dan Hendrycks, Xiaoyuan Liu et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="9ae293dbcb0a3d2311775a7f4d23854fe9b0ee3d">TTTTTackling WinoGrande Schemas</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Sheng-Chieh Lin, Jheng-Hong Yang et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8771679aac0e90371340bd8c657317f5be113e81">Train Large, Then Compress: Rethinking Model Size for Efficient Training and Inference of Transformers</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Zhuohan Li, Eric Wallace et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="832fff14d2ed50eb7969c4c4b976c35776548f56">REALM: Retrieval-Augmented Language Model Pre-Training</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Kelvin Guu, Kenton Lee et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="80376bdec5f534be78ba82821f540590ebce5559">How Much Knowledge Can You Pack into the Parameters of a Language Model?</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Adam Roberts, Colin Raffel et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="e6c561d02500b2596a230b341a8eb8b921ca5bf2">Scaling Laws for Neural Language Models</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - J. Kaplan, Sam McCandlish et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="495da6f19baa09c6db3697d839e10432cdc25934">Multilingual Denoising Pre-training for Neural Machine Translation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yinhan Liu, Jiatao Gu et al. (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8ae9a17c87a4518b513e860683a0ef7824be994d">Exploiting Cloze-Questions for Few-Shot Text Classification and Natural Language Inference</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Timo Schick, Hinrich Schütze (2020)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="04f4e55e14150b7c48b0287ba77c7443df76ed45">PIQA: Reasoning about Physical Commonsense in Natural Language</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yonatan Bisk, Rowan Zellers et al. (2019)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="5d22b241836e30d5b0d852b463951ab7e3245ea4">Reducing Sentiment Bias in Language Models via Counterfactual Evaluation</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Po-Sen Huang, Huan Zhang et al. (2019)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="9146414fca384e73f11ccfd3db8ad6d2a1e8eda2">Automatic Detection of Generated Text is Easiest when Humans are Fooled</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Daphne Ippolito, Daniel Duckworth et al. (2019)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="207da6d2c07289bf72a2b5974bb3f011ebb5dd0d">Adversarial NLI: A New Benchmark for Natural Language Understanding</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Yixin Nie, Adina Williams et al. (2019)</span>
-        </li>
-      </ol>
-<h2 id="related">Related Papers</h2>
-<div class="related-grid">
-  <div class="related-card" onclick="window.location.href='../paper/7318a804566baadc9f4b4ca8255f78744e749a32.html'">
-    <div class="related-card-title">QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead</div>
-    <div class="related-card-meta">2024 &bull; 26 citations</div>
-  </div>
 </div>
 </article>
 

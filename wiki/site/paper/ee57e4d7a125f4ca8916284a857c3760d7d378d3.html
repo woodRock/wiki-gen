@@ -34,9 +34,7 @@
         <li><a href="#section-4">Scalability and Computational Efficiency</a></li>
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
-        <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
-        <li><a href="#references">References</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
@@ -72,35 +70,24 @@
 <p>Generative methods (MAE, BEiT, data2vec) reconstruct masked or corrupted portions of the input, either at the pixel level (MAE) or discrete <span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> level (BEiT). These methods require no hand-crafted views and generalize more easily to other modalities. However, predicting in pixel/<span class="glossary-term" data-definition="A unit of text (like a word or part of a word) that a language model processes.">token</span> space requires capturing low-level details (exact textures, colors) that may not be useful for semantic tasks, and these methods often underperform <span class="glossary-term" data-definition="The property of remaining unchanged regardless of certain transformations, like translation or scaling.">invariance</span>-based methods on <span class="glossary-term" data-definition="Evaluation where frozen representations are tested for decodability of target quantities (e.g., physical properties) by a simple linear regressor. LeWM&#x27;s physical structure probing uses linear probing to show latents encode position, velocity, and contact forces.">linear probing</span> evaluations.</p>
 <p>I-JEPA occupies a third paradigm: predictive, non-generative, and augmentation-free. By predicting in representation space (not pixel space), I-JEPA avoids the need to model low-level details. By using a masking strategy rather than augmentations, it avoids encoding arbitrary invariances. This combination produces representations that are both semantically rich and broadly useful across tasks.</p>
 <h2 id="section-1">Joint-Embedding Predictive Architecture Design</h2>
-<p>I-JEPA consists of three components: a context encoder (ViT), a target encoder (exponential moving average of context encoder), and a predictor network. Given an image, a <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span> (a connected rectangular region) and multiple target blocks (separate regions in the same image) are sampled. The context encoder processes the <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span>; the predictor estimates the representations of each <span class="glossary-term" data-definition="One of the masked rectangular image regions whose representations I-JEPA predicts. Sampled at large scale (15–20% of image area) to require semantic-level understanding for accurate prediction.">target block</span> from the context encoding.</p>
-<p>The target encoder, updated as an exponential moving average (EMA) of the context encoder, provides stable target representations. Rather than matching the context encoder's output directly (which would trivially <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span> to a constant), the predictor must estimate the output of a separate, slowly evolving encoder. The EMA mechanism is analogous to the <span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span> encoder in MoCo and ensures the target representations change slowly enough for the predictor to track.</p>
-<p>The training objective minimizes the L2 distance between the predictor's estimated representations and the target encoder's actual representations of the target blocks. Crucially, the loss is computed in representation space, not in pixel space—the model never tries to reconstruct the original pixel values. This means the model is not penalized for failing to predict exact textures or colors, only for failing to predict the high-level semantic content.</p>
+<p>I-JEPA consists of three components: a context encoder (ViT), a target encoder (exponential moving average of context encoder), and a predictor network <b>Figure 0</b>. Given an image, a <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span> (a connected rectangular region) and multiple target blocks (separate regions in the same image) are sampled. The context encoder processes the <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span>; the predictor estimates the representations of each <span class="glossary-term" data-definition="One of the masked rectangular image regions whose representations I-JEPA predicts. Sampled at large scale (15–20% of image area) to require semantic-level understanding for accurate prediction.">target block</span> from the context encoding.</p>
+<p>The target encoder, updated as an exponential moving average (EMA) of the context encoder, provides stable target representations. Rather than matching the context encoder's output directly (which would trivially <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span> to a constant), the predictor must estimate the output of a separate, slowly evolving encoder. The EMA mechanism is analogous to the <span class="glossary-term" data-definition="An optimization technique that helps accelerate SGD in the relevant direction and dampens oscillations.">momentum</span> encoder in MoCo and ensures the target representations change slowly enough for the predictor to track.</p>
+<p>The training objective minimizes the $$L_2$$ distance between the predictor's estimated representations and the target encoder's actual representations of the target blocks. Crucially, the loss is computed in representation space, not in pixel space—the model never tries to reconstruct the original pixel values. This means the model is not penalized for failing to predict exact textures or colors, only for failing to predict the high-level semantic content.</p>
 <p><span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">Collapse</span> prevention in I-JEPA relies on the EMA target encoder combined with the multi-block masking strategy. The EMA prevents the trivial solution of both encoder and predictor outputting constants. The masking strategy ensures the context is informative enough that predictions are non-trivial, preventing the predictor from learning a constant function that ignores its input.</p>
 <h2 id="section-2">Multi-Block Masking Strategy</h2>
-
-      <div class="thumb tright">
-        <div class="thumbinner">
-          <a href="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig1.png" target="_blank">
-            <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig1.png" class="thumbimage" alt="Figure 1">
-          </a>
-          <div class="thumbcaption">
-            <b>Figure 1:</b> The overall objective is as follows: given a context
-          </div>
-        </div>
-      </div>
-<p>The masking strategy is identified as the most critical design choice guiding I-JEPA toward semantic representations. The paper systematically studies two dimensions of masking: (a) the scale of target blocks and (b) the informativeness of the <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span>.</p>
+<p>The masking strategy <b>Figure 1</b> is identified as the most critical design choice guiding I-JEPA toward semantic representations. The paper systematically studies two dimensions of masking: (a) the scale of target blocks and (b) the informativeness of the <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span>.</p>
 <p>Target blocks must be large enough to require semantic-level prediction rather than pixel interpolation. Small target blocks adjacent to the <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span> can be predicted from low-level texture statistics; large blocks require understanding of object structure, spatial layout, and semantic category. The paper uses target blocks covering 15–20% of the image area, much larger than the 2–3% patches used in MAE.</p>
 <p>The <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span> must be sufficiently informative (spatially distributed) to enable meaningful prediction. A very small <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span> provides insufficient information about the image, making the task impossible. I-JEPA samples a single large <span class="glossary-term" data-definition="In I-JEPA, the visible (unmasked) rectangular region of the image passed to the context encoder. Sampled as a large region (50–100% of image area) to provide informative context for predicting multiple target blocks.">context block</span> (50–100% of image area with random aspect ratio) that provides a broad view of the image content while leaving meaningful regions to predict.</p>
 <p>The multi-block design—predicting several target blocks simultaneously from one context—provides multiple prediction targets per <span class="glossary-term" data-definition="The initial computation of the function&#x27;s output values.">forward pass</span>, increasing training efficiency. Each <span class="glossary-term" data-definition="One of the masked rectangular image regions whose representations I-JEPA predicts. Sampled at large scale (15–20% of image area) to require semantic-level understanding for accurate prediction.">target block</span> provides an independent <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> signal, effectively multiplying the learning signal per image compared to single-target designs.</p>
 <h2 id="section-3">Representation Quality and Downstream Evaluation</h2>
 <p>I-JEPA representations are evaluated across a diverse set of downstream tasks designed to probe different aspects of representation quality. <span class="glossary-term" data-definition="Evaluation where frozen representations are tested for decodability of target quantities (e.g., physical properties) by a simple linear regressor. LeWM&#x27;s physical structure probing uses linear probing to show latents encode position, velocity, and contact forces.">Linear probing</span> (a frozen encoder with a linear classifier) tests whether semantic class information is linearly separable in the representation space. I-JEPA significantly outperforms pixel-reconstruction methods (MAE, data2vec) and is competitive with augmentation-based methods (DINO, iBOT) on ImageNet-1K <span class="glossary-term" data-definition="Evaluation where frozen representations are tested for decodability of target quantities (e.g., physical properties) by a simple linear regressor. LeWM&#x27;s physical structure probing uses linear probing to show latents encode position, velocity, and contact forces.">linear probing</span>.</p>
 <p>Low-level vision tasks like object counting and depth prediction test whether spatial structure is preserved in representations. Here I-JEPA shows a notable advantage over augmentation-based methods, which can lose spatial information through aggressive cropping and color augmentation. By not enforcing spatial invariances, I-JEPA preserves finer-grained spatial structure useful for these tasks.</p>
-<p>Semi-supervised learning evaluations (1% and 10% of labeled ImageNet) test sample efficiency: how well representations transfer when few labels are available. I-JEPA performs strongly in these regimes, demonstrating that its representations generalize well and require minimal <span class="glossary-term" data-definition="Adapting a pre-trained model to a specific task using a smaller, labeled dataset.">fine-tuning</span> to achieve competitive performance.</p>
+<p>Semi-supervised learning evaluations (1% and 10% of labeled ImageNet) test sample efficiency: how well representations transfer when few labels are available. I-JEPA performs strongly in these regimes, demonstrating that its representations generalize well and require minimal <span class="glossary-term" data-definition="The process of taking a model that has already been trained for a given task and then tuning it further for a second similar task.">fine-tuning</span> to achieve competitive performance.</p>
 <p>Transfer to other datasets (iNaturalist, Places205) and tasks (ADE20K semantic <span class="glossary-term" data-definition="The process of dividing a document or image into meaningful parts, such as individual characters.">segmentation</span>) confirms the broad utility of I-JEPA representations. The augmentation-free design avoids encoding ImageNet-specific invariances, resulting in representations that transfer more effectively to out-of-domain visual tasks.</p>
 <h2 id="section-4">Scalability and Computational Efficiency</h2>
 <p>I-JEPA demonstrates excellent scaling behavior with model and data size. Training a ViT-H/14 (632M parameters) on ImageNet-1K requires fewer than 1200 GPU hours on 16 A100 GPUs, completing in under 72 hours. This is over 2.5× faster than training a smaller ViT-S/16 with iBOT (800 epochs requiring more than 3000 GPU hours) and 10× more efficient than MAE on ViT-H/14.</p>
 <p>The efficiency advantage comes from prediction in representation space: the predictor only needs to match target encoder outputs at a few spatial locations, not reconstruct all pixel values. This means the per-step loss computation is much lighter than pixel-level reconstruction methods that must decode full image patches.</p>
-<p>The ViT-based architecture enables flexible image size and patch size. Using larger patches (ViT-H/16 with 448×448 resolution, denoted H/16-448) at lower resolution is particularly efficient, as the number of tokens scales as (H/P)² where P is patch size. I-JEPA experiments with this configuration achieve further efficiency gains while maintaining strong representation quality.</p>
+<p>The ViT-based architecture enables flexible image size and patch size. Using larger patches (ViT-H/16 with 448×448 resolution, denoted H/16-448) at lower resolution is particularly efficient, as the number of tokens scales as $$\left(H/P\right)^2$$ where $$P$$ is the patch size. I-JEPA experiments with this configuration achieve further efficiency gains while maintaining strong representation quality.</p>
 <p>Scaling laws for I-JEPA follow expected trends: larger models and more training epochs consistently improve representation quality. The combination of efficient architecture (ViT) with an efficient pretraining objective (representation-space prediction) positions I-JEPA as a practical foundation for scaling self-supervised vision learning.</p>
 <h2 id="concepts">Concept Breakdown</h2>
 
@@ -116,7 +103,7 @@
 
       <div class="concept-item">
         <div class="concept-title">Target Encoder with EMA Update</div>
-        <p>The target encoder is not directly trained but updated as an exponential moving average of the context encoder weights: θ_target ← α·θ_target + (1-α)·θ_context. This creates a slowly-changing, stable target that the predictor must track. The <span class="glossary-term" data-definition="A technique that uses previous gradients to smooth out updates and accelerate descent.">momentum</span> <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> α (typically 0.996–0.999) controls the update speed, preventing <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span> while maintaining coherent prediction targets.</p>
+        <p>The target encoder is not directly trained but updated as an exponential moving average of the context encoder weights: $$\theta_{\text{target}} \leftarrow \alpha \cdot \theta_{\text{target}} + (1-\alpha) \cdot \theta_{\text{context}}$$. This creates a slowly-changing, stable target that the predictor must track. The <span class="glossary-term" data-definition="An optimization technique that helps accelerate SGD in the relevant direction and dampens oscillations.">momentum</span> <span class="glossary-term" data-definition="A variable within a neural network that is learned during the training process; GPT-3 has 175 billion of them.">parameter</span> $$\alpha$$ (typically 0.996–0.999) controls the update speed, preventing <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span> while maintaining coherent prediction targets.</p>
       </div>
 
       <div class="concept-item">
@@ -136,58 +123,13 @@
 <h2 id="math">Mathematics</h2>
 <h3>I-JEPA training objective</h3>
 <div class="math-block">$$\mathcal{L} = \sum_{j=1}^{M} \left\| p_\theta\!\left(s_x, \text{pos}(B_j)\right) - \operatorname{sg}\!\left(e_{\bar{\theta}}(B_j)\right) \right\|_2^2$$</div>
-<div class="math-explanation-box">The loss sums L2 distances between the predictor's output for each of M target blocks and the <span class="glossary-term" data-definition="An operation that prevents backpropagation through a specific computational path. Used in SimSiam and BYOL to prevent collapse; LeWM eliminates the need for stop-gradients entirely through SIGReg.">stop-gradient</span> target encoder's representation of that block. sg(·) denotes stop <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>—the target encoder output is treated as a fixed target, not backpropagated through. This design prevents trivial <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span>: the predictor must match a meaningful target it cannot directly influence.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$p_\theta$</td><td>predictor network with parameters θ</td></tr><tr><td>$s_x$</td><td>context encoder output for context block</td></tr><tr><td>$\text{pos}(B_j)$</td><td>positional encoding of j-th target block</td></tr><tr><td>$e_{\bar{\theta}}$</td><td>target encoder (EMA of context encoder)</td></tr><tr><td>$\operatorname{sg}$</td><td>stop-gradient operator</td></tr></table></div>
+<div class="math-explanation-box">The loss sums $$L_2$$ distances between the predictor's output for each of $$M$$ target blocks and the <span class="glossary-term" data-definition="An operation that prevents backpropagation through a specific computational path. Used in SimSiam and BYOL to prevent collapse; LeWM eliminates the need for stop-gradients entirely through SIGReg.">stop-gradient</span> target encoder's representation of that block. $$\text{sg}(\cdot)$$ denotes stop <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span>—the target encoder output is treated as a fixed target, not backpropagated through. This design prevents trivial <span class="glossary-term" data-definition="Failure mode in self-supervised learning where the encoder maps all inputs to the same representation, trivially satisfying the self-supervised objective. I-JEPA prevents collapse via EMA target encoder and diverse masking strategies.">collapse</span>: the predictor must match a meaningful target it cannot directly influence.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$p_\theta$</td><td>predictor network with parameters θ</td></tr><tr><td>$s_x$</td><td>context encoder output for context block</td></tr><tr><td>$\text{pos}(B_j)$</td><td>positional encoding of j-th target block</td></tr><tr><td>$e_{\bar{\theta}}$</td><td>target encoder (EMA of context encoder)</td></tr><tr><td>$\operatorname{sg}$</td><td>stop-gradient operator</td></tr></table></div>
 <h3>EMA update of target encoder</h3>
 <div class="math-block">$$\bar{\theta} \leftarrow \alpha \bar{\theta} + (1-\alpha)\theta, \quad \alpha \in [0.996, 0.999]$$</div>
-<div class="math-explanation-box">The target encoder is updated as an exponential moving average of the online context encoder. With α close to 1, the target encoder changes slowly—acting as a smoothed version of the training encoder. This provides stable prediction targets: if the target encoder updated as fast as the context encoder, the predictor would chase a rapidly changing target, destabilizing training.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\bar{\theta}$</td><td>target encoder parameters</td></tr><tr><td>$\theta$</td><td>context encoder parameters (updated by gradient descent)</td></tr><tr><td>$\alpha$</td><td>EMA momentum coefficient (0.996-0.999)</td></tr></table></div>
+<div class="math-explanation-box">The target encoder is updated as an exponential moving average of the online context encoder. With $$\alpha$$ close to 1, the target encoder changes slowly—acting as a smoothed version of the training encoder. This provides stable prediction targets: if the target encoder updated as fast as the context encoder, the predictor would chase a rapidly changing target, destabilizing training.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\bar{\theta}$</td><td>target encoder parameters</td></tr><tr><td>$\theta$</td><td>context encoder parameters (updated by gradient descent)</td></tr><tr><td>$\alpha$</td><td>EMA momentum coefficient (0.996-0.999)</td></tr></table></div>
 <h3>Target block sampling distribution</h3>
 <div class="math-block">$$(x, y, h, w) \sim \mathcal{U}([0,H] \times [0,W] \times [s_{\min} H, s_{\max} H] \times [r_{\min} W, r_{\max} W])$$</div>
-<div class="math-explanation-box">Target blocks are sampled as rectangles with uniformly random position (x,y) and dimensions (h,w) drawn from specified scale and aspect ratio ranges. The minimum scale s_min = 0.15 ensures blocks are large enough to require semantic-level prediction. The aspect ratio range [0.75, 1.5] allows non-square blocks that better match object shapes.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$(x,y)$</td><td>top-left corner of target block</td></tr><tr><td>$(h,w)$</td><td>height and width of target block</td></tr><tr><td>$s_{\min}, s_{\max}$</td><td>scale range 0.15-0.20 relative to image size</td></tr></table></div>
-<h2 id="figures">Figures and Explanations</h2>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig1.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 1:</b> The overall objective is as follows: given a context<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Figure 4 shows the multi-block masking strategy visualization. The image is divided into a grid of patches; the context block (lighter shading) is a single large connected region covering most of the image. Four target blocks (darker shading) are separate rectangular regions not overlapping the context. The figure illustrates why target block scale matters: small target blocks adjacent to context boundaries could be predicted from texture interpolation, while large target blocks require semantic understanding of object structure. Ablations shown in the paper confirm that increasing target block scale consistently improves representation semantic quality.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig2.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 2:</b> Examples of our context and target-masking strategy.<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Figure 2 from the paper shows a comparison of three self-supervised learning paradigms. (a) Joint-Embedding Architecture (JEA/SimCLR-style): two compatible inputs x and y are independently encoded, and the loss drives their embeddings to be similar. (b) Generative Architecture (MAE-style): input x is encoded and a decoder reconstructs signal y directly in input space using latent variable z. (c) Joint-Embedding Predictive Architecture (I-JEPA): input x is encoded to context embedding sₓ, a predictor network uses sₓ and latent variable z (positional information about target) to predict the embedding sᵧ of y as computed by a separate y-encoder. I-JEPA avoids both the augmentation bias of (a) and the pixel-level reconstruction of (b).
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig3.jpeg" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 3:</b> Visualization of I-JEPA predictor representations. For each image: first column contains the original image; second column<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            Figure 1 from the paper shows ImageNet linear evaluation accuracy versus pretraining GPU hours for multiple self-supervised methods. I-JEPA (ViT-H/14, 300 epochs) achieves higher top-1 accuracy than MAE (ViT-H/14, 1600 epochs) and data2vec (ViT-L/16, 1600 epochs) while using substantially fewer GPU hours. The plot demonstrates both the quality advantage (higher accuracy) and efficiency advantage (lower compute) of the predictive objective versus pixel-reconstruction objectives.
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/ee57e4d7a125f4ca8916284a857c3760d7d378d3_fig4.jpeg" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 4:</b> Visualization of I-JEPA target-encoder representations. For each image: first column contains the original image; subsequent<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
+<div class="math-explanation-box">Target blocks are sampled as rectangles with uniformly random position $$(x,y)$$ and dimensions $$(h,w)$$ drawn from specified scale and aspect ratio ranges. The minimum scale $$s_{\min} = 0.15$$ ensures blocks are large enough to require semantic-level prediction. The aspect ratio range $$[0.75, 1.5]$$ allows non-square blocks that better match object shapes.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$(x,y)$</td><td>top-left corner of target block</td></tr><tr><td>$(h,w)$</td><td>height and width of target block</td></tr><tr><td>$s_{\min}, s_{\max}$</td><td>scale range 0.15-0.20 relative to image size</td></tr></table></div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
@@ -220,110 +162,6 @@
           <span style="font-size: 0.8rem; color: #54595d;">The backbone architecture used in I-JEPA; both context encoder and target encoder are ViT models whose patch-based design naturally supports the block masking strategy.</span>
         </div>
 </div>
-
-      <h2 id="references">References</h2>
-      <ol class="reference-list">
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="d8496775f90ca21735decc238855550c11efd85a">Efficient Self-supervised Learning with Contextualized Target Representations for Vision, Speech and Language</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Alexei Baevski, Arun Babu et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8be831a07abe8c5475c2bd91cc41bf4c1c2be771">The Hidden Uniform Cluster Prior in Self-Supervised Learning</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Mahmoud Assran, Randall Balestriero et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="b8d4beeb8df994db12688226cf2a619f1d633b72">VICRegL: Self-Supervised Learning of Local Visual Features</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Adrien Bardes, J. Ponce et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="0904945439e7f23b1b6ae6ce358c398accc3cd9a">Semi-supervised Vision Transformers at Scale</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Zhaowei Cai, Avinash Ravichandran et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="c715b3b607445998acc869633a4fde32e1933fa2">On the principles of Parsimony and Self-consistency for the emergence of intelligence</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Y. Ma, D. Tsao et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="a6e231db70a6774abc995afc0201671e0dab4d3a">Masked Siamese Networks for Label-Efficient Learning</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Mahmoud Assran, Mathilde Caron et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="3387e9dedb7accc3c248d194b012cab0ab5ab0b8">Context Autoencoder for Self-supervised Representation Learning</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Xiaokang Chen, Mingyu Ding et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8f2bca9d684005675e294b33c26481e36f528cdb">data2vec: A General Framework for Self-supervised Learning in Speech, Vision and Language</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Alexei Baevski, Wei-Ning Hsu et al. (2022)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="7d0dfbddbf5b824e7048b2d40fa5945afd18ac9c">Are Large-scale Datasets Necessary for Self-Supervised Pre-training?</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Alaaeldin El-Nouby, Gautier Izacard et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="008a428e049003fe768068a0f1fa1416af5c4982">Masked Feature Prediction for Self-Supervised Visual Pre-Training</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Chen Wei, Haoqi Fan et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="4d7c2de7a0de802f0fbfafcd9a4b4ec19e62e49d">High Fidelity Visualization of What Your Self-Supervised Representation Knows About</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Florian Bordes, Randall Balestriero et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="9c4753ef43d2928866dc5bf6cec53d03373ec2fa">SimMIM: a Simple Framework for Masked Image Modeling</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Zhenda Xie, Zheng Zhang et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="9653c070724e44f023e8cc3ec79f0b9e6d59480d">iBOT: Image BERT Pre-Training with Online Tokenizer</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Jinghao Zhou, Chen Wei et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="6351ebb4a3287f5f3e1273464b3b91e5df5a16d7">Masked Autoencoders Are Scalable Vision Learners</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Kaiming He, Xinlei Chen et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="722ad6ac92286507437b31486f47987d6ece05c9">BEiT: BERT Pre-Training of Image Transformers</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Hangbo Bao, Li Dong et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="0d0cf5f64c052aa7edc5bb638203616a620557f6">VICReg: Variance-Invariance-Covariance Regularization for Self-Supervised Learning</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Adrien Bardes, J. Ponce et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="ad4a0938c48e61b7827869e4ac3baffd0aefab35">Emerging Properties in Self-Supervised Vision Transformers</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Mathilde Caron, Hugo Touvron et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="57119dde4f6c45b195d9768e00e441032da7a650">Semi-Supervised Learning of Visual Features by Non-Parametrically Predicting View Assignments with Support Samples</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Mahmoud Assran, Mathilde Caron et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="739ceacfafb1c4eaa17509351b647c773270b3ae">An Empirical Study of Training Self-Supervised Vision Transformers</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Xinlei Chen, Saining Xie et al. (2021)</span>
-        </li>
-
-        <li class="reference-item">
-          <a class="reference-link" data-paper-id="8a9d84d86ac0d76e63914802f9738325c3bece9c">Barlow Twins: Self-Supervised Learning via Redundancy Reduction</a>
-          <span style="font-size: 0.8rem; color: #54595d;"> - Jure Zbontar, Li Jing et al. (2021)</span>
-        </li>
-      </ol>
 </article>
 
   </main>

@@ -36,14 +36,14 @@ def infer_tags(paper):
     """Infer tags for a paper based on keyword matching."""
     # Build corpus text
     parts = [
-        paper.get('title', ''),
-        paper.get('lead_paragraph', ''),
-        paper.get('main_concept', ''),
+        paper.get('title') or '',
+        paper.get('lead_paragraph') or '',
+        paper.get('main_concept') or '',
     ]
     for section in paper.get('sections', []):
-        parts.append(section.get('title', ''))
+        parts.append(section.get('title') or '')
     for concept in paper.get('concept_breakdown', []):
-        parts.append(concept.get('concept', ''))
+        parts.append(concept.get('concept') or '')
 
     corpus = ' '.join(parts).lower()
 

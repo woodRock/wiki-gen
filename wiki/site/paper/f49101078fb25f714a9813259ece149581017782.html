@@ -33,12 +33,11 @@
         <li><a href="#section-3">Historical Context and Legacy</a></li>
         <li><a href="#concepts">Concepts</a></li>
         <li><a href="#math">Mathematics</a></li>
-        <li><a href="#figures">Figures</a></li>
         <li><a href="#see-also">See Also</a></li>
 
       </ul>
       <h3 style="margin-top: 1.5rem;">Tags</h3>
-      <div><span class="tag" style="background: #e3f2fd; color: #1976d2;">optimization</span></div>
+      <div><span class="tag" style="background: #4A90E220; color: #4A90E2;">optimization</span></div>
     </aside>
 
     
@@ -105,33 +104,10 @@
 <h2 id="math">Mathematics</h2>
 <h3>Error Propagation Weight</h3>
 <div class="math-block">$$w_i = \frac{\partial f}{\partial x_i}$$</div>
-<div class="math-explanation-box">Linnainmaa defined weights $w_i$ as the partial derivatives of the result $f$ with respect to the intermediate value $x_i$, calculated via the chain rule in reverse.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$f$</td><td>Final output or result of the computation</td></tr><tr><td>$x_i$</td><td>An intermediate or input variable in the sequence of operations</td></tr></table></div>
+<div class="math-explanation-box">Linnainmaa defined weights $$w_i$$ as the partial derivatives of the result $$f$$ with respect to the intermediate value $$x_i$$, calculated via the chain rule in reverse.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$f$</td><td>Final output or result of the computation</td></tr><tr><td>$x_i$</td><td>An intermediate or input variable in the sequence of operations</td></tr></table></div>
 <h3>The Chain Rule (Reverse)</h3>
 <div class="math-block">$$\delta_i = \sum_{j \in \text{children}(i)} \delta_j \frac{\partial x_j}{\partial x_i}$$</div>
-<div class="math-explanation-box">The fundamental recursive step of reverse-mode AD, where the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> at node $i$ is the sum of gradients from its dependent nodes $j$, scaled by local derivatives.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\delta_i$</td><td>The 'adjoint' or gradient of the output with respect to node i</td></tr></table></div>
-<h2 id="figures">Figures and Explanations</h2>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/f49101078fb25f714a9813259ece149581017782_fig1.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 1:</b> ca. 1 = d4.2d2.1 + d4.J~.l + da.ads.2d2, r The<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
-
-      <div class="thumb" style="float:none; width:100%; margin: 1rem 0;">
-        <div class="thumbinner" style="width:100%;">
-          <img src="../assets/figures/f49101078fb25f714a9813259ece149581017782_fig2.png" style="max-height: 400px;">
-          <div class="thumbcaption">
-            <b>Figure 2:</b> are inactive (as they are e.g.<br>
-            <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-            
-          </div>
-        </div>
-      </div>
+<div class="math-explanation-box">The fundamental recursive step of reverse-mode AD, where the <span class="glossary-term" data-definition="The vector of partial derivatives of a function, indicating the direction of steepest ascent.">gradient</span> at node $$i$$ is the sum of gradients from its dependent nodes $$j$$, scaled by local derivatives.<table class="symbol-table"><tr><th>Symbol</th><th>Meaning</th></tr><tr><td>$\delta_i$</td><td>The 'adjoint' or gradient of the output with respect to node $$i$$</td></tr></table></div>
 <h2 id="see-also">See Also</h2>
 <div class="see-also-grid">
         <div class="see-also-item">
