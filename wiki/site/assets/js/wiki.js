@@ -104,13 +104,13 @@ class Search {
   constructor() {
     this.searchIndex = null;
     this.dropdown = null;
+    this.activeIndex = -1;
     this.input = document.getElementById('search');
     if (!this.input) return;
     this.init();
   }
 
   async init() {
-    // Resolve path relative to current page depth
     const isInPaperDir = window.location.pathname.includes('/paper/');
     const basePath = isInPaperDir ? '../' : '';
     try {
@@ -131,18 +131,38 @@ class Search {
 
   bindEvents() {
     this.input.addEventListener('input', () => {
+      this.activeIndex = -1;
       const q = this.input.value.trim();
       if (q.length < 2) { this.hide(); return; }
-      this.render(this.search(q));
+      this.render(this.search(q), q);
     });
 
     this.input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { this.hide(); this.input.blur(); }
+      const items = this.dropdown.querySelectorAll('.search-result');
+      if (e.key === 'Escape') { this.hide(); this.input.blur(); return; }
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        this.setActive(Math.min(this.activeIndex + 1, items.length - 1), items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        this.setActive(Math.max(this.activeIndex - 1, 0), items);
+      } else if (e.key === 'Enter' && this.activeIndex >= 0) {
+        e.preventDefault();
+        items[this.activeIndex].click();
+      }
     });
 
     document.addEventListener('click', (e) => {
       if (!this.input.parentElement.contains(e.target)) this.hide();
     });
+  }
+
+  setActive(idx, items) {
+    items.forEach(el => el.classList.remove('active'));
+    this.activeIndex = idx;
+    items[idx].classList.add('active');
+    items[idx].scrollIntoView({ block: 'nearest' });
   }
 
   search(query) {
@@ -157,7 +177,15 @@ class Search {
     ).slice(0, 8);
   }
 
-  render(results) {
+  highlight(text, query) {
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text;
+    return text.slice(0, idx)
+      + `<mark>${text.slice(idx, idx + query.length)}</mark>`
+      + text.slice(idx + query.length);
+  }
+
+  render(results, query) {
     const isInPaperDir = window.location.pathname.includes('/paper/');
     const base = isInPaperDir ? '../' : '';
 
@@ -167,21 +195,40 @@ class Search {
       return;
     }
 
-    this.dropdown.innerHTML = results.map(p => {
-      const authors = p.authors ? p.authors.slice(0, 2).join(', ') + (p.authors.length > 2 ? ' et al.' : '') : '';
-      const tags = (p.tags || []).slice(0, 3).map(t => `<span class="search-result-tag">${t}</span>`).join('');
+    const countHeader = `<div class="search-result-count">${results.length} result${results.length !== 1 ? 's' : ''}</div>`;
+
+    const items = results.map(p => {
+      const authors = p.authors
+        ? p.authors.slice(0, 2).join(', ') + (p.authors.length > 2 ? ' et al.' : '')
+        : '';
+      const tags = (p.tags || []).slice(0, 3)
+        .map(t => `<span class="search-result-tag">${t}</span>`).join('');
+      const citations = p.citation_count
+        ? `<span class="search-result-citations">📖 ${p.citation_count.toLocaleString()}</span>`
+        : '';
+      const metaParts = [
+        authors ? `<span>${authors}</span>` : '',
+        p.year   ? `<span class="year">${p.year}</span>` : '',
+        p.venue  ? `<span>${p.venue}</span>` : '',
+      ].filter(Boolean).join('<span class="sep">•</span>');
+
       return `<div class="search-result" onclick="window.location.href='${base}paper/${p.paper_id}.html'">
-        <div class="search-result-title">${p.title}</div>
-        <div class="search-result-meta">${[authors, p.year, p.venue].filter(Boolean).join(' • ')}</div>
-        ${tags ? `<div class="search-result-tags">${tags}</div>` : ''}
+        <div class="search-result-title">${this.highlight(p.title, query)}</div>
+        <div class="search-result-meta">${metaParts}</div>
+        ${(tags || citations) ? `<div class="search-result-footer">
+          <div class="search-result-tags">${tags}</div>
+          ${citations}
+        </div>` : ''}
       </div>`;
     }).join('');
 
+    this.dropdown.innerHTML = countHeader + items;
     this.dropdown.classList.add('visible');
   }
 
   hide() {
     if (this.dropdown) this.dropdown.classList.remove('visible');
+    this.activeIndex = -1;
   }
 }
 

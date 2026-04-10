@@ -396,33 +396,60 @@ body {
   position: relative;
 }
 
+.wiki-search input:focus {
+  outline: none;
+  border-color: var(--wiki-link);
+  box-shadow: 0 0 0 2px rgba(51,102,204,0.15);
+}
+
 .search-dropdown {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: white;
+  background: #fff;
   border: 1px solid var(--wiki-border);
-  border-top: none;
-  max-height: 400px;
+  border-radius: 4px;
+  max-height: 480px;
   overflow-y: auto;
   z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.07);
+  animation: searchFadeIn 0.1s ease-out;
+}
+
+@keyframes searchFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .search-dropdown.visible {
   display: block;
 }
 
-.search-result {
-  padding: 0.6rem 1rem;
-  cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+.search-result-count {
+  padding: 0.35rem 1rem;
+  font-size: 0.68rem;
+  color: #72777d;
+  background: var(--wiki-gray-bg);
+  border-bottom: 1px solid var(--wiki-border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
 }
 
-.search-result:hover {
-  background: var(--wiki-gray-bg);
+.search-result {
+  padding: 0.6rem 1rem 0.6rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  border-left: 3px solid transparent;
+  transition: background 0.08s, border-color 0.08s;
+}
+
+.search-result:hover,
+.search-result.active {
+  background: #f3f8ff;
+  border-left-color: var(--wiki-link);
 }
 
 .search-result:last-child {
@@ -432,35 +459,72 @@ body {
 .search-result-title {
   font-weight: 500;
   color: var(--wiki-link);
-  font-size: 0.9rem;
-  line-height: 1.3;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  margin-bottom: 0.2rem;
+}
+
+.search-result-title mark {
+  background: #fff3b0;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+  font-style: normal;
 }
 
 .search-result-meta {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  color: #72777d;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.search-result-meta .sep {
+  margin: 0 0.3rem;
+  opacity: 0.5;
+}
+
+.search-result-meta .year {
+  font-weight: 600;
   color: #54595d;
-  margin-top: 0.15rem;
+}
+
+.search-result-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .search-result-tags {
-  margin-top: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
 }
 
 .search-result-tag {
-  display: inline-block;
-  padding: 0.1rem 0.35rem;
-  margin: 0 0.1rem 0 0;
-  background: #e3f2fd;
-  color: #1976d2;
-  border-radius: 2px;
-  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  background: #e8f0fe;
+  color: #1a56b0;
+  border-radius: 10px;
+  font-size: 0.67rem;
+  font-weight: 500;
+}
+
+.search-result-citations {
+  font-size: 0.68rem;
+  color: #999;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .search-no-results {
-  padding: 0.8rem 1rem;
-  color: #54595d;
+  padding: 1.2rem 1rem;
+  color: #72777d;
   font-size: 0.85rem;
   font-style: italic;
+  text-align: center;
 }
 
 /* Responsive */
@@ -589,13 +653,13 @@ class Search {
   constructor() {
     this.searchIndex = null;
     this.dropdown = null;
+    this.activeIndex = -1;
     this.input = document.getElementById('search');
     if (!this.input) return;
     this.init();
   }
 
   async init() {
-    // Resolve path relative to current page depth
     const isInPaperDir = window.location.pathname.includes('/paper/');
     const basePath = isInPaperDir ? '../' : '';
     try {
@@ -616,18 +680,38 @@ class Search {
 
   bindEvents() {
     this.input.addEventListener('input', () => {
+      this.activeIndex = -1;
       const q = this.input.value.trim();
       if (q.length < 2) { this.hide(); return; }
-      this.render(this.search(q));
+      this.render(this.search(q), q);
     });
 
     this.input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { this.hide(); this.input.blur(); }
+      const items = this.dropdown.querySelectorAll('.search-result');
+      if (e.key === 'Escape') { this.hide(); this.input.blur(); return; }
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        this.setActive(Math.min(this.activeIndex + 1, items.length - 1), items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        this.setActive(Math.max(this.activeIndex - 1, 0), items);
+      } else if (e.key === 'Enter' && this.activeIndex >= 0) {
+        e.preventDefault();
+        items[this.activeIndex].click();
+      }
     });
 
     document.addEventListener('click', (e) => {
       if (!this.input.parentElement.contains(e.target)) this.hide();
     });
+  }
+
+  setActive(idx, items) {
+    items.forEach(el => el.classList.remove('active'));
+    this.activeIndex = idx;
+    items[idx].classList.add('active');
+    items[idx].scrollIntoView({ block: 'nearest' });
   }
 
   search(query) {
@@ -642,7 +726,15 @@ class Search {
     ).slice(0, 8);
   }
 
-  render(results) {
+  highlight(text, query) {
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text;
+    return text.slice(0, idx)
+      + `<mark>${text.slice(idx, idx + query.length)}</mark>`
+      + text.slice(idx + query.length);
+  }
+
+  render(results, query) {
     const isInPaperDir = window.location.pathname.includes('/paper/');
     const base = isInPaperDir ? '../' : '';
 
@@ -652,21 +744,40 @@ class Search {
       return;
     }
 
-    this.dropdown.innerHTML = results.map(p => {
-      const authors = p.authors ? p.authors.slice(0, 2).join(', ') + (p.authors.length > 2 ? ' et al.' : '') : '';
-      const tags = (p.tags || []).slice(0, 3).map(t => `<span class="search-result-tag">${t}</span>`).join('');
+    const countHeader = `<div class="search-result-count">${results.length} result${results.length !== 1 ? 's' : ''}</div>`;
+
+    const items = results.map(p => {
+      const authors = p.authors
+        ? p.authors.slice(0, 2).join(', ') + (p.authors.length > 2 ? ' et al.' : '')
+        : '';
+      const tags = (p.tags || []).slice(0, 3)
+        .map(t => `<span class="search-result-tag">${t}</span>`).join('');
+      const citations = p.citation_count
+        ? `<span class="search-result-citations">📖 ${p.citation_count.toLocaleString()}</span>`
+        : '';
+      const metaParts = [
+        authors ? `<span>${authors}</span>` : '',
+        p.year   ? `<span class="year">${p.year}</span>` : '',
+        p.venue  ? `<span>${p.venue}</span>` : '',
+      ].filter(Boolean).join('<span class="sep">\u2022</span>');
+
       return `<div class="search-result" onclick="window.location.href='${base}paper/${p.paper_id}.html'">
-        <div class="search-result-title">${p.title}</div>
-        <div class="search-result-meta">${[authors, p.year, p.venue].filter(Boolean).join(' \u2022 ')}</div>
-        ${tags ? `<div class="search-result-tags">${tags}</div>` : ''}
+        <div class="search-result-title">${this.highlight(p.title, query)}</div>
+        <div class="search-result-meta">${metaParts}</div>
+        ${(tags || citations) ? `<div class="search-result-footer">
+          <div class="search-result-tags">${tags}</div>
+          ${citations}
+        </div>` : ''}
       </div>`;
     }).join('');
 
+    this.dropdown.innerHTML = countHeader + items;
     this.dropdown.classList.add('visible');
   }
 
   hide() {
     if (this.dropdown) this.dropdown.classList.remove('visible');
+    this.activeIndex = -1;
   }
 }
 
@@ -1070,6 +1181,7 @@ def generate_search_index(papers, conn):
             'authors': paper['authors'],
             'year': paper.get('year'),
             'venue': paper.get('venue'),
+            'citation_count': paper.get('citation_count', 0),
             'tags': paper.get('tags', []),
             'content': ' '.join(content_parts)[:3000],
         })
