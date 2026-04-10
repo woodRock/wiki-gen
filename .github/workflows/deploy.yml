@@ -5,9 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'wiki/**'
-      - 'scripts/**'
-      - 'ingest/**'
+      - 'wiki/site/**'
       - '.github/workflows/deploy.yml'
 
 jobs:
@@ -18,20 +16,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pdf2doi semanticscholar pymupdf python-dotenv Jinja2
-
-      - name: Build Wiki
-        run: |
-          python scripts/processor.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
