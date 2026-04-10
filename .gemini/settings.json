@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "tools": {
+      "allow": [
+        "read_file",
+        "grep_search",
+        "run_shell_command",
+        "write_file",
+        "replace",
+        "glob",
+        "list_directory"
+      ]
+    }
+  }
+}

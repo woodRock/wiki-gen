@@ -1,0 +1,2 @@
+description = "Reprocess a paper from scratch."
+prompt = "Use the 'reingest' skill to reprocess the following paper/PDF: {{args}}"
