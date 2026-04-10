@@ -103,27 +103,85 @@ class HoverCard {
 class Search {
   constructor() {
     this.searchIndex = null;
+    this.dropdown = null;
+    this.input = document.getElementById('search');
+    if (!this.input) return;
     this.init();
   }
-  
+
   async init() {
+    // Resolve path relative to current page depth
+    const isInPaperDir = window.location.pathname.includes('/paper/');
+    const basePath = isInPaperDir ? '../' : '';
     try {
-      const response = await fetch('/search_index.json');
+      const response = await fetch(`${basePath}search_index.json`);
       this.searchIndex = await response.json();
     } catch (err) {
       console.error('Failed to load search index:', err);
     }
+    this.createDropdown();
+    this.bindEvents();
   }
-  
+
+  createDropdown() {
+    this.dropdown = document.createElement('div');
+    this.dropdown.className = 'search-dropdown';
+    this.input.parentElement.appendChild(this.dropdown);
+  }
+
+  bindEvents() {
+    this.input.addEventListener('input', () => {
+      const q = this.input.value.trim();
+      if (q.length < 2) { this.hide(); return; }
+      this.render(this.search(q));
+    });
+
+    this.input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { this.hide(); this.input.blur(); }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!this.input.parentElement.contains(e.target)) this.hide();
+    });
+  }
+
   search(query) {
     if (!this.searchIndex) return [];
-    
-    query = query.toLowerCase();
-    return this.searchIndex.filter(paper => 
-      paper.title.toLowerCase().includes(query) ||
-      (paper.abstract && paper.abstract.toLowerCase().includes(query)) ||
-      (paper.authors && paper.authors.join(' ').toLowerCase().includes(query))
-    );
+    const q = query.toLowerCase();
+    return this.searchIndex.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      (p.authors && p.authors.join(' ').toLowerCase().includes(q)) ||
+      (p.venue && p.venue.toLowerCase().includes(q)) ||
+      (p.tags && p.tags.join(' ').toLowerCase().includes(q)) ||
+      (p.content && p.content.toLowerCase().includes(q))
+    ).slice(0, 8);
+  }
+
+  render(results) {
+    const isInPaperDir = window.location.pathname.includes('/paper/');
+    const base = isInPaperDir ? '../' : '';
+
+    if (!results.length) {
+      this.dropdown.innerHTML = '<div class="search-no-results">No papers found</div>';
+      this.dropdown.classList.add('visible');
+      return;
+    }
+
+    this.dropdown.innerHTML = results.map(p => {
+      const authors = p.authors ? p.authors.slice(0, 2).join(', ') + (p.authors.length > 2 ? ' et al.' : '') : '';
+      const tags = (p.tags || []).slice(0, 3).map(t => `<span class="search-result-tag">${t}</span>`).join('');
+      return `<div class="search-result" onclick="window.location.href='${base}paper/${p.paper_id}.html'">
+        <div class="search-result-title">${p.title}</div>
+        <div class="search-result-meta">${[authors, p.year, p.venue].filter(Boolean).join(' • ')}</div>
+        ${tags ? `<div class="search-result-tags">${tags}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    this.dropdown.classList.add('visible');
+  }
+
+  hide() {
+    if (this.dropdown) this.dropdown.classList.remove('visible');
   }
 }
 
